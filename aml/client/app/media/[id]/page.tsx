@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const { id } = params;
   // const [selectedBranch, setSelectedBranch] = useState("")
   const mediaItem = await getMedia(id);
-  console.log(mediaItem)
+  
   return (
     <div className="container mx-auto p-4">
       {/* Breadcrumb Navigation */}
