@@ -2,12 +2,17 @@ const mongoose = require('mongoose');
 
 const mediaSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  description: { type: String },
+  mediaType: { type: String, required: true }, 
   genre: { type: String, required: true },
   releaseDate: { type: Date },
-  imageUrl: { type: String },
   stock: { type: Number, required: true, default: 0 },
-  borrowed: { type: Number, required: true, default: 0 },
+  description: { type: String },
+  coverImgURL: { type: String }, 
+  borrowed: { type: String, required: true, default: "Available" }, 
+  author: { type: String }, 
+  publisher: { type: String }, 
+  platform: { type: String, default: null }, 
+  artist: { type: String, default: null }, 
   createdAt: { type: Date, default: Date.now },
 });
 
