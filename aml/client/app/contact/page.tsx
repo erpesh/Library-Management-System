@@ -87,7 +87,7 @@ export default function ContactPage() {
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-5 w-5 text-muted-foreground" />
-                <span>123 Library Street, Booktown, BT 12345</span>
+                <span>Central Library Surrey Street Sheffield S1 1XZ</span>
               </div>
             </CardContent>
           </Card>
@@ -117,18 +117,18 @@ export default function ContactPage() {
               <CardTitle>Find Us</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="aspect-video relative">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.9663095343008!2d-74.00425878459418!3d40.74076294379132!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259bf5c1654f3%3A0xc80f9cfce5383d5d!2sNew%20York%20Public%20Library%20-%20Stephen%20A.%20Schwarzman%20Building!5e0!3m2!1sen!2sus!4v1651103744585!5m2!1sen!2sus"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Library Location"
-                ></iframe>
-              </div>
+            <div className="aspect-video relative">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2370.5846801328075!2d-1.4700854841744054!3d53.37934687997908!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4879788dc4dcad6f%3A0x4ad1500d1a35c68b!2sCentral%20Library%2C%20Surrey%20St%2C%20Sheffield%20S1%201XZ%2C%20UK!5e0!3m2!1sen!2sus!4v1699472969632!5m2!1sen!2sus"
+        width="100%"
+        height="100%"
+        style="border: 0;"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Sheffield Central Library Location"
+      ></iframe>
+    </div>
             </CardContent>
           </Card>
         </div>
