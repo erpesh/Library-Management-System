@@ -8,7 +8,9 @@ The library management system requires a frontend framework that allows dynamic,
 
 ## Considered Options
 -Next.js
+
 -React
+
 -Vue.js  
 
 ## Decision Outcome Confirmation
