@@ -1,81 +1,81 @@
-# ADR: Database Strategy for Microservices
+# ADR: Data Model Strategy – Separate Databases for Each Microservice
 
 ## Context
 
-The AML system's microservices architecture requires a flexible and scalable data storage strategy to support the specific data needs and workloads of each service. To align with the microservices approach, we need a database strategy that enables each service to manage and access its data independently while supporting system scalability and data isolation.
+The AML library management system has adopted a microservices architecture to enhance scalability, flexibility, and service autonomy. Each service has specific data requirements, and the chosen data model should support independent, scalable, and adaptable data storage for each service. 
 
 ## Problem Statement
 
-To optimize performance, flexibility, and scalability, each microservice in the AML system should have the freedom to use a database solution tailored to its unique requirements. The database strategy should allow services to store structured and unstructured data, accommodate future growth, and prevent interdependencies between services, minimizing the risk of cascading failures and operational bottlenecks.
+To fully leverage the benefits of microservices, the system needs a data model strategy that aligns with its architecture. This strategy should allow each microservice to manage its data independently, prevent data dependencies, and support scalability across different data types and volumes. Additionally, the data model must facilitate the flexibility to evolve and update data schemas without impacting other services.
 
 ## Considered Options
 
-1. **Single Database for All Microservices**  
-2. **Different Databases per Microservice**  
-3. **Hybrid Approach (Core Services in Shared Database, Others Independent)**
+1. **Single Database for All Microservices**: All services share a single database, using a relational model.
+2. **Shared Database with Separate Schemas**: Each service has its own schema within a shared database.
+3. **Separate Databases for Each Microservice** (Selected)
 
-## Chosen Approach: Different Databases per Microservice
+## Chosen Approach: Separate Databases for Each Microservice
 
-After reviewing various approaches, we have decided to implement a **"Different Databases per Microservice"** strategy. Each microservice will have its own database instance, and MongoDB will be the default database choice due to its flexibility and scalability benefits in a microservices environment. However, each service is free to select a database that best meets its specific needs.
+After evaluating these options, the decision is to implement a **Separate Databases for Each Microservice** strategy. This approach enables each service to maintain its own MongoDB database instance, supporting flexibility in data modeling, independent scaling, and minimized interdependencies between services.
 
 ## Consequences
 
 ### Benefits
 
-- **Data Independence and Isolation**: Each service controls its own database, improving resilience and minimizing the risk of cross-service data inconsistencies or failures.
-- **Scalability**: Databases can be scaled individually based on service-specific loads, optimizing resource usage and performance.
-- **Flexibility**: Services with unique data storage needs (e.g., structured vs. unstructured data) can select the database that aligns best with their requirements.
-- **Easier Schema Evolution**: Database schemas can evolve independently, enabling services to adapt more rapidly to changing requirements without affecting other services.
+- **Service Autonomy**: Each microservice independently controls its database, allowing for tailored configurations, optimized queries, and isolated data management.
+- **Enhanced Scalability**: Each service's database can scale independently, addressing specific workload demands and improving resource utilization across the system.
+- **Schema Flexibility**: MongoDB’s flexible document model allows for schema evolution within each service, making it easier to adapt to new data requirements.
+- **Reduced Risk of Cross-Service Failures**: Independent databases mean that issues in one service’s data layer do not impact others, reducing the risk of cascading failures.
 
 ### Trade-offs
 
-- **Increased Complexity**: Managing multiple databases increases operational complexity, including setup, monitoring, and backup processes.
-- **Higher Maintenance Costs**: Each database requires separate maintenance and tuning, leading to higher administrative costs.
-- **Data Consistency Challenges**: Cross-service consistency must be managed carefully, as there is no single, centralized database to enforce consistency rules across services.
+- **Increased Operational Overhead**: Managing multiple databases requires a more complex setup for monitoring, backup, and maintenance.
+- **Data Consistency Challenges**: Cross-service data consistency requires careful orchestration since there is no single, centralized database to enforce consistency.
+- **Higher Maintenance Costs**: Each database requires individual maintenance and may increase administrative costs over time.
 
-## Pros of Different Databases per Microservice
+## Pros of Separate Databases per Microservice
 
-- **Improved Service Autonomy**: Microservices are independent and self-contained, simplifying development and maintenance.
-- **Optimized Performance**: Databases can be selected based on the data access patterns and load of each service, allowing each service to maximize its performance.
-- **Reduced Risk of Cross-Service Failures**: Isolated databases mean failures in one database do not impact others, reducing the likelihood of system-wide disruptions.
+- **Enhanced Service Independence**: With separate databases, services are more autonomous, making them easier to develop, maintain, and deploy.
+- **Optimized Data Models**: Each service can choose the optimal data model and indexing strategy, improving overall performance.
+- **Flexibility in Schema Management**: MongoDB’s schema-less model allows for rapid changes within services without affecting others, supporting agile development.
 
-## Cons of Different Databases per Microservice
+## Cons of Separate Databases per Microservice
 
-- **Increased Operational Overhead**: Multiple databases require more sophisticated monitoring and maintenance solutions.
-- **Complex Data Management**: Ensuring cross-service data consistency, if required, will be more challenging without a shared database.
-- **Additional Training**: Teams may need to be familiar with multiple database types if services choose databases other than MongoDB.
+- **Operational Complexity**: Managing separate databases per service requires advanced tooling for effective monitoring and maintenance.
+- **Data Redundancy**: Without a shared database, there may be some data redundancy across services, potentially leading to higher storage needs.
+- **Cross-Service Transactions**: Multi-service transactions are more challenging, as MongoDB’s transaction support across services is limited compared to relational databases.
 
 ## Confirmations
 
-We have confirmed that using different databases per microservice aligns well with AML’s microservices architecture and supports our scalability and flexibility goals. MongoDB is selected as the primary database option, but each service is free to choose an alternative database if it provides a better fit for its requirements.
+The decision to use separate MongoDB databases per microservice supports AML’s goal of a highly scalable, flexible, and autonomous microservices architecture. This model is well-suited for the AML system’s data requirements and allows each service to operate independently, ensuring future growth and system reliability.
 
 ---
 
 ## Pros and Cons of Other Considered Options
 
-### 1. Single Database for All Microservices
+### Single Database for All Microservices
 
    **Pros**:  
-   - Simplified management with a single point of maintenance.
-   - Consistent data access rules across services.
-
+   - Simplified management with one centralized database.
+   - Easier to maintain cross-service consistency.
+   
    **Cons**:  
-   - Limits scalability, as all services depend on a shared resource.
-   - Increases risk of cascading failures across microservices due to database contention or failure.
-   - Less flexibility for services with unique data requirements.
+   - Limits scalability as all services share a single database resource.
+   - High risk of cascading failures and performance bottlenecks.
+   - Less flexible for services with unique data requirements.
 
-### 2. Hybrid Approach (Core Services in Shared Database, Others Independent)
+### Shared Database with Separate Schemas
 
    **Pros**:  
-   - Balances some of the simplicity of a shared database with the autonomy of separate databases.
-   - Core services benefit from shared data consistency, while others have the flexibility to use independent databases.
-
+   - Moderate simplicity with a single database, while allowing some separation of data between services.
+   - Eases some operational burden compared to fully separate databases.
+   
    **Cons**:  
-   - Complexity remains high, as both shared and independent databases require coordination.
-   - Risk of performance bottlenecks in the shared database, potentially impacting critical services.
+   - Cross-service dependency risks and performance bottlenecks remain.
+   - Complexity in managing database resources to avoid interference between service schemas.
 
 ---
 
 ## Conclusion
 
-The **Different Databases per Microservice** strategy was chosen to align with AML’s microservices architecture and ensure high scalability, autonomy, and flexibility for each service. MongoDB will serve as the default database due to its schema flexibility, scalability, and support for unstructured data, but individual services have the freedom to select the most appropriate database for their specific needs. This approach provides a robust foundation for handling AML’s current and future data demands, despite the increased operational complexity.
+The **Separate Databases per Microservice** approach aligns with the AML system’s microservices architecture by providing data independence, flexibility, and scalability for each service. MongoDB’s document-oriented model and schema flexibility make it an ideal database solution for each independent microservice, offering agile data management capabilities and the ability to scale horizontally as the system grows. Although this approach introduces operational complexity and some cross-service consistency challenges, the benefits for AML’s scalability and service autonomy outweigh the trade-offs.
