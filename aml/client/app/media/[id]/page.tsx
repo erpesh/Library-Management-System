@@ -1,15 +1,5 @@
-'use client'
-
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 import {
   Book,
@@ -33,25 +23,8 @@ async function getMedia(id: string) {
     }
   }
 
-// Mock data based on the schema
-// const mediaItem = {
-//   _id: 1,
-//   title: "The Great Gatsby",
-//   mediaType: "Book",
-//   genre: "Fiction",
-//   releaseDate: "1925-04-10",
-//   stock: 3,
-//   description: "The Great Gatsby is a 1925 novel by American writer F. Scott Fitzgerald. Set in the Jazz Age on Long Island, near New York City, the novel depicts first-person narrator Nick Carraway's interactions with mysterious millionaire Jay Gatsby and Gatsby's obsession to reunite with his former lover, Daisy Buchanan.",
-//   coverImgURL: "/placeholder.svg?height=600&width=400",
-//   borrowed: "Available",
-//   author: "F. Scott Fitzgerald",
-//   publisher: "Charles Scribner's Sons",
-//   platform: null,
-//   artist: null
-// }
-
 export default async function Page({ params }: { params: { id: string } }) {
-    const { id } = params;
+  const { id } = params;
   // const [selectedBranch, setSelectedBranch] = useState("")
   const mediaItem = await getMedia(id);
   console.log(mediaItem)
@@ -79,7 +52,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           <Card>
             <CardContent className="p-2">
               <img
-                src={mediaItem.coverImgURL}
+                src={mediaItem.imageUrl}
                 alt={mediaItem.title}
                 className="w-full h-auto rounded-lg"
               />
@@ -113,7 +86,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               </div>
               <div className="flex items-center text-green-600">
                 <Clock className="mr-2 h-4 w-4" />
-                {mediaItem.borrowed}
+                {mediaItem.stock - mediaItem.borrowed}
               </div>
             </div>
 

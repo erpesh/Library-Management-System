@@ -95,8 +95,8 @@ export default async function BrowseMediaPage() {
         <main className="flex-grow">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {mediaItems.map((item: Media) => (
-              <Link href={`/media/${item._id}`}>
-                <Card key={item._id} className="overflow-hidden">
+              <Link key={item._id} href={`/media/${item._id}`}>
+                <Card className="overflow-hidden">
                   <div className="relative h-48">
                     <img
                       src={item.imageUrl}
