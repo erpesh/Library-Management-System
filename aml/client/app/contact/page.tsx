@@ -83,7 +83,7 @@ export default function ContactPage() {
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-5 w-5 text-muted-foreground" />
-                <span>+1 (555) 123-4567</span>
+                <span>(+44) 0114 273 4727</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-5 w-5 text-muted-foreground" />
@@ -122,10 +122,7 @@ export default function ContactPage() {
         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2370.5846801328075!2d-1.4700854841744054!3d53.37934687997908!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4879788dc4dcad6f%3A0x4ad1500d1a35c68b!2sCentral%20Library%2C%20Surrey%20St%2C%20Sheffield%20S1%201XZ%2C%20UK!5e0!3m2!1sen!2sus!4v1699472969632!5m2!1sen!2sus"
         width="100%"
         height="100%"
-        style="border: 0;"
-        allowfullscreen
         loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
         title="Sheffield Central Library Location"
       ></iframe>
     </div>
