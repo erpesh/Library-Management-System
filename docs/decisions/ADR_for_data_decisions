@@ -1,6 +1,6 @@
-# **ADR: Database Strategy for Microservices**
+# ADR: Database Strategy for Microservices
 
-## **Context**
+## Context
 
 The AML system's microservices architecture requires a flexible and scalable data storage strategy to support the specific data needs and workloads of each service. To align with the microservices approach, we need a database strategy that enables each service to manage and access its data independently while supporting system scalability and data isolation.
 
