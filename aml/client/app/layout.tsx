@@ -40,8 +40,8 @@ export default function RootLayout({
                 <ul className="flex space-x-6">
                   <li><a href="/" className="text-sm font-medium hover:text-primary transition-colors">Home</a></li>
                   <li><a href="/media/add" className="text-sm font-medium hover:text-primary transition-colors">Add Media</a></li>
-                  <li><a href="#" className="text-sm font-medium hover:text-primary transition-colors">Media</a></li>
-                  <li><a href="/media/contact/contact.tsx" className="text-sm font-medium hover:text-primary transition-colors">Contact</a></li>
+                  <li><a href="/media" className="text-sm font-medium hover:text-primary transition-colors">Media</a></li>
+                  <li><a href="/contact" className="text-sm font-medium hover:text-primary transition-colors">Contact</a></li>
                 </ul>
               </nav>
             </div>
