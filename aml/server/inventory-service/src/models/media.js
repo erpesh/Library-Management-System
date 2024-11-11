@@ -2,7 +2,11 @@ const mongoose = require('mongoose');
 
 const mediaSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  mediaType: { type: String, required: true }, 
+  mediaType: { 
+    type: String, 
+    required: true, 
+    enum: ['book', 'cd', 'game']  
+  },
   genre: { type: String, required: true },
   releaseDate: { type: Date },
   stock: { type: Number, required: true, default: 0 },
