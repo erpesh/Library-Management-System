@@ -1,11 +1,16 @@
 export interface Media {
     _id: string;
     title: string;
-    description: string;
+    mediaType: 'book' | 'cd' | 'game';  // Restricted to specific values
     genre: string;
     releaseDate: Date;
-    imageUrl: string;
     stock: number;
-    borrowed: number;
+    description: string;
+    imageUrl: string;
+    borrowed: number;  // e.g., "Available" or similar status
+    author?: string | null;  // Optional field
+    publisher?: string | null;
+    platform?: string | null;  // Optional, can be null
+    artist?: string | null;  // Optional, can be null
     createdAt: Date;
 }
