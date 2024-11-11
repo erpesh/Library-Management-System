@@ -21,14 +21,14 @@ With Next.js, we gain the benefits of React's component-based development while 
 
 ## Pros
 - Component-Based with React: Built on React, Next.js enables modular and reusable components, simplifying updates and maintenance.
--API Routes and Routing: Simplifies data fetching and backend integration, supporting our microservices-based architecture.
--Automatic Code Splitting: Loads only the code necessary for each page, improving user experience with faster page loads.
--Robust Community and Ecosystem: With extensive resources, Next.js provides numerous plugins, libraries, and community support.
+- API Routes and Routing: Simplifies data fetching and backend integration, supporting our microservices-based architecture.
+- Automatic Code Splitting: Loads only the code necessary for each page, improving user experience with faster page loads.
+- Robust Community and Ecosystem: With extensive resources, Next.js provides numerous plugins, libraries, and community support.
 
 ## Cons
--Learning Curve for SSR and SSG: Developers may need to learn about SSR and static generation, adding complexity compared to client-side-only frameworks.
--Reliance on the React Ecosystem: Familiarity with React’s concepts, such as state management, is necessary.
--Increased Server Costs: SSR may incur higher server costs compared to client-side-only frameworks, though static generation can mitigate this.
+- Learning Curve for SSR and SSG: Developers may need to learn about SSR and static generation, adding complexity compared to client-side-only frameworks.
+- Reliance on the React Ecosystem: Familiarity with React’s concepts, such as state management, is necessary.
+- Increased Server Costs: SSR may incur higher server costs compared to client-side-only frameworks, though static generation can mitigate this.
 
 ## Confirmations
 We have confirmed Next.js as the best choice for the AML system frontend due to its combination of React’s component-based architecture and Next.js’s SEO and performance advantages. This decision provides a flexible, scalable, and high-performing frontend that aligns well with both current and future needs.
