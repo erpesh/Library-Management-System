@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Book, Search, Clock, Users, ArrowRight, Calendar, Star } from 'lucide-react'
 
+// Curent landing page!!!!!!!!
 
 export default function LandingPage() {
   return (
@@ -180,10 +181,10 @@ export default function LandingPage() {
                 </p>
               </div>
               <Button asChild>
-                <Link href="/signup" className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
-                  Get Started <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+  <Link href="/media" className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+    Get Started <ArrowRight className="ml-2 h-4 w-4" />
+  </Link>
+</Button>
             </div>
           </div>
         </section>
