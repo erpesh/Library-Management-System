@@ -1,15 +1,12 @@
-import Image from 'next/image'
-import Link from "next/link"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { inventoryApi } from '../api/settings'
 import { Media } from '@/types/media'
-import { BookIcon, DiscIcon, GamepadIcon, SearchIcon } from 'lucide-react'
+import { SearchIcon } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@radix-ui/react-select'
 import { Checkbox } from '@radix-ui/react-checkbox'
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
 import { Input } from '@/components/ui/input'
+import MediaCard from '@/components/media-card'
 
 async function getMedia() {
   try {
@@ -95,39 +92,7 @@ export default async function BrowseMediaPage() {
         <main className="flex-grow">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {mediaItems.map((item: Media) => (
-              <Link key={item._id} href={`/media/${item._id}`}>
-                <Card className="overflow-hidden">
-                  <div className="relative h-48">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    {item.stock == item.borrowed && (
-                      <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 text-xs font-bold rounded">
-                        Not Available
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                    <div className="flex items-center mb-2">
-                      {/* {item.type === 'book' && <BookIcon className="w-4 h-4 mr-2" />}
-                    {item.type === 'cd' && <DiscIcon className="w-4 h-4 mr-2" />}
-                    {item.type === 'game' && <GamepadIcon className="w-4 h-4 mr-2" />} */}
-                      <BookIcon className="w-4 h-4 mr-2" />
-                      <span className="capitalize">Book</span>
-                      {/* <span className="capitalize">{item.type}</span> */}
-
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {/* {item.author || item.artist || item.platform} */}
-                      Author
-                    </p>
-                    <Badge variant="secondary" className='capitalize'>{item.genre}</Badge>
-                  </CardContent>
-                </Card>
-              </Link>
+              <MediaCard media={item} />
             ))}
           </div>
 

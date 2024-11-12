@@ -4,6 +4,7 @@ import "./globals.css";
 import { FacebookIcon, InstagramIcon, LibraryIcon, TwitterIcon } from "lucide-react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
+import { Toaster } from "@/components/ui/sonner";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -24,16 +25,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider
+        {/* <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-        >
+        > */}
           <header className="border-b">
             <div className="container mx-auto px-4 py-4">
               <div className="flex justify-between items-center">
@@ -53,7 +54,7 @@ export default function RootLayout({
               </div>
             </div>
           </header>
-          <main className="mx-auto max-w-[1200px]">
+          <main className="mx-auto max-w-[1200px] min-h-screen px-4">
             {children}
           </main>
           <footer className="bg-secondary text-secondary-foreground mt-12">
@@ -70,7 +71,8 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-        </ThemeProvider>
+          <Toaster/>
+        {/* </ThemeProvider> */}
       </body>
     </html>
   );
