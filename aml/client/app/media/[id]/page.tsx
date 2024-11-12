@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { inventoryApi } from "@/app/api/settings"
+import MediaIcon from "@/components/media-icon"
 
 
 // Fetch media item by ID
@@ -24,8 +25,8 @@ async function getMedia(id: string) {
   }
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const { id } = params;
-  // const [selectedBranch, setSelectedBranch] = useState("")
+  const { id } = await params;
+
   const mediaItem = await getMedia(id);
   
   return (
@@ -69,8 +70,8 @@ export default async function Page({ params }: { params: { id: string } }) {
           <div>
             <h1 className="text-3xl font-bold mb-2">{mediaItem.title}</h1>
             <div className="flex items-center space-x-2 text-muted-foreground">
-              <Book className="h-4 w-4" />
-              <span>{mediaItem.mediaType}</span>
+              <MediaIcon mediaType={mediaItem.mediaType}/>
+              <span className="capitalize">{mediaItem.mediaType}</span>
               <Separator orientation="vertical" className="h-4" />
               <span>{mediaItem.genre}</span>
             </div>
@@ -106,9 +107,6 @@ export default async function Page({ params }: { params: { id: string } }) {
 
               <Button className="w-full" disabled={mediaItem.stock === 0}>
                 Borrow Now
-              </Button>
-              <Button variant="outline" className="w-full" disabled={mediaItem.stock === 0}>
-                Reserve
               </Button>
             </div>
           </div>
