@@ -3,8 +3,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Media } from '@/types/media';
-import { BookIcon, DiscIcon, GamepadIcon } from 'lucide-react';
-import useMounted from '@/hooks/use-mounted';
 import Link from 'next/link';
 import MediaIcon from './media-icon';
 
@@ -14,10 +12,6 @@ interface Props {
 }
 
 export default function MediaCard({ media }: Props) {
-    // const mounted = useMounted();
-    // console.log(mounted)
-    // if (!mounted) return
-
     return (
         <Link href={`/media/${media._id}`} key={media._id}>
             <Card className="overflow-hidden h-full flex flex-col transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
