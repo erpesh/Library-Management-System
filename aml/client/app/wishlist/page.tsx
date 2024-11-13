@@ -3,12 +3,11 @@
 import { useState } from 'react'
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
-import { Trash2, PlusCircle } from 'lucide-react'
+import { Trash2, ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from '@/hooks/use-toast'
 import { Media } from '@/types/media'
-import MediaIcon from '@/components/media-icon'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -88,11 +87,11 @@ export default function WishlistPage() {
     })
   }
 
-  const addToCheckout = (id: string) => {
-    console.log(`Adding item ${id} to checkout`)
+  const borrowItem = (id: string) => {
+    console.log(`Borrowing item ${id}`)
     toast({
-      title: "Added to cart",
-      description: "The item has been added to your cart.",
+      title: "Item borrowed",
+      description: "The item has been added to your borrowed items.",
     })
   }
 
@@ -157,12 +156,11 @@ export default function WishlistPage() {
                       {item.title}
                     </motion.p>
                     <motion.p 
-                      className="text-sm text-muted-foreground mt-1 flex gap-1 capitalize items-center"
+                      className="text-sm text-muted-foreground mt-1"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.3 }}
                     >
-                      <MediaIcon mediaType={item.mediaType}/>
                       {item.mediaType}
                     </motion.p>
                     <motion.p 
@@ -175,27 +173,23 @@ export default function WishlistPage() {
                     </motion.p>
                   </div>
                 </div>
-                <div className="flex space-x-2">
-                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                <div className="flex flex-col space-y-2">
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Button
-                      variant="ghost"
-                      size="icon"
+                      variant="outline"
+                      className="w-28 bg-background hover:bg-background border-destructive text-destructive hover:text-destructive flex items-center justify-center gap-2"
                       onClick={() => removeFromWishlist(item._id)}
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
                     >
-                      <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Remove from wishlist</span>
+                      <ArrowLeft className="h-4 w-4" />
+                      Remove
                     </Button>
                   </motion.div>
-                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                     <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => addToCheckout(item._id)}
-                      className="text-primary hover:text-primary hover:bg-primary/10"
+                      className="w-28 bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center"
+                      onClick={() => borrowItem(item._id)}
                     >
-                      <PlusCircle className="h-4 w-4" />
-                      <span className="sr-only">Add to checkout</span>
+                      Borrow
                     </Button>
                   </motion.div>
                 </div>
