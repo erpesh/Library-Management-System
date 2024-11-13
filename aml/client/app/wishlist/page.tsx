@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useToast } from "@/hooks/use-toast"
 import { Media } from '@/types/media'
+import MediaIcon from '@/components/media-icon'
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -156,11 +157,12 @@ export default function WishlistPage() {
                       {item.title}
                     </motion.p>
                     <motion.p 
-                      className="text-sm text-muted-foreground mt-1"
+                      className="text-sm text-muted-foreground mt-1 flex gap-1 capitalize items-center"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.3 }}
                     >
+                      <MediaIcon mediaType={item.mediaType}/>
                       {item.mediaType}
                     </motion.p>
                     <motion.p 
