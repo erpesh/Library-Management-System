@@ -8,11 +8,13 @@ import { Separator } from "@/components/ui/separator"
 import {
     ChevronRight,
     Clock,
+    Heart,
     Home,
     Share2,
 } from "lucide-react"
 import Link from "next/link"
 import MediaIcon from "@/components/media-icon"
+import { RainbowButton } from "@/components/ui/rainbow-button"
 
 interface Props {
     media: Media
@@ -112,9 +114,13 @@ export default function ClientPage({ media }: Props) {
 
                         <Separator />
 
-                        <div className="space-y-2">
-                            <Button className="w-full" disabled={media.stock === 0}>
+                        <div className="space-y-2 flex justify-end items-end gap-4">
+                            <RainbowButton disabled={media.stock === media.borrowed}>
                                 Borrow Now
+                            </RainbowButton>
+                            <Button variant='outline'>
+                                <Heart className="h-4 w-4" />
+                                Add to Wishlist
                             </Button>
                         </div>
                     </motion.div>
