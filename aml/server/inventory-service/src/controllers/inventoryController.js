@@ -72,3 +72,56 @@ exports.deleteMedia = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+exports.checkAvailability = async (req, res) => {
+    try {
+        const mediaItem = await Media.findById(req.params.id);
+        if (!mediaItem) return res.status(404).json({ error: 'Media not found' });
+
+        if (mediaItem.borrowed < mediaItem.stock) {
+            return res.status(200).json({ available: true });
+        } else {
+            return res.status(200).json({ available: false });
+        }
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
+exports.borrowMedia = async (req, res) => {
+    try {
+        const mediaItem = await Media.findById(req.params.id);
+        if (!mediaItem) return res.status(404).json({ error: 'Media not found' });
+
+        if (mediaItem.borrowed < mediaItem.stock) {
+            mediaItem.borrowed += 1;
+            await mediaItem.save();
+            return res.status(200).json({ message: 'Media borrowed successfully' });
+        } else {
+            return res.status(400).json({ error: 'Media not available for borrowing' });
+        }
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
+exports.returnMedia = async (req, res) => {
+    try {
+        const mediaItem = await Media.findById(req.params.id);
+        if (!mediaItem) return res.status(404).json({ error: 'Media not found' });
+
+        if (mediaItem.borrowed > 0) {
+            mediaItem.borrowed -= 1;
+            await mediaItem.save();
+            return res.status(200).json({ message: 'Media returned successfully' });
+        } else {
+            return res.status(400).json({ error: 'No borrowed media to return' });
+        }
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
