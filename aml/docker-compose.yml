@@ -35,6 +35,21 @@ services:
       - mongo  # Ensure MongoDB is up before this service starts
     networks:
       - lms-network
+
+      # email service
+
+  notification-service:
+    build:
+      context: ./server/notification-service  # Path to the Express.js microservice folder
+    ports:
+      - "3002:3000"  # Expose container's port 3000 on host port 3002
+    environment:
+      - EMAIL_USER=cantorlibrarynotification@gmail.com
+      - EMAIL_PASS=huswuj-beBxu6-cojgys
+    # depends_on:
+    #   - mongo  # Ensure MongoDB is up before this service starts
+    networks:
+      - lms-network
   
   client:
     build:
