@@ -25,7 +25,7 @@ exports.sendWishlistNotificationEndpoint = async (req, res) => {
       `;
 
       // Send the email notification
-      await sendEmail('farshad389@gmail.com', 'Wishlist Media Item Now Available', emailContent); // Replace 'user@example.com' with the actual user email
+      await sendEmail('farshad389@gmail.com', 'Wishlist Media Item Now Available', emailContent); // reflecace with dynamic email
       console.log('Availability notification email sent successfully');
       
       // Respond with a success message
