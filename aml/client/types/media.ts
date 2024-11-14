@@ -8,10 +8,10 @@ export interface Media {
     description: string;
     imageUrl: string;
     borrowed: number;
-    author?: string | null;  // Optional field
-    publisher?: string | null;
-    platform?: string | null;  // Optional, can be null
-    artist?: string | null;  // Optional, can be null
+    author?: string | undefined;  // Optional field
+    publisher?: string | undefined;
+    platform?: string | undefined;  // Optional, can be null
+    artist?: string | undefined;  // Optional, can be null
     createdAt: Date;
 }
 

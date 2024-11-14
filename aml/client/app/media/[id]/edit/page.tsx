@@ -5,6 +5,7 @@ import { ChevronRight, Clock, Home, Share2 } from "lucide-react";
 import Link from "next/link";
 import { inventoryApi } from "@/app/api/settings";
 import EditCard from "./edit_card"; // Import the new EditCard component
+import AddMediaForm from "../../add/page";
 
 // Fetch media item by ID
 async function getMedia(id: string) {
@@ -18,7 +19,7 @@ async function getMedia(id: string) {
 
 // Page component
 export default async function Page({ params }: { params: { id: string } }) {
-  const { id } = params;
+  const { id } = await params;
   const mediaItem = await getMedia(id); // Fetch media item
   console.log(mediaItem);
 
@@ -93,20 +94,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           </div>
 
           {/* Use EditCard Component for Media Attributes */}
-          <EditCard
-            mediaType={mediaItem.mediaType}
-            attributes={[
-              { label: `${mediaItem.mediaType} Name`, value: mediaItem.title },
-              { label: "Genre", value: mediaItem.genre },
-              { label: "Type", value: mediaItem.mediaType },
-              { label: "Author", value: mediaItem.author },
-              { label: "Publisher", value: mediaItem.publisher },
-              { label: "Description", value: mediaItem.description },
-              { label: "Release Date", value: new Date(mediaItem.releaseDate).toLocaleDateString() },
-              { label: "Platform", value: mediaItem.platform },
-              { label: "Artist", value: mediaItem.artist },
-            ]}
-          />
+          <AddMediaForm media={mediaItem}/>
         </div>
       </div>
     </div>
