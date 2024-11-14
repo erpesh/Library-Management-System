@@ -7,10 +7,18 @@ export interface Media {
     stock: number;
     description: string;
     imageUrl: string;
-    borrowed: number;  // e.g., "Available" or similar status
+    borrowed: number;
     author?: string | null;  // Optional field
     publisher?: string | null;
     platform?: string | null;  // Optional, can be null
     artist?: string | null;  // Optional, can be null
     createdAt: Date;
+}
+
+export interface MediaSearchResponse {
+    mediaItems: Media[],
+    page: number,
+    perPage: number,
+    totalItems: number,
+    totalPages: number
 }

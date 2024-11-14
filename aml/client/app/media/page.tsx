@@ -1,28 +1,49 @@
-import Image from 'next/image'
-import Link from "next/link"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { inventoryApi } from '../api/settings'
-import { Media } from '@/types/media'
-import { BookIcon, DiscIcon, GamepadIcon, SearchIcon } from 'lucide-react'
+import {Media, MediaSearchResponse} from '@/types/media';
+import { SearchIcon } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@radix-ui/react-select'
 import { Checkbox } from '@radix-ui/react-checkbox'
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
 import { Input } from '@/components/ui/input'
+import MediaCard from '@/components/media-card'
 
-async function getMedia() {
+async function getMedia(filters: { [key: string]: string | string[] | undefined }): Promise<MediaSearchResponse | undefined> {
   try {
-    const response = await inventoryApi.get('/');
+    // Construct query parameters from filters
+    const queryParams = new URLSearchParams();
+
+    // Iterate through the filters and append them to the query parameters
+    for (const key in filters) {
+      const value = filters[key];
+      if (value !== undefined) {
+        // If the value is an array, append each item as a separate query parameter
+        if (Array.isArray(value)) {
+          value.forEach(val => queryParams.append(key, val));
+        } else {
+          queryParams.append(key, value);
+        }
+      }
+    }
+
+    // Make the API request with the constructed query string
+    const response = await inventoryApi.get(`/?${queryParams.toString()}`);
     return response.data;
-  }
-  catch (e) {
-    console.error(e)
+  } catch (e) {
+    console.error(e);
   }
 }
 
-export default async function BrowseMediaPage() {
-  const mediaItems = await getMedia();
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const filters = (await searchParams);
+
+
+  const response = await getMedia(filters);
+  const mediaItems = response?.mediaItems;
 
   return (
     <div className="container mx-auto py-6">
@@ -94,41 +115,9 @@ export default async function BrowseMediaPage() {
 
         <main className="flex-grow">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {mediaItems.map((item: Media) => (
-              <Link key={item._id} href={`/media/${item._id}`}>
-                <Card className="overflow-hidden">
-                  <div className="relative h-48">
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    {item.stock == item.borrowed && (
-                      <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 text-xs font-bold rounded">
-                        Not Available
-                      </div>
-                    )}
-                  </div>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                    <div className="flex items-center mb-2">
-                      {/* {item.type === 'book' && <BookIcon className="w-4 h-4 mr-2" />}
-                    {item.type === 'cd' && <DiscIcon className="w-4 h-4 mr-2" />}
-                    {item.type === 'game' && <GamepadIcon className="w-4 h-4 mr-2" />} */}
-                      <BookIcon className="w-4 h-4 mr-2" />
-                      <span className="capitalize">Book</span>
-                      {/* <span className="capitalize">{item.type}</span> */}
-
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {/* {item.author || item.artist || item.platform} */}
-                      Author
-                    </p>
-                    <Badge variant="secondary" className='capitalize'>{item.genre}</Badge>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
+            {mediaItems ? mediaItems.map((item: Media) => (
+              <MediaCard media={item} />
+            )) : <div>No results!</div>}
           </div>
 
           <Pagination className="mt-8">

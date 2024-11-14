@@ -38,9 +38,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { format } from "date-fns"
-import { toast } from "@/hooks/use-toast"
 import { CalendarIcon } from 'lucide-react'
 import axios from "axios";
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -72,8 +73,10 @@ async function addMedia(data: FormValues) {
 }
 
 export default function AddMediaForm() {
+  const router = useRouter();
+
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selectedMediaType, setSelectedMediaType] = useState<'book' | 'cd' | 'game' | ''>('')
+  const [selectedMediaType, setSelectedMediaType] = useState<'book' | 'cd' | 'game'>('book')
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -92,16 +95,17 @@ export default function AddMediaForm() {
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
-      await addMedia(data);  // Send form data to addMedia
-      toast({
-        title: "Media Added",
+      const { _id } = await addMedia(data);  // Send form data to addMedia
+      toast('Media Added', {
         description: "Your new media has been successfully added.",
+        action: {
+          label: 'Go to media',
+          onClick: () => router.push(`/media/${_id}`)
+        }
       });
       form.reset();
-      setSelectedMediaType('');  // Reset the media type selection
     } catch (error) {
-      toast({
-        title: "Error",
+      toast.error('Media was not added', {
         description: "There was an error adding your media.",
       });
       console.log(error);
