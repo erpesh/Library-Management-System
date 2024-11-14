@@ -14,3 +14,11 @@ export interface Media {
     artist?: string | null;  // Optional, can be null
     createdAt: Date;
 }
+
+export interface MediaSearchResponse {
+    mediaItems: Media[],
+    page: number,
+    perPage: number,
+    totalItems: number,
+    totalPages: number
+}
