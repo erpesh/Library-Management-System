@@ -6,9 +6,9 @@ services:
       context: ./server/media-service  # Path to the media-service folder
       dockerfile: Dockerfile
     ports:
-      - "8082:8080"  # Map host port 8082 to container port 8080
+      - "8082:8080" 
     environment:
-      - MONGO_URI=mongodb://mongo:27017/your_database_name
+      - MONGO_URI=mongodb://mongo-media:27017/your_media_database_name
     depends_on:
       - mongo
     networks:
@@ -23,16 +23,26 @@ services:
       - mongo-data:/data/db
     networks:
       - lms-network
+  
+  mongo-media:
+    image: mongo:6.0
+    container_name: mongo-media
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-media-data:/data/db
+    networks:
+      - lms-network
 
   inventory-service:
     build:
-      context: ./server/inventory-service  # Path to the Express.js microservice folder
+      context: ./server/inventory-service
     ports:
-      - "3001:3000"  # Expose container's port 3000 on host port 3001
+      - "3001:3000"
     environment:
       - MONGO_URI=mongodb://mongo:27017/your_database_name
     depends_on:
-      - mongo  # Ensure MongoDB is up before this service starts
+      - mongo
     networks:
       - lms-network
   
@@ -59,3 +69,4 @@ networks:
 
 volumes:
   mongo-data:
+  mongo-media-data:

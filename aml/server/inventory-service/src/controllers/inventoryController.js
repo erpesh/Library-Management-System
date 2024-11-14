@@ -79,9 +79,9 @@ exports.checkAvailability = async (req, res) => {
         if (!mediaItem) return res.status(404).json({ error: 'Media not found' });
 
         if (mediaItem.borrowed < mediaItem.stock) {
-            return res.status(200).json({ message: 'Media is available' });
+            return res.status(200).json({ available: true });
         } else {
-            return res.status(200).json({ message: 'Media is not available' });
+            return res.status(200).json({ available: false });
         }
 
     } catch (error) {
