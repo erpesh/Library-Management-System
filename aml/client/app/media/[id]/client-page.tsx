@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import {
     ChevronRight,
     Clock,
+    Edit,
     Heart,
     Home,
     Share2,
@@ -76,12 +77,15 @@ export default function ClientPage({ media }: Props) {
                 {/* Media Details */}
                 <div className="space-y-6">
                     <div>
-                        <motion.h1
-                            layoutId={`title-${media._id}`}
-                            className="text-3xl font-bold mb-2"
-                        >
-                            {media.title}
-                        </motion.h1>
+                        <div className="mb-2 flex justify-between w-full">
+                            <h1 className="text-3xl">
+                                {media.title}
+                            </h1>
+                            <Link href={`/media/${media._id}/edit`} className="flex items-center text-primary hover:text-primary/80 transition-colors">
+                                <Edit className="h-4 w-4 mr-1" />
+                                Edit
+                            </Link>
+                        </div>
                         <motion.div
                             layoutId={`type-${media._id}`}
                             className="flex items-center space-x-2 text-muted-foreground"
