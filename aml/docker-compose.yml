@@ -54,6 +54,7 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_INVENTORY_SERVICE_URL=http://inventory-service:3000/api/inventory
+      - NEXT_PUBLIC_MEDIA_SERVICE_URL=http://media-service:8080
       - WATCHPACK_POLLING=true
     volumes:
       - ./client:/app          # Map the local client folder to the container
