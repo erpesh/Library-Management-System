@@ -45,7 +45,8 @@ services:
       - "3002:3000"  # Expose container's port 3000 on host port 3002
     environment:
       - EMAIL_USER=cantorlibrarynotification@gmail.com
-      - EMAIL_PASS=huswuj-beBxu6-cojgys
+      - EMAIL_PASS=fkrv gcys cale qxwf
+
     # depends_on:
     #   - mongo  # Ensure MongoDB is up before this service starts
     networks:
