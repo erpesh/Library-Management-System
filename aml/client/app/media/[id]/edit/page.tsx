@@ -4,7 +4,6 @@ import { Separator } from "@/components/ui/separator";
 import { ChevronRight, Clock, Home, Share2 } from "lucide-react";
 import Link from "next/link";
 import { inventoryApi } from "@/app/api/settings";
-import EditCard from "./edit_card"; // Import the new EditCard component
 import AddMediaForm from "../../add/page";
 
 // Fetch media item by ID
@@ -20,8 +19,7 @@ async function getMedia(id: string) {
 // Page component
 export default async function Page({ params }: { params: { id: string } }) {
   const { id } = await params;
-  const mediaItem = await getMedia(id); // Fetch media item
-  console.log(mediaItem);
+  const mediaItem = await getMedia(id);
 
   return (
     <div className="container mx-auto p-4">
