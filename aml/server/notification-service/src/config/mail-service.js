@@ -1,23 +1,22 @@
 // emailService.js
 const nodemailer = require('nodemailer');
 
-// Configure the transporter
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // You can also use other providers like Outlook, Yahoo, or custom SMTP
+    service: 'gmail', 
     auth: {
-        user: process.env.EMAIL_USER, // Set these as environment variables for security
+        user: process.env.EMAIL_USER, 
         pass: process.env.EMAIL_PASS
     }
 });
 
 // Function to send email
-const sendEmail = async (to, subject, html) => { // Use 'html' instead of 'text' for HTML content
+const sendEmail = async (to, subject, html) => { 
     try {
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: to,
             subject: subject,
-            html: html // Use 'html' property for HTML content
+            html: html 
         });
         console.log('Email sent successfully');
     } catch (error) {
