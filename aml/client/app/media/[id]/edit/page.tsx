@@ -4,8 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import { ChevronRight, Clock, Home, Share2 } from "lucide-react";
 import Link from "next/link";
 import { inventoryApi } from "@/app/api/settings";
-import EditCard from "./edit_card"; // Import the new EditCard component
 import AddMediaForm from "../../add/page";
+import  DeleteMedia  from "./DeletePage";  // Import DeleteMedia component
 
 // Fetch media item by ID
 async function getMedia(id: string) {
@@ -19,9 +19,12 @@ async function getMedia(id: string) {
 
 // Page component
 export default async function Page({ params }: { params: { id: string } }) {
-  const { id } = await params;
+  const { id } = params;
   const mediaItem = await getMedia(id); // Fetch media item
-  console.log(mediaItem);
+
+  if (!mediaItem) {
+    return <p>Loading...</p>; // Handle loading state
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -78,23 +81,15 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 
             <Separator />
-            {/* Edit and Delete Buttons */}
+
+            {/* Pass mediaId to DeleteMedia component */}
             <div className="space-y-2">
-              <Button className="w-full" disabled={mediaItem.stock === 0}>
-                Edit Stock Amount
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full border-red-600 text-red-600 hover:bg-red-100"
-                disabled={mediaItem.stock === 0}
-              >
-                Delete Media
-              </Button>
+              <DeleteMedia mediaId={id} /> {/* Pass mediaId as a prop */}
             </div>
           </div>
 
-          {/* Use EditCard Component for Media Attributes */}
-          <AddMediaForm media={mediaItem}/>
+          {/* Use AddMediaForm Component for Media Attributes */}
+          <AddMediaForm media={mediaItem} />
         </div>
       </div>
     </div>
