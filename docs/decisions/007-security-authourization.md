@@ -4,5 +4,13 @@
 
 ## Problem Statement
 
-## Decision
+## Considered Options
+
+## Decision Outcome Confirmations
+
+## Pros
+
+## Cons
+
+## Pr
 
