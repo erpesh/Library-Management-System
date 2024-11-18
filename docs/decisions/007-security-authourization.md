@@ -12,5 +12,8 @@
 
 ## Cons
 
-## Pr
+## Consequences
+
+## Pros and Cons of Options
+
 
