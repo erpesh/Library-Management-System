@@ -14,6 +14,7 @@ In an advanced library  system, ensuring proper access control is critical for m
 - OAuth 2.0 with Access and Refresh Tokens
 
 ## Decision Outcome Confirmations
+We have chosen to implement JWT Tokens for security measures, as our primary focus is on authorization for the advanced media library system. Additionally, JWT offers scalability, allowing the system to handle an increasing number of users and requests efficiently. JWT’s flexibility and widespread adoption make it a reliable choice for long-term security.
 
 ## Roles for Authorization
 
