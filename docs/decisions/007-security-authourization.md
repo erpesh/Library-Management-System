@@ -8,11 +8,13 @@
 
 ## Decision Outcome Confirmations
 
+## Consequences
+
 ## Pros
 
 ## Cons
 
-## Consequences
+## Confirmations
 
 ## Pros and Cons of Options
 
