@@ -7,7 +7,7 @@ The library system requires a strong security and scalable authorization mechani
 In an advanced library  system, ensuring proper access control is critical for maintaining security, data integrity, and user privacy. Without implementing proper security measures, the entire system becomes vulnerable to unauthorized access, data breaches, and potential misuse of sensitive information.becomes vulnerable to unauthorized access, data breaches, and potential misuse of sensitive information.
 
 ## Considered Options
-- JSON Web Tokens (JWT) [Chosen Option]
+- JSON Web Tokens (JWT)
 
 - Session-Based Authentication
 
@@ -15,9 +15,10 @@ In an advanced library  system, ensuring proper access control is critical for m
 
 ## Decision Outcome Confirmations
 
+## Roles for Authorization
+
 - Library Manager: Responsible for managing the media catalog (adding, editing, and deleting media) and accessing library-wide borrowing records for administrative purposes.
 - User: Allowed to browse, borrow, and view media but restricted to accessing and managing only their personal borrowing history and wishlist.
-
 
 ## Consequences
 
