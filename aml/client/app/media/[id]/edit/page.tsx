@@ -19,6 +19,7 @@ async function getMedia(id: string) {
 
 // Page component
 export default async function Page({ params }: { params: { id: string } }) {
+  
   const { id } = params;
   const mediaItem = await getMedia(id); // Fetch media item
 
