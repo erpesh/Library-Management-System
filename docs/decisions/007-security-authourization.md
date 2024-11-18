@@ -36,9 +36,33 @@ Choosing JWT tokens for security and authorization significantly enhances the me
 - Increased Token Size: Including custom claims (e.g., user roles or permissions) within the JWT can increase the token size. This may cause inefficiencies, especially when tokens need to be transmitted frequently or over low-bandwidth networks.
 
 ## Confirmations
+Choosing JWT tokens for authorization and access control is a strategic decision that enhances scalability, performance, and security. Their stateless nature reduces server load, while custom claims allow for efficient management of user roles and permissions. JWT’s compatibility across platforms and its secure signing mechanism ensure reliable and tamper-proof access control. 
 
 ## Pros and Cons of Options
+### Session-Based Authentication
 **Pros**
+- Centralized Control: Server-side session storage allows for easy access management and the ability to revoke sessions at any time.
+- Security: Sensitive information is kept on the server, reducing the risk of token theft or exposure.
+- Ease of Revocation: Sessions can be immediately invalidated on the server, ensuring quick logouts or access terminations.
 **Cons**
+- Scalability Issues: Managing sessions across multiple servers can be complex, especially in distributed systems.
+- Server Load: Storing session data for each user on the server increases memory and processing requirements.
+- Stateful Nature: Sessions require maintaining state, making horizontal scaling more difficult compared to stateless authentication methods like JWT.
+### OAuth 2.0 with Access and Refresh Tokens
+**Pros**
+- Enhanced Security: Access tokens provide limited access to resources, while refresh tokens can be used to obtain new access tokens without requiring the user to log in again, reducing the exposure of sensitive credentials.
+- Granular Permissions: OAuth 2.0 allows for fine-grained access control by specifying different scopes, so users can grant specific permissions to applications.
+- Improved User Experience: Users can remain authenticated across sessions without needing to re-enter their credentials, thanks to refresh tokens, which provide seamless, long-term access.
+**Cons**
+- Complex Implementation: Setting up OAuth 2.0 with both access and refresh tokens requires proper configuration and management, which can be more complex compared to simpler authentication methods.
+- Token Storage Risks: Refresh tokens must be securely stored, as they provide long-term access; if compromised, they can allow unauthorized access.
+- Token Expiration Management: While access tokens have short lifespans for security, managing their expiration and refresh token renewal introduces additional complexity and potential user experience interruptions.
+
+## Conclusion
+In conclusion, we have chosen JWT tokens for authorization and access control due to their scalability, performance, and flexibility. JWT’s stateless nature reduces server load, and the ability to include custom claims simplifies access control. Despite considerations around token expiration and secure storage, JWT remains the best choice for our system's needs.
+
+
+
+
 
 
