@@ -8,7 +8,7 @@ The data model strategy must support the Database per Service pattern to ensure 
 ## Considered Options
 
 1. **Single Database for All Microservices**: All services share a single database, using a relational model.
-2. **Database per service** (Selected)
+2. **Database per service** (Selected) [(https://microservices.io/patterns/data/database-per-service.html)]
 
 ## Chosen Approach: Separate Databases for Each Microservice
 
