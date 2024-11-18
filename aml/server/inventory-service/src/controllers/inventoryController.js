@@ -1,5 +1,4 @@
 const Media = require('../models/media');
-const axios = require('axios');
 const { checkMediaBorrowingStatus } = require('../services/mediaService');
 
 exports.createMedia = async (req, res) => {
