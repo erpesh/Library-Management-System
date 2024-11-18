@@ -1,6 +1,7 @@
 package services
 
 import (
+	"os"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -8,10 +9,10 @@ import (
 	"net/http"
 )
 
-var BaseURL = "http://inventory-service:3000/api/inventory/"
+var BaseURL = os.Getenv("INVENTORY_SERVICE_URL")
 
 func CheckMediaAvailability(mediaID primitive.ObjectID) (bool, error) {
-	url := fmt.Sprintf("%s%s/available", BaseURL, mediaID.Hex())
+	url := fmt.Sprintf("%s/%s/available", BaseURL, mediaID.Hex())
 
 	fmt.Println(url)
 
@@ -36,7 +37,7 @@ func CheckMediaAvailability(mediaID primitive.ObjectID) (bool, error) {
 }
 
 func BorrowMedia(mediaID primitive.ObjectID) error {
-	url := fmt.Sprintf("%s%s/borrow", BaseURL, mediaID.Hex())
+	url := fmt.Sprintf("%s/%s/borrow", BaseURL, mediaID.Hex())
 	reqBody := map[string]interface{}{
 		"userID": 1,
 	}
@@ -60,7 +61,7 @@ func BorrowMedia(mediaID primitive.ObjectID) error {
 }
 
 func ReturnMedia(mediaID primitive.ObjectID) error {
-	url := fmt.Sprintf("%s%s/return", BaseURL, mediaID.Hex())
+	url := fmt.Sprintf("%s/%s/return", BaseURL, mediaID.Hex())
 	reqBody := map[string]interface{}{
 		"userID": 1,
 	}
