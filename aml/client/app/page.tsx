@@ -6,10 +6,12 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Book, Search, Clock, Users, ArrowRight, Calendar, Star } from 'lucide-react'
 
+
 // Curent landing page!!!!!!!!
 
 export default function LandingPage() {
   return (
+    
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800">

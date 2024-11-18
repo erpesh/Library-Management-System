@@ -1,13 +1,23 @@
-import { Button } from "@/components/ui/button"
-import { ArrowLeft } from 'lucide-react'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { toast } from 'sonner'
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from 'lucide-react';
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle, 
+  AlertDialogTrigger 
+} from "@/components/ui/alert-dialog";
+import { toast } from 'sonner';
 
 export function ReturnButton({ item, onReturn }) {
   const handleReturn = () => {
-    onReturn(item)
-    toast.success(`${item.title} has been returned`)
-  }
+    onReturn(item.id); // Use the ID in the callback
+    toast.success(`${item.title} has been returned`); // Display the title in the toast
+  };
 
   return (
     <AlertDialog>
@@ -29,5 +39,5 @@ export function ReturnButton({ item, onReturn }) {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

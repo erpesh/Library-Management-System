@@ -6,6 +6,8 @@ import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { ReturnButton } from '@/components/return-media-button'  
+import { RenewButton } from '@/components/renew-media-button'  
 import {
     ChevronRight,
     Clock,
@@ -17,7 +19,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import MediaIcon from "@/components/media-icon"
-import { RainbowButton } from "@/components/ui/rainbow-button"
+
 import axios from "axios"
 import { toast } from "sonner"
 import { useRouter } from 'next/navigation'
@@ -143,6 +145,15 @@ export default function ClientPage({ media }: Props) {
                         <Separator />
 
                         <div className="space-y-2 flex justify-end items-end gap-4">
+                            <ReturnButton 
+                            item={{ id: media._id, title: media.title }} 
+                            onReturn={(mediaId) => console.log(`Returned media ID: ${mediaId}`)} 
+                            />
+                            <RenewButton 
+                            item={{ id: "12345", title: "The Great Gatsby" }} 
+                            onRenew={(id, date) => console.log(`Renewed item with ID ${id} until ${date}`)} 
+                            />
+
                             {media.isBorrowed ? (
                                 <>
                                     <Button
