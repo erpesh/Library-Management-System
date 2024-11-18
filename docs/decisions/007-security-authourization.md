@@ -1,4 +1,8 @@
 # ADR - Security and Authourization Decision
 
-# Context 
+## Context 
+
+## Problem Statement
+
+## Decision
 
