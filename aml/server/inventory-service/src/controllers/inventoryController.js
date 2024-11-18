@@ -1,4 +1,6 @@
 const Media = require('../models/media');
+const axios = require('axios');
+const { checkMediaBorrowingStatus } = require('../services/mediaService');
 
 exports.createMedia = async (req, res) => {
     try {
@@ -47,8 +49,31 @@ exports.getMediaById = async (req, res) => {
         if (!media) {
             return res.status(404).json({ message: 'Media not found' });
         }
-        res.status(200).json(media);
+
+        const userID = 1; // Hardcoded for now, but should be retrieved from the request or a session
+
+        if (!userID) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+
+        // Fetch borrowing status for the media item
+        const borrowingStatus = await checkMediaBorrowingStatus(userID, media._id);
+        
+        console.log('borrowingStatus', borrowingStatus);
+
+        // Merge borrowing status with the media data
+        const responseData = {
+            ...media.toObject(),
+            isBorrowed: borrowingStatus.isBorrowed,
+            borrowingRecord: borrowingStatus.borrowingRecord
+        };
+        
+        console.log('responseData', responseData)
+
+        // Send the combined response
+        res.status(200).json(responseData);
     } catch (error) {
+        console.error('Error fetching media or borrowing status:', error);
         res.status(400).json({ error: error.message });
     }
 };

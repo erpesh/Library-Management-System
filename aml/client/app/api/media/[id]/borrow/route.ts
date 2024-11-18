@@ -7,7 +7,7 @@ export async function POST(
 ) {
     try {
         const id = (await params).id
-        const response = await mediaApi.post(`/${id}/borrow`);
+        const response = await mediaApi.post(`/user/1/media/${id}`);
         return new Response(JSON.stringify(response.data), { status: 200 })
 
     } catch (error) {

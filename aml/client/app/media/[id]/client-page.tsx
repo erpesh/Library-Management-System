@@ -30,6 +30,8 @@ export default function ClientPage({ media }: Props) {
     const router = useRouter()
     const [isBorrowing, setIsBorrowing] = React.useState(false)
 
+    console.log(media)
+
     const handleBorrow = async () => {
         setIsBorrowing(true)
         try {
@@ -141,23 +143,38 @@ export default function ClientPage({ media }: Props) {
                         <Separator />
 
                         <div className="space-y-2 flex justify-end items-end gap-4">
-                        {false ? (
-                                <Button 
-                                    variant='outline'
-                                    onClick={() => {/* Return */}}
-                                    disabled={false}
-                                >
-                                    {false ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Returning...
-                                        </>
-                                    ) : (
-                                        'Return'
-                                    )}
-                                </Button>
+                            {media.isBorrowed ? (
+                                <>
+                                    <Button
+                                        onClick={() => {/* Return */ }}
+                                        disabled={false}
+                                    >
+                                        {false ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Renew...
+                                            </>
+                                        ) : (
+                                            'Renew'
+                                        )}
+                                    </Button>
+                                    <Button
+                                        variant='outline'
+                                        onClick={() => {/* Return */ }}
+                                        disabled={false}
+                                    >
+                                        {false ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Returning...
+                                            </>
+                                        ) : (
+                                            'Return'
+                                        )}
+                                    </Button>
+                                </>
                             ) : (
-                                <RainbowButton 
+                                <Button
                                     onClick={handleBorrow}
                                     disabled={isBorrowing || media.stock === media.borrowed}
                                 >
@@ -169,7 +186,7 @@ export default function ClientPage({ media }: Props) {
                                     ) : (
                                         'Borrow Now'
                                     )}
-                                </RainbowButton>
+                                </Button>
                             )}
                             <Button variant='outline'>
                                 <Heart className="h-4 w-4" />

@@ -9,6 +9,7 @@ services:
       - "8082:8080" 
     environment:
       - MONGO_URI=mongodb://mongo-media:27017/your_media_database_name
+      - INVENTORY_SERVICE_URL=http://inventory-service:3000/api/inventory
     depends_on:
       - mongo
     networks:
@@ -41,6 +42,7 @@ services:
       - "3001:3000"
     environment:
       - MONGO_URI=mongodb://mongo:27017/your_database_name
+      - MEDIA_SERVICE_URL=http://media-service:8080/api/media
     depends_on:
       - mongo
     networks:
@@ -54,7 +56,7 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_INVENTORY_SERVICE_URL=http://inventory-service:3000/api/inventory
-      - NEXT_PUBLIC_MEDIA_SERVICE_URL=http://media-service:8080
+      - NEXT_PUBLIC_MEDIA_SERVICE_URL=http://media-service:8080/api/media
       - WATCHPACK_POLLING=true
     volumes:
       - ./client:/app          # Map the local client folder to the container
