@@ -1,3 +1,4 @@
+// routes.ts
 import { inventoryApi } from "../../settings";
 import * as z from "zod";
 
