@@ -1,17 +1,14 @@
-# ADR: Data Model Strategy – Separate Databases for Each Microservice
-
+# ADR: Data Model Strategy – Database per Service
 ## Context
-
-The AML library management system has adopted a microservices architecture to enhance scalability, flexibility, and service autonomy. Each service has specific data requirements, and the chosen data model should support independent, scalable, and adaptable data storage for each service. 
+The AML library management system has adopted a microservices architecture to enhance scalability, flexibility, and service autonomy. Each microservice is designed to handle a specific bounded context and has distinct data storage and processing requirements. To fully leverage the benefits of microservices, the system's data model strategy must align with the principle of service independence and support for scalability, flexibility, and resilience.
 
 ## Problem Statement
-
-To fully leverage the benefits of microservices, the system needs a data model strategy that aligns with its architecture. This strategy should allow each microservice to manage its data independently, prevent data dependencies, and support scalability across different data types and volumes. Additionally, the data model must facilitate the flexibility to evolve and update data schemas without impacting other services.
+The data model strategy must support the Database per Service pattern to ensure that each microservice can independently manage its data. This approach should eliminate inter-service data dependencies, provide scalability for varying data types and volumes, and enable schema evolution without impacting other services. Additionally, the strategy must address operational complexity and ensure consistent communication across services.
 
 ## Considered Options
 
 1. **Single Database for All Microservices**: All services share a single database, using a relational model.
-2. **Separate Databases for Each Microservice** (Selected)
+2. **Database per service** (Selected)
 
 ## Chosen Approach: Separate Databases for Each Microservice
 
@@ -66,5 +63,4 @@ The decision to use separate MongoDB databases per microservice supports AML’s
 ---
 
 ## Conclusion
-
-The Separate Databases per Microservice approach is ideal for AML, offering better independence, scalability, and flexibility for each service. Although it adds some operational complexity, the benefits of autonomy and growth potential make it the best choice for the system.
+The Database per Service pattern aligns with the goals of AML’s microservices architecture by enabling service independence, scalability, and flexibility. While it introduces some operational challenges, these are outweighed by the benefits of autonomous data management and the ability to grow and evolve the system seamlessly. This decision ensures the AML system is robust, scalable, and prepared for future enhancements.
