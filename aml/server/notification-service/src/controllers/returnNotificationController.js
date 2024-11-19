@@ -152,11 +152,11 @@ const remindUserToReturnBook = async (userId) => {
                         
                         <p>Thank you for using our library services!</p>
                         
-                        <p>Best regards,<br>City Public Library Team</p>
+                        <p>Best regards,<br>Cantor Library Team</p>
                     </div>
                     <div class="card-footer">
                         <p>If you have any questions, please contact us at library@example.com or call (123) 456-7890.</p>
-                        <p>&copy; 2023 City Public Library. All rights reserved.</p>
+                        <p>&copy; 2024 Cantor Library. All rights reserved.</p>
                     </div>
                 </div>
             </div>
