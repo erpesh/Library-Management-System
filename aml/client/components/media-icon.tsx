@@ -1,9 +1,9 @@
 import { cn } from "@/lib/utils";
-import { Media } from "@/types/media"
+import { MediaType } from "@/types/media"
 import { BookIcon, DiscIcon, GamepadIcon } from "lucide-react"
 
 interface Props {
-  mediaType: Media['mediaType']
+  mediaType: MediaType
   className?: string
 }
 

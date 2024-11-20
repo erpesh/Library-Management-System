@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import MediaCard from '@/components/media-card'
 import SearchInput from "./search-input";
 import MediaSelect from "./media-select";
+import GenreSelect from "./genre-select";
 
 async function getMedia(filters: { [key: string]: string | string[] | undefined }): Promise<MediaSearchResponse | undefined> {
   try {
@@ -53,26 +54,7 @@ export default async function Page({
       <div className="flex flex-col md:flex-row gap-8">
         <aside className="w-full md:w-64 space-y-6">
           <MediaSelect/>
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Genres</h2>
-            <div className="space-y-2">
-              {['Classic', 'Pop', 'Adventure', 'Rock', 'Action'].map((genre) => (
-                <label key={genre} className="flex items-center space-x-2">
-                  <Checkbox
-                  // checked={selectedGenres.includes(genre)}
-                  // onCheckedChange={(checked) => {
-                  //   if (checked) {
-                  //     setSelectedGenres([...selectedGenres, genre])
-                  //   } else {
-                  //     setSelectedGenres(selectedGenres.filter(g => g !== genre))
-                  //   }
-                  // }}
-                  />
-                  <span>{genre}</span>
-                </label>
-              ))}
-            </div>
-          </div>
+          <GenreSelect/>
 
           <div>
             <h2 className="text-lg font-semibold mb-2">Availability</h2>
