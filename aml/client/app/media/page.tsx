@@ -8,6 +8,7 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import { Input } from '@/components/ui/input'
 import MediaCard from '@/components/media-card'
 import SearchInput from "./search-input";
+import MediaSelect from "./media-select";
 
 async function getMedia(filters: { [key: string]: string | string[] | undefined }): Promise<MediaSearchResponse | undefined> {
   try {
@@ -51,23 +52,7 @@ export default async function Page({
       <SearchInput />
       <div className="flex flex-col md:flex-row gap-8">
         <aside className="w-full md:w-64 space-y-6">
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Media Type</h2>
-            <Select
-            // onValueChange={(value) => setSelectedType(value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select media type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="book">Books</SelectItem>
-                <SelectItem value="cd">CDs</SelectItem>
-                <SelectItem value="game">Games</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
+          <MediaSelect/>
           <div>
             <h2 className="text-lg font-semibold mb-2">Genres</h2>
             <div className="space-y-2">
