@@ -19,7 +19,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "MediaLib",
+  title: "Cantor Library",
   description: "Your personal media library",
 };
 
