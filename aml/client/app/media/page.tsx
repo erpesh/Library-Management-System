@@ -55,19 +55,7 @@ export default async function Page({
         <aside className="w-full md:w-64 space-y-6">
           <MediaSelect/>
           <GenreSelect/>
-
-          <div>
-            <h2 className="text-lg font-semibold mb-2">Availability</h2>
-            <label className="flex items-center space-x-2">
-              <Checkbox
-              // checked={isAvailable}
-              // onCheckedChange={(checked) => setIsAvailable(checked)}
-              />
-              <span>Show only available items</span>
-            </label>
-          </div>
         </aside>
-
         <main className="flex-grow">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {mediaItems ? mediaItems.map((item: Media) => (
