@@ -7,6 +7,7 @@ import { Checkbox } from '@radix-ui/react-checkbox'
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
 import { Input } from '@/components/ui/input'
 import MediaCard from '@/components/media-card'
+import SearchInput from "./search-input";
 
 async function getMedia(filters: { [key: string]: string | string[] | undefined }): Promise<MediaSearchResponse | undefined> {
   try {
@@ -47,20 +48,7 @@ export default async function Page({
 
   return (
     <div className="container mx-auto py-6">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Media Library Search</h1>
-
-        <div className="flex gap-2">
-          <Input
-            type="text"
-            placeholder="Search..."
-            // value={searchTerm}
-            // onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-grow"
-          />
-          <Button><SearchIcon className="w-4 h-4 mr-2" /> Search</Button>
-        </div>
-      </header>
+      <SearchInput />
       <div className="flex flex-col md:flex-row gap-8">
         <aside className="w-full md:w-64 space-y-6">
           <div>
