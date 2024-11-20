@@ -59,10 +59,6 @@ export default function GenreCombobox() {
         router.push(`${pathname}?${params.toString()}`)
     }
 
-    if (genres.length === 0) {
-        return <div>Loading genres...</div>
-    }
-
     return (
         <div className="w-full max-w-sm">
             <h2 className="text-lg font-semibold mb-2">Genres</h2>
