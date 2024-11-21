@@ -7,6 +7,10 @@ exports.createWishlist = (req, res) => {
         mediaId: req.params.mediaId
     });
 
+    console.log('asfafas')
+    console.log(req.params.userId, req.params.mediaId)
+    console.log(wishlist);
+
     wishlist.save()
         .then(data => {
             res.send(data);
