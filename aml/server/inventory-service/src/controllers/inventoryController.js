@@ -1,6 +1,6 @@
 const Media = require('../models/media');
+const { checkMediaBorrowingStatus } = require('../services/mediaService');
 
-// Create a new media item
 exports.createMedia = async (req, res) => {
     try {
         const media = new Media(req.body);
@@ -11,32 +11,25 @@ exports.createMedia = async (req, res) => {
     }
 };
 
-// Get all media items with optional filters
 exports.getMedia = async (req, res) => {
     try {
         const { page = 1, perPage = 10, title, ...filters } = req.query; // Default to page 1 and 10 items per page if not provided
 
-        // Convert page and perPage to integers
         const pageNumber = parseInt(page);
         const perPageNumber = parseInt(perPage);
 
-        // Create a new filters object, including a regex for the title if it is provided
         if (title) {
-            filters.title = { $regex: title, $options: 'i' }; // Case-insensitive match for title
+            filters.title = { $regex: title, $options: 'i' };
         }
 
-        // Calculate the skip value to offset the records (pagination)
         const skip = (pageNumber - 1) * perPageNumber;
 
-        // Fetch media items with pagination
         const mediaItems = await Media.find(filters)
-            .skip(skip)        // Skip the appropriate number of records
-            .limit(perPageNumber); // Limit the number of records per page
+            .skip(skip)        
+            .limit(perPageNumber);
 
-        // Optionally, you could also calculate the total number of items and send it back in the response
         const totalItems = await Media.countDocuments(filters);
 
-        // Respond with paginated results and metadata (total items, current page, etc.)
         res.status(200).json({
             mediaItems,
             page: pageNumber,
@@ -49,20 +42,41 @@ exports.getMedia = async (req, res) => {
     }
 };
 
-
 exports.getMediaById = async (req, res) => {
     try {
-        const media = await Media.findById(req.params.id); // Get media by MongoDB ObjectID
+        const media = await Media.findById(req.params.id); 
         if (!media) {
             return res.status(404).json({ message: 'Media not found' });
         }
-        res.status(200).json(media);
+
+        const userID = 1; // Hardcoded for now, but should be retrieved from the request or a session
+
+        if (!userID) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+
+        // Fetch borrowing status for the media item
+        const borrowingStatus = await checkMediaBorrowingStatus(userID, media._id);
+        
+        console.log('borrowingStatus', borrowingStatus);
+
+        // Merge borrowing status with the media data
+        const responseData = {
+            ...media.toObject(),
+            isBorrowed: borrowingStatus.isBorrowed,
+            borrowingRecord: borrowingStatus.borrowingRecord
+        };
+        
+        console.log('responseData', responseData)
+
+        // Send the combined response
+        res.status(200).json(responseData);
     } catch (error) {
+        console.error('Error fetching media or borrowing status:', error);
         res.status(400).json({ error: error.message });
     }
 };
 
-// Update a media item by ID
 exports.updateMedia = async (req, res) => {
     try {
         const updatedMedia = await Media.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -73,7 +87,6 @@ exports.updateMedia = async (req, res) => {
     }
 };
 
-// Delete a media item by ID
 exports.deleteMedia = async (req, res) => {
     try {
         const deletedMedia = await Media.findByIdAndDelete(req.params.id);
@@ -83,3 +96,56 @@ exports.deleteMedia = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+exports.checkAvailability = async (req, res) => {
+    try {
+        const mediaItem = await Media.findById(req.params.id);
+        if (!mediaItem) return res.status(404).json({ error: 'Media not found' });
+
+        if (mediaItem.borrowed < mediaItem.stock) {
+            return res.status(200).json({ available: true });
+        } else {
+            return res.status(200).json({ available: false });
+        }
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
+exports.borrowMedia = async (req, res) => {
+    try {
+        const mediaItem = await Media.findById(req.params.id);
+        if (!mediaItem) return res.status(404).json({ error: 'Media not found' });
+
+        if (mediaItem.borrowed < mediaItem.stock) {
+            mediaItem.borrowed += 1;
+            await mediaItem.save();
+            return res.status(200).json({ message: 'Media borrowed successfully' });
+        } else {
+            return res.status(400).json({ error: 'Media not available for borrowing' });
+        }
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
+exports.returnMedia = async (req, res) => {
+    try {
+        const mediaItem = await Media.findById(req.params.id);
+        if (!mediaItem) return res.status(404).json({ error: 'Media not found' });
+
+        if (mediaItem.borrowed > 0) {
+            mediaItem.borrowed -= 1;
+            await mediaItem.save();
+            return res.status(200).json({ message: 'Media returned successfully' });
+        } else {
+            return res.status(400).json({ error: 'No borrowed media to return' });
+        }
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}
+
