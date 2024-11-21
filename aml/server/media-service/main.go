@@ -1,20 +1,25 @@
+// main.go
 package main
 
 import (
-	"log"
-	"media-service/utils"
-	"media-service/routes"
-	"github.com/gin-gonic/gin"
+    "github.com/gin-gonic/gin"
+    "log"
 )
 
 func main() {
-	utils.ConnectToDB()
+    // Connect to MongoDB
+    // ConnectToDB()
+    
+    // Initialize Gin router
+    router := gin.Default()
 
-	r := gin.Default()
+    // Sample route
+    router.GET("/api/media/test", func(c *gin.Context) {
+        c.JSON(200, gin.H{"message": "Hello from Media Service!"})
+    })
 
-	routes.RegisterRoutes(r)
-
-	if err := r.Run(":8080"); err != nil {
-		log.Fatal("Error starting server: ", err)
-	}
+    // Start the server
+    if err := router.Run(":8080"); err != nil {
+        log.Fatal("Failed to run the server: ", err)
+    }
 }

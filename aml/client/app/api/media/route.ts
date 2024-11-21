@@ -1,3 +1,4 @@
+import { formSchema } from "@/app/page";
 import * as z from 'zod'
 import { inventoryApi } from "../settings";
 

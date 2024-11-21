@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -28,7 +28,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -38,87 +37,108 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { format } from "date-fns"
+import { toast } from "@/hooks/use-toast"
 import { CalendarIcon } from 'lucide-react'
-import axios from "axios";
-import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
+import axios from "axios"
 
-export const formSchema = z.object({
+const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  mediaType: z.enum(['book', 'cd', 'game'], { required_error: 'Media type is required' }),
   description: z.string().min(10, 'Description must be at least 10 characters'),
   genre: z.string().min(1, 'Genre is required'),
   releaseDate: z.date({
     required_error: "Please select a release date.",
   }),
   imageUrl: z.string().url('Please enter a valid URL for the cover image'),
-  stock: z.coerce.number().min(0, 'Stock must be a non-negative number').default(0),
-  borrowed: z.coerce.number().min(0).default(0),
-  author: z.string().optional(),
-  publisher: z.string().optional(),
-  platform: z.string().optional(),
-  artist: z.string().optional(),
+  stock: z.coerce.number().min(0, 'Stock must be a non-negative number'),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-async function addMedia(data: FormValues) {
+async function updateMedia(id: string, data: FormValues) {
   try {
-    const response = await axios.post('/api/media', data);
-    return response.data;
-  }
-  catch (e) {
-    console.log('error', e)
+    const response = await axios.put(`/api/media/${id}`, data)
+    return response.data
+  } catch (e) {
+    console.error('Error updating media:', e)
+    throw e
   }
 }
 
-export default function AddMediaForm() {
-  const router = useRouter();
+async function fetchMedia(id: string) {
+  try {
+    const response = await axios.get(`/api/media/${id}`)
+    return response.data
+  } catch (e) {
+    console.error('Error fetching media:', e)
+    throw e
+  }
+}
 
+export default function EditMediaForm({ mediaId = '1' }: { mediaId?: string }) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [selectedMediaType, setSelectedMediaType] = useState<'book' | 'cd' | 'game'>('book')
+  const [isLoading, setIsLoading] = useState(true)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
-      mediaType: 'book',
       description: '',
       genre: '',
       releaseDate: new Date(),
       imageUrl: '',
       stock: 0,
-      borrowed: 0,
     },
   })
 
-  const onSubmit = async (data: FormValues) => {
-    setIsSubmitting(true);
-    try {
-      const { _id } = await addMedia(data);  // Send form data to addMedia
-      toast('Media Added', {
-        description: "Your new media has been successfully added.",
-        action: {
-          label: 'Go to media',
-          onClick: () => router.push(`/media/${_id}`)
-        }
-      });
-      form.reset();
-    } catch (error) {
-      toast.error('Media was not added', {
-        description: "There was an error adding your media.",
-      });
-      console.log(error);
-    } finally {
-      setIsSubmitting(false);
+  useEffect(() => {
+    const loadMedia = async () => {
+      try {
+        const media = await fetchMedia(mediaId)
+        form.reset({
+          ...media,
+          releaseDate: new Date(media.releaseDate),
+        })
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to load media data.",
+        })
+      } finally {
+        setIsLoading(false)
+      }
     }
+
+    loadMedia()
+  }, [mediaId, form])
+
+  const onSubmit = async (data: FormValues) => {
+    setIsSubmitting(true)
+    try {
+      await updateMedia(mediaId, data)
+      toast({
+        title: "Media Updated",
+        description: "Your media has been successfully updated.",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was an error updating your media.",
+      })
+      console.error(error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
   }
 
   return (
     <Card className="mt-4 w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Add New Media</CardTitle>
-        <CardDescription>Enter the details of your new media item.</CardDescription>
+        <CardTitle>Edit Media</CardTitle>
+        <CardDescription>Update the details of your media item.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -131,53 +151,41 @@ export default function AddMediaForm() {
                   <FormItem>
                     <FormLabel>Title</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter media title" {...field} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="mediaType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Media Type</FormLabel>
-                    <FormControl>
-                      <Select onValueChange={(value) => {
-                        field.onChange(value)
-                        setSelectedMediaType(value as 'book' | 'cd' | 'game')
-                      }} value={field.value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select media type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="book">Book</SelectItem>
-                          <SelectItem value="cd">CD</SelectItem>
-                          <SelectItem value="game">Game</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="genre"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Genre</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter genre" {...field} />
-                    </FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="action">Action</SelectItem>
+                        <SelectItem value="comedy">Comedy</SelectItem>
+                        <SelectItem value="drama">Drama</SelectItem>
+                        <SelectItem value="scifi">Science Fiction</SelectItem>
+                        <SelectItem value="horror">Horror</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Select one genre for your media.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="releaseDate"
@@ -212,76 +220,33 @@ export default function AddMediaForm() {
                         />
                       </PopoverContent>
                     </Popover>
+                    <FormDescription>
+                      The release date of your media.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="stock"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Stock</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Number of copies available in stock.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-
-            {/* Conditional Fields Based on Media Type */}
-            {selectedMediaType === 'book' && (
-              <FormField
-                control={form.control}
-                name="author"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Author</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter author" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            {selectedMediaType === 'cd' && (
-              <FormField
-                control={form.control}
-                name="artist"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Artist</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter artist" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
-
-            {selectedMediaType === 'game' && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="platform"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Platform</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter platform" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="publisher"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Publisher</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter publisher" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </>
-            )}
-
             <FormField
               control={form.control}
               name="description"
@@ -290,16 +255,17 @@ export default function AddMediaForm() {
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter media description"
                       className="resize-none"
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Provide a brief description of your media.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="imageUrl"
@@ -307,29 +273,17 @@ export default function AddMediaForm() {
                 <FormItem>
                   <FormLabel>Cover Image URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter cover image URL" {...field} />
+                    <Input {...field} />
                   </FormControl>
+                  <FormDescription>
+                    Provide a URL for the cover image of your media.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="stock"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Stock</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Enter stock quantity" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <Button type="submit" disabled={isSubmitting} className="w-full">
-              {isSubmitting ? 'Adding...' : 'Add Media'}
+              {isSubmitting ? 'Updating...' : 'Update Media'}
             </Button>
           </form>
         </Form>

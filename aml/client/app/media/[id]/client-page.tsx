@@ -1,7 +1,6 @@
 'use client'
 
-import * as React from 'react'
-import { Media } from "@/lib/types"
+import { Media } from "@/types/media"
 import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -9,43 +8,19 @@ import { Separator } from "@/components/ui/separator"
 import {
     ChevronRight,
     Clock,
-    Edit,
     Heart,
     Home,
-    Loader2,
     Share2,
 } from "lucide-react"
 import Link from "next/link"
 import MediaIcon from "@/components/media-icon"
 import { RainbowButton } from "@/components/ui/rainbow-button"
-import axios from "axios"
-import { toast } from "sonner"
-import { useRouter } from 'next/navigation'
 
 interface Props {
     media: Media
 }
 
 export default function ClientPage({ media }: Props) {
-    const router = useRouter()
-    const [isBorrowing, setIsBorrowing] = React.useState(false)
-
-    console.log(media)
-
-    const handleBorrow = async () => {
-        setIsBorrowing(true)
-        try {
-            await axios.post(`/api/media/${media._id}/borrow`)
-            // setIsBorrowed(true)
-            toast.success('Successfully borrowed the item')
-            router.refresh()
-        } catch (error) {
-            toast.error('Failed to borrow the item')
-        } finally {
-            setIsBorrowing(false)
-        }
-    }
-
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -101,15 +76,12 @@ export default function ClientPage({ media }: Props) {
                 {/* Media Details */}
                 <div className="space-y-6">
                     <div>
-                        <div className="mb-2 flex justify-between w-full">
-                            <h1 className="text-3xl">
-                                {media.title}
-                            </h1>
-                            <Link href={`/media/${media._id}/edit`} className="flex items-center text-primary hover:text-primary/80 transition-colors">
-                                <Edit className="h-4 w-4 mr-1" />
-                                Edit
-                            </Link>
-                        </div>
+                        <motion.h1
+                            layoutId={`title-${media._id}`}
+                            className="text-3xl font-bold mb-2"
+                        >
+                            {media.title}
+                        </motion.h1>
                         <motion.div
                             layoutId={`type-${media._id}`}
                             className="flex items-center space-x-2 text-muted-foreground"
@@ -143,51 +115,9 @@ export default function ClientPage({ media }: Props) {
                         <Separator />
 
                         <div className="space-y-2 flex justify-end items-end gap-4">
-                            {media.isBorrowed ? (
-                                <>
-                                    <Button
-                                        onClick={() => {/* Return */ }}
-                                        disabled={false}
-                                    >
-                                        {false ? (
-                                            <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                Renew...
-                                            </>
-                                        ) : (
-                                            'Renew'
-                                        )}
-                                    </Button>
-                                    <Button
-                                        variant='outline'
-                                        onClick={() => {/* Return */ }}
-                                        disabled={false}
-                                    >
-                                        {false ? (
-                                            <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                Returning...
-                                            </>
-                                        ) : (
-                                            'Return'
-                                        )}
-                                    </Button>
-                                </>
-                            ) : (
-                                <Button
-                                    onClick={handleBorrow}
-                                    disabled={isBorrowing || media.stock === media.borrowed}
-                                >
-                                    {isBorrowing ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Borrowing...
-                                        </>
-                                    ) : (
-                                        'Borrow Now'
-                                    )}
-                                </Button>
-                            )}
+                            <RainbowButton disabled={media.stock === media.borrowed}>
+                                Borrow Now
+                            </RainbowButton>
                             <Button variant='outline'>
                                 <Heart className="h-4 w-4" />
                                 Add to Wishlist
