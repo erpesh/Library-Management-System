@@ -11,12 +11,18 @@ exports.createMedia = async (req, res) => {
     }
 };
 
+const mongoose = require('mongoose');
+
 exports.getMedia = async (req, res) => {
     try {
-        const { page = 1, perPage = 10, title, ...filters } = req.query; // Default to page 1 and 10 items per page if not provided
-
+        const { page = 1, perPage = 10, title, ids, ...filters } = req.query;
         const pageNumber = parseInt(page);
         const perPageNumber = parseInt(perPage);
+
+        if (ids) {
+            const idArray = ids.split(',').map(id => new mongoose.Types.ObjectId(id.trim()));
+            filters._id = { $in: idArray };
+        }
 
         if (title) {
             filters.title = { $regex: title, $options: 'i' };
@@ -25,7 +31,7 @@ exports.getMedia = async (req, res) => {
         const skip = (pageNumber - 1) * perPageNumber;
 
         const mediaItems = await Media.find(filters)
-            .skip(skip)        
+            .skip(skip)
             .limit(perPageNumber);
 
         const totalItems = await Media.countDocuments(filters);
