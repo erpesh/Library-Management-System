@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -42,6 +42,7 @@ import { CalendarIcon } from 'lucide-react'
 import axios from "axios";
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { Media } from '@/lib/types'
 
 export const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -66,21 +67,46 @@ async function addMedia(data: FormValues) {
   try {
     const response = await axios.post('/api/media', data);
     return response.data;
-  }
-  catch (e) {
+  } catch (e) {
     console.log('error', e)
   }
 }
 
-export default function AddMediaForm() {
+async function updateMedia(id: string, data: FormValues) {
+  try {
+    const response = await axios.put(`/api/media/${id}`, data);
+    return response.data;
+  } catch (e) {
+    console.log('error', e)
+  }
+}
+
+interface Props {
+  media?: Media
+}
+
+export default function AddMediaForm({ media }: Props) {
   const router = useRouter();
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedMediaType, setSelectedMediaType] = useState<'book' | 'cd' | 'game'>('book')
-
+  
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: media ? {
+      title: media.title ?? '',
+      mediaType: media.mediaType ?? 'book',  // Default to 'book' if undefined
+      description: media.description ?? '',
+      genre: media.genre ?? '',
+      releaseDate: media.releaseDate ? new Date(media.releaseDate) : new Date(),
+      imageUrl: media.imageUrl ?? '',
+      stock: media.stock ?? 0,
+      borrowed: media.borrowed ?? 0,
+      author: media.author ?? '',  // Replace undefined with empty string
+      publisher: media.publisher ?? '',  // Replace undefined with empty string
+      platform: media.platform ?? '',  // Replace undefined with empty string
+      artist: media.artist ?? '',  // Replace undefined with empty string
+    } : {
       title: '',
       mediaType: 'book',
       description: '',
@@ -92,21 +118,39 @@ export default function AddMediaForm() {
     },
   })
 
+  useEffect(() => {
+    if (media) {
+      setSelectedMediaType(media.mediaType)
+    }
+  }, [media])
+
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
-      const { _id } = await addMedia(data);  // Send form data to addMedia
-      toast('Media Added', {
-        description: "Your new media has been successfully added.",
-        action: {
-          label: 'Go to media',
-          onClick: () => router.push(`/media/${_id}`)
-        }
-      });
+      let response: {_id: string};
+      if (media) {
+        response = await updateMedia(media._id, data);  // Update existing media
+        toast('Media Updated', {
+          description: "Your media has been successfully updated.",
+          action: {
+            label: 'Go to media',
+            onClick: () => router.push(`/media/${media._id}`)
+          }
+        });
+      } else {
+        response = await addMedia(data);  // Add new media
+        toast('Media Added', {
+          description: "Your new media has been successfully added.",
+          action: {
+            label: 'Go to media',
+            onClick: () => router.push(`/media/${response._id}`)
+          }
+        });
+      }
       form.reset();
     } catch (error) {
-      toast.error('Media was not added', {
-        description: "There was an error adding your media.",
+      toast.error('Error', {
+        description: "There was an error processing your request.",
       });
       console.log(error);
     } finally {
@@ -117,8 +161,8 @@ export default function AddMediaForm() {
   return (
     <Card className="mt-4 w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>Add New Media</CardTitle>
-        <CardDescription>Enter the details of your new media item.</CardDescription>
+        <CardTitle>{media ? `Edit ${media.title}` : 'Add New Media'}</CardTitle>
+        <CardDescription>{media ? 'Edit the details of your media item.' : 'Enter the details of your new media item.'}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -147,7 +191,7 @@ export default function AddMediaForm() {
                       <Select onValueChange={(value) => {
                         field.onChange(value)
                         setSelectedMediaType(value as 'book' | 'cd' | 'game')
-                      }} value={field.value}>
+                      }} value={field.value} disabled={!!media}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select media type" />
                         </SelectTrigger>
@@ -329,7 +373,7 @@ export default function AddMediaForm() {
             />
 
             <Button type="submit" disabled={isSubmitting} className="w-full">
-              {isSubmitting ? 'Adding...' : 'Add Media'}
+              {isSubmitting ? 'Saving...' : media ? 'Save Changes' : 'Add Media'}
             </Button>
           </form>
         </Form>
