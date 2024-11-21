@@ -6,7 +6,7 @@ const axiosApi = axios.create({
     baseURL: INVENTORY_SERVICE_URL,
 });
 
-const getInventoryByIds = async (ids) => {
+const getMediaByIds = async (ids) => {
     try {
         const response = await axiosApi.get('/', {
             params: {
