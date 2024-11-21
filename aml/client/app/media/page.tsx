@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { inventoryApi } from '../api/settings'
-import {Media, MediaSearchResponse} from '@/types/media';
+import {Media, MediaSearchResponse} from '@/lib/types';
 import { SearchIcon } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@radix-ui/react-select'
 import { Checkbox } from '@radix-ui/react-checkbox'

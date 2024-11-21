@@ -17,7 +17,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { getAllGenres } from "@/types/media"
+import { getAllGenres } from "@/lib/utils"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
 
 
