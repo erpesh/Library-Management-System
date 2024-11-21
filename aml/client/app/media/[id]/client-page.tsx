@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Media } from "@/types/media"
+import { Media } from "@/lib/types"
 import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"

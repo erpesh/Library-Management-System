@@ -42,7 +42,7 @@ import { CalendarIcon } from 'lucide-react'
 import axios from "axios";
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { Media } from '@/types/media'
+import { Media } from '@/lib/types'
 
 export const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
