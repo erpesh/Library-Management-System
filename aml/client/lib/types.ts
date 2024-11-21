@@ -1,7 +1,9 @@
+export type MediaType = 'book' | 'cd' | 'game';
+
 export interface Media {
     _id: string;
     title: string;
-    mediaType: 'book' | 'cd' | 'game';  // Restricted to specific values
+    mediaType: MediaType;
     genre: string;
     releaseDate: Date;
     stock: number;
@@ -33,3 +35,7 @@ export interface BorrowingRecord {
     ReturnAt: number;   // Unix timestamp (number)
 }
 
+export interface Genre {
+    type: MediaType;
+    genres: string[];
+}

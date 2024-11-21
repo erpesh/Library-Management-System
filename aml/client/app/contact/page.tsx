@@ -79,7 +79,7 @@ export default function ContactPage() {
             <CardContent className="space-y-4">
               <div className="flex items-center space-x-2">
                 <Mail className="h-5 w-5 text-muted-foreground" />
-                <span>contact@librarysystem.com</span>
+                <span>cantorlibrarynotification@gmail.com</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-5 w-5 text-muted-foreground" />
@@ -87,7 +87,7 @@ export default function ContactPage() {
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-5 w-5 text-muted-foreground" />
-                <span>Central Library Surrey Street Sheffield S1 1XZ</span>
+                <span>Cantor Library Arundel Street Sheffield S1 2NU</span>
               </div>
             </CardContent>
           </Card>
