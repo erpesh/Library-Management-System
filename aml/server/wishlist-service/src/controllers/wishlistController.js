@@ -34,4 +34,21 @@ exports.getWishlistByUserId = (req, res) => {
         });
 };
 
+// Delete a single wishlist record by ID
+exports.deleteWishlistRecordById = (req, res) => {
+    WishlistRecord.findByIdAndDelete(req.params.Id)
+        .then(wishlist => {
+            if (!wishlist) {
+                return res.status(404).send({ message: "Wishlist record not found." });
+            }
+
+            res.send({ message: "Wishlist record deleted successfully." });
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message || "An error occurred while deleting the wishlist record."
+            });
+        });
+};
+
 
