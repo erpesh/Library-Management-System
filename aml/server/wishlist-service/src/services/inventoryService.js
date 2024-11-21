@@ -21,5 +21,5 @@ const getMediaByIds = async (ids) => {
 };
 
 module.exports = {
-    getInventoryByIds,
+    getMediaByIds,
 };
