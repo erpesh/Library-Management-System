@@ -30,7 +30,7 @@ services:
 
   wishlist-service:
     build:
-      context: ./server/inventory-service
+      context: ./server/wishlist-service
     ports:
       - "3003:3000"
     environment:
