@@ -34,6 +34,8 @@ export default function ClientPage({ media }: Props) {
 
     console.log(media)
 
+
+
     const handleBorrow = async () => {
         setIsBorrowing(true)
         try {
@@ -150,19 +152,25 @@ export default function ClientPage({ media }: Props) {
                             {media.isBorrowed ? (
                                     <>
                                         <ReturnButton
-                                            item={{ id: media.borrowingRecord.ID, title: media.title }}
+                                            item={{ id: media.borrowingRecord?.ID, title: media.title }}
                                             onReturn={(mediaId) => {
                                                 console.log(`Returned media ID: ${mediaId}`);
                                                 // Call your return function here
                                             }}
                                         />
                                         <RenewButton
-                                            item={{ id: media.borrowingRecord.ID, title: media.title }}
+                                            item={{
+                                                id: media.borrowingRecord.ID,
+                                                title: media.title,
+                                                returnDate: new Date(media.borrowingRecord.ReturnAt * 1000).toISOString(), // Convert UNIX timestamp
+                                            }}
                                             onRenew={(id, date) => {
                                                 console.log(`Renewed item with ID ${id} until ${date}`);
-                                                // Call your renew function here
                                             }}
                                         />
+
+
+                                        
                                     </>
                                 ) : (
                                     // If media is not borrowed, show Borrow Button
