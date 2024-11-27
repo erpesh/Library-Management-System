@@ -5,6 +5,9 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import { ObjectId } from "mongodb"
 import { getServerSession } from "next-auth/next"
 import client from '@/lib/db';
+import { AuthOptions } from "next-auth"
+import { customEmailTemplate } from "./email-template"
+import { createTransport } from 'nodemailer'
 
 export async function getSession() {
     return await getServerSession(authOptions)
@@ -20,7 +23,7 @@ export async function isAdmin() {
     return user?.role === "admin"
 }
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
     providers: [
         GithubProvider({
             clientId: process.env.GITHUB_ID as string,
@@ -33,11 +36,31 @@ export const authOptions = {
         EmailProvider({
             server: process.env.EMAIL_SERVER,
             from: process.env.EMAIL_FROM,
+            sendVerificationRequest: async ({ identifier: email, url, provider, theme }) => {
+                const { host } = new URL(url)
+                const transport = await createTransport(provider.server)
+                const result = await transport.sendMail({
+                  to: email,
+                  from: provider.from,
+                  subject: `Sign in to ${host}`,
+                  text: `Sign in to ${host}\n${url}\n\n`,
+                  html: customEmailTemplate({
+                    url,
+                    host,
+                    theme,
+                  }),
+                })
+                const failed = result.rejected.concat(result.pending).filter(Boolean)
+                if (failed.length) {
+                  throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
+                }
+              },
         }),
     ],
     adapter: MongoDBAdapter(client),
     pages: {
         signIn: '/signin',
+        verifyRequest: '/signin/verify-request',
     },
     callbacks: {
         async session({ session, user }) {

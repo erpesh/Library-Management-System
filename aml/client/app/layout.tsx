@@ -38,7 +38,7 @@ export default function RootLayout({
         <ThemeProvider>
           <NextAuthProvider>
             <Header />
-            <main className="mx-auto max-w-[1200px] min-h-screen px-4">
+            <main className="mx-auto max-w-[1200px] min-h-page px-4">
               {children}
             </main>
             <Footer />

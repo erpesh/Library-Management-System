@@ -76,7 +76,13 @@ const config: Config = {
   					'background-position': '200%'
   				}
   			}
-  		}
+  		},
+		height: {
+			'page': 'calc(100vh - 206px)'
+		},
+		minHeight: {
+			'page': 'calc(100vh - 206px)'
+		}
   	}
   },
   plugins: [require("tailwindcss-animate")],

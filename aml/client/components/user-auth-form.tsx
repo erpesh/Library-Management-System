@@ -2,38 +2,81 @@
 
 import * as React from "react"
 import { signIn } from "next-auth/react"
+import { z } from "zod"
+import { toast } from 'sonner'
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Github, Loader2 } from "lucide-react"
+import { Github, Loader2 } from 'lucide-react'
+
+const emailSchema = z.string().email("Please enter a valid email address")
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [isEmailLoading, setIsEmailLoading] = React.useState<boolean>(false)
+  const [isGithubLoading, setIsGithubLoading] = React.useState<boolean>(false)
+  const [isGoogleLoading, setIsGoogleLoading] = React.useState<boolean>(false)
+  const [email, setEmail] = React.useState<string>("")
+  const [emailError, setEmailError] = React.useState<string | null>(null)
 
-  async function onSubmit(event: React.SyntheticEvent) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setIsLoading(true)
-
-    const target = event.target as typeof event.target & {
-      email: { value: string }
-    }
-    const email = target.email.value
+    setIsEmailLoading(true)
+    setEmailError(null)
 
     try {
+      emailSchema.parse(email)
       await signIn("email", { email, callbackUrl: "/" })
+      toast.success('Verification email sent', {
+        description: 'Please check your inbox to verify your email.',
+      })
     } catch (error) {
-      console.error("Error:", error)
+      if (error instanceof z.ZodError) {
+        setEmailError(error.errors[0].message)
+      } else {
+        console.error("Error:", error)
+        toast.error('An error occurred', {
+          description: 'Please try again.',
+        })
+      }
     } finally {
-      setIsLoading(false)
+      setIsEmailLoading(false)
+    }
+  }
+
+  async function handleGithubSignIn() {
+    setIsGithubLoading(true)
+    try {
+      await signIn("github", { callbackUrl: "/" })
+    } catch (error) {
+      console.error("GitHub Sign In Error:", error)
+      toast.error('Failed to sign in with GitHub', {
+        description: 'Please try again.',
+      })
+    } finally {
+      setIsGithubLoading(false)
+    }
+  }
+
+  async function handleGoogleSignIn() {
+    setIsGoogleLoading(true)
+    try {
+      await signIn("google", { callbackUrl: "/" })
+    } catch (error) {
+      console.error("Google Sign In Error:", error)
+      toast.error('Failed to sign in with Google', {
+        description: 'Please try again.',
+      })
+    } finally {
+      setIsGoogleLoading(false)
     }
   }
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
+    <div className={cn("grid gap-4", className)} {...props}>
       <form onSubmit={onSubmit}>
         <div className="grid gap-2">
           <div className="grid gap-1">
@@ -47,11 +90,18 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading}
+              disabled={isEmailLoading}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              aria-invalid={!!emailError}
+              aria-describedby={emailError ? "email-error" : undefined}
             />
+            {emailError && (
+              <p className="text-sm text-red-500" id="email-error">{emailError}</p>
+            )}
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && (
+          <Button disabled={isEmailLoading}>
+            {isEmailLoading && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
             Sign In with Email
@@ -68,19 +118,29 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading} onClick={() => signIn("github")}>
-        {isLoading ? (
+      <Button
+        variant="outline"
+        type="button"
+        disabled={isGithubLoading}
+        onClick={handleGithubSignIn}
+      >
+        {isGithubLoading ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <Github className="mr-2 h-4 w-4" />
         )}{" "}
         GitHub
       </Button>
-      <Button variant="outline" type="button" disabled={isLoading} onClick={() => signIn("google")}>
-        {isLoading ? (
+      <Button
+        variant="outline"
+        type="button"
+        disabled={isGoogleLoading}
+        onClick={handleGoogleSignIn}
+      >
+        {isGoogleLoading ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-            <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+          <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -99,7 +159,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             />
             <path d="M1 1h22v22H1z" fill="none" />
           </svg>
-        
         )}{" "}
         Google
       </Button>
