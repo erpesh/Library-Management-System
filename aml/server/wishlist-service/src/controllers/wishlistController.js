@@ -23,20 +23,22 @@ exports.createWishlist = (req, res) => {
 };
 
 // Get all wishlist records by user ID
-exports.getWishlistByUserId = (req, res) => {
-    WishlistRecord.find({ userId: req.params.userId })
-        .then(wishlist => {
-            // Make request to inventory-service to get media data for each media ID
-            
+exports.getWishlistByUserId = async (req, res) => {
+    try {
+        const wishlist = await WishlistRecord.find({ userId: req.params.userId });
 
-            res.send(wishlist);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "An error occurred while retrieving the wishlist records."
-            });
+        if (!wishlist || wishlist.length === 0) {
+            return res.status(404).send({ message: "No wishlist records found for this user." });
+        }
+
+        res.status(200).send(wishlist);
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "An error occurred while retrieving the wishlist records."
         });
+    }
 };
+
 
 // Delete a single wishlist record by ID
 exports.deleteWishlistRecordById = (req, res) => {
