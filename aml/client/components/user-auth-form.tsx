@@ -121,7 +121,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       <Button
         variant="outline"
         type="button"
-        disabled={isGithubLoading}
+        // disabled={isGithubLoading}
+        disabled
         onClick={handleGithubSignIn}
       >
         {isGithubLoading ? (
@@ -134,7 +135,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       <Button
         variant="outline"
         type="button"
-        disabled={isGoogleLoading}
+        // disabled={isGoogleLoading}
+        disabled
         onClick={handleGoogleSignIn}
       >
         {isGoogleLoading ? (

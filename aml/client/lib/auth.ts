@@ -9,13 +9,25 @@ import { AuthOptions } from "next-auth"
 import { customEmailTemplate } from "./email-template"
 import { createTransport } from 'nodemailer'
 
+export interface User {
+    name?: string;
+    email: string;
+    image?: string;
+    id: string;
+    role: 'user' | 'admin';
+}
+
 export async function getSession() {
     return await getServerSession(authOptions)
 }
 
-export async function getCurrentUser() {
-    const session = await getSession()
-    return session?.user
+export async function getCurrentUser(): Promise<User | null> {
+    const session = await getSession();
+
+    if (session) 
+        return session.user as User;
+
+    return null
 }
 
 export async function isAdmin() {
@@ -64,7 +76,6 @@ export const authOptions: AuthOptions = {
     },
     callbacks: {
         async session({ session, user }) {
-            console.log(session, user)
             if (session.user) {
                 session.user.id = user.id;
                 const db = client.db();
