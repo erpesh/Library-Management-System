@@ -15,7 +15,7 @@ const mongoose = require('mongoose');
 
 exports.getMedia = async (req, res) => {
     try {
-        const { page = 1, perPage = 10, title, ids, ...filters } = req.query;
+        const { page = 1, perPage = 8, title, ids, ...filters } = req.query;
         const pageNumber = parseInt(page);
         const perPageNumber = parseInt(perPage);
 

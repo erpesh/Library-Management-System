@@ -1,10 +1,10 @@
 import { inventoryApi } from '../api/settings'
 import {Media, MediaSearchResponse} from '@/lib/types';
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
 import MediaCard from '@/components/media-card'
 import SearchInput from "./search-input";
 import MediaSelect from "./media-select";
 import GenreSelect from "./genre-select";
+import Pagionation from "./pagination";
 
 async function getMedia(filters: { [key: string]: string | string[] | undefined }): Promise<MediaSearchResponse | undefined> {
   try {
@@ -58,28 +58,7 @@ export default async function Page({
             )) : <div>No results!</div>}
           </div>
 
-          <Pagination className="mt-8">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive>2</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          {response && <Pagionation totalPages={response?.totalPages} />}
         </main>
       </div>
     </div>

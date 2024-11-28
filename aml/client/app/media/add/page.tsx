@@ -43,6 +43,7 @@ import axios from "axios";
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Media } from '@/lib/types'
+import { getGenresForType } from '@/lib/utils'
 
 export const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -209,14 +210,25 @@ export default function AddMediaForm({ media }: Props) {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
+            <FormField
                 control={form.control}
                 name="genre"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Genre</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter genre" {...field} />
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select genre" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {getGenresForType(selectedMediaType).map((genre) => (
+                            <SelectItem key={genre} value={genre}>
+                              {genre}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
