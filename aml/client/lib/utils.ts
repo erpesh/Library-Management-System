@@ -106,3 +106,10 @@ export const getAllGenres = (): string[] => {
   });
   return Array.from(allGenresSet).sort();
 }
+
+export function formatUnixTimestamp(unixTimestamp: number): string {
+  const returnDate = new Date(unixTimestamp * 1000);
+  
+  return returnDate.toISOString().split('T')[0];
+}
+

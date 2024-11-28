@@ -143,37 +143,14 @@ export default function ClientPage({ media }: Props) {
                                 {media.stock - media.borrowed}
                             </div>
                         </div>
-
                         <Separator />
-
                         <div className="space-y-2 flex justify-end items-end gap-4">
-
-
                             {media.isBorrowed ? (
                                     <>
-                                        <ReturnButton
-                                            item={{ id: media.borrowingRecord?.ID, title: media.title }}
-                                            onReturn={(mediaId) => {
-                                                console.log(`Returned media ID: ${mediaId}`);
-                                                // Call your return function here
-                                            }}
-                                        />
-                                        <RenewButton
-                                            item={{
-                                                id: media.borrowingRecord.ID,
-                                                title: media.title,
-                                                returnDate: new Date(media.borrowingRecord.ReturnAt * 1000).toISOString(), // Convert UNIX timestamp
-                                            }}
-                                            onRenew={(id, date) => {
-                                                console.log(`Renewed item with ID ${id} until ${date}`);
-                                            }}
-                                        />
-
-
-                                        
+                                        <ReturnButton item={media} />
+                                        <RenewButton item={media} />
                                     </>
                                 ) : (
-                                    // If media is not borrowed, show Borrow Button
                                     <Button
                                         onClick={handleBorrow}
                                         disabled={isBorrowing || media.stock === media.borrowed}

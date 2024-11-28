@@ -7,7 +7,6 @@ export async function POST(
 ) {
     try {
         const id = (await params).id; 
-        // Assuming mediaApi is preconfigured with base URL
         const response = await mediaApi.post(`/${id}/renew`); 
         return new Response(JSON.stringify(response.data), { status: 200 });
     } catch (error) {

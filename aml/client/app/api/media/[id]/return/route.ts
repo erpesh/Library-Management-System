@@ -6,9 +6,9 @@ export async function POST(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
-        const id = (await params).id; 
-        // Assuming mediaApi is preconfigured with base URL
+        const id = (await params).id;
         const response = await mediaApi.post(`/${id}/return`); 
+        console.log('response', response.data);
         return new Response(JSON.stringify(response.data), { status: 200 });
     } catch (error) {
         if (error instanceof z.ZodError) {

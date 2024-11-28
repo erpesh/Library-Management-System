@@ -12,29 +12,33 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import axios from "axios"; // Import axios
+import axios from "axios";
 import { useRouter } from 'next/navigation'
 import React from "react";
+import { Media } from "@/lib/types";
 
-export function ReturnButton({ item }) {
+
+interface Props {
+  item: Media;
+}
+
+export function ReturnButton({ item }: Props) {
   const router = useRouter();
-  const [isReturned, setIsReturned] = React.useState(false); // Track return state
+  const [isReturned, setIsReturned] = React.useState(false);
 
   const handleReturn = async () => {
     try {
-      // Make the API request to return the media using axios
-      setIsReturned(true); // Set the state to indicate the return action is in progress
+      setIsReturned(true);
 
-      await axios.post(`/api/media/${item.id}/return`);
+      await axios.post(`/api/media/${item.borrowingRecord?.ID}/return`);
 
-
-      toast.success(`Successfully returned "${item.title}"`); // Display success toast
-      router.refresh(); // Refresh the page to reflect the changes
+      toast.success(`Successfully returned "${item.title}"`);
+      router.refresh();
     } catch (error) {
       console.error(error);
-      toast.error('Failed to return the item'); // Display error toast
+      toast.error('Failed to return the item');
     } finally {
-      setIsReturned(false); // Reset the state after the process
+      setIsReturned(false);
     }
   };
 
