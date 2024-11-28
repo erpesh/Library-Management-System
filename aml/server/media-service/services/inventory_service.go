@@ -56,7 +56,6 @@ func BorrowMedia(mediaID primitive.ObjectID) error {
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("failed to borrow media")
 	}
-
 	return nil
 }
 
@@ -65,7 +64,7 @@ func ReturnMedia(mediaID primitive.ObjectID) error {
 	reqBody := map[string]interface{}{
 		"userID": 1,
 	}
-
+	
 	body, err := json.Marshal(reqBody)
 	if err != nil {
 		return fmt.Errorf("failed to create request body")

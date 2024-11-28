@@ -6,6 +6,8 @@ import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { ReturnButton } from '@/components/return-media-button'  
+import { RenewButton } from '@/components/renew-media-button'  
 import {
     ChevronRight,
     Clock,
@@ -31,6 +33,8 @@ export default function ClientPage({ media }: Props) {
     const [isBorrowing, setIsBorrowing] = React.useState(false);
 
     const { data: session } = useSession();
+
+
 
     const handleBorrow = async () => {
         if (!session) {
@@ -143,55 +147,28 @@ export default function ClientPage({ media }: Props) {
                                 {media.stock - media.borrowed}
                             </div>
                         </div>
-
                         <Separator />
-
                         <div className="space-y-2 flex justify-end items-end gap-4">
                             {media.isBorrowed ? (
-                                <>
+                                    <>
+                                        <ReturnButton item={media} />
+                                        <RenewButton item={media} />
+                                    </>
+                                ) : (
                                     <Button
-                                        onClick={() => {/* Return */ }}
-                                        disabled={false}
+                                        onClick={handleBorrow}
+                                        disabled={isBorrowing || media.stock === media.borrowed}
                                     >
-                                        {false ? (
+                                        {isBorrowing ? (
                                             <>
                                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                Renew...
+                                                Borrowing...
                                             </>
                                         ) : (
-                                            'Renew'
+                                            'Borrow Now'
                                         )}
                                     </Button>
-                                    <Button
-                                        variant='outline'
-                                        onClick={() => {/* Return */ }}
-                                        disabled={false}
-                                    >
-                                        {false ? (
-                                            <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                Returning...
-                                            </>
-                                        ) : (
-                                            'Return'
-                                        )}
-                                    </Button>
-                                </>
-                            ) : (
-                                <Button
-                                    onClick={handleBorrow}
-                                    disabled={isBorrowing || media.stock === media.borrowed}
-                                >
-                                    {isBorrowing ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Borrowing...
-                                        </>
-                                    ) : (
-                                        'Borrow Now'
-                                    )}
-                                </Button>
-                            )}
+                                )}
                             <Button variant='outline'>
                                 <Heart className="h-4 w-4" />
                                 Add to Wishlist
