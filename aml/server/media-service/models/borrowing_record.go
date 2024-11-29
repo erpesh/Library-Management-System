@@ -8,4 +8,5 @@ type BorrowingRecord struct {
 	MediaID    primitive.ObjectID `bson:"mediaID"`
 	BorrowedAt int64              `bson:"borrowedAt"`
 	ReturnAt   int64              `bson:"returnAt"`
+	ReturnedAt *int64             `bson:"returnedAt,omitempty"`
 }

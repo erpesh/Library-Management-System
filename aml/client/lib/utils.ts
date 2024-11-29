@@ -112,3 +112,9 @@ export function formatUnixTimestamp(unixTimestamp: number): string {
   return returnDate.toISOString().split('T')[0];
 }
 
+export function formatUnixTimestampToFullDate(unixTimestamp: number): string {
+  const returnDate = new Date(unixTimestamp * 1000);
+  
+  return returnDate.toDateString().split(' ').slice(1).join(' ');
+}
+

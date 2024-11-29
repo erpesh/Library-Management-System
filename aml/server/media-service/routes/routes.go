@@ -8,6 +8,7 @@ import (
 func RegisterRoutes(router *gin.Engine) {
 	apiMedia := router.Group("/api/media")
 
+	apiMedia.GET("/user/:userID", controllers.GetBorrowingRecordsByUserID)
 	apiMedia.POST("/user/:userID/media/:mediaID", controllers.BorrowMedia)
 
 	// TODO: implement the following routes, where :id is the borrowing record ID
