@@ -41,7 +41,7 @@ export function customEmailTemplate(params: {
   </style>
 </head>
 <body style="margin: 0; padding: 0; width: 100%; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f3f4f6;">
-  <div style="display: none; line-height: 0; font-size: 0;">Verify your email address to sign in to ${escapedHost}</div>
+  <div style="display: none; line-height: 0; font-size: 0;">Verify your email address to sign in to Cantor Library</div>
   <table class="wrapper" width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin: 0; padding: 0; width: 100%; background-color: #f3f4f6;">
     <tr>
       <td align="center" style="padding: 24px;">
@@ -50,7 +50,7 @@ export function customEmailTemplate(params: {
             <td style="padding: 24px; background-color: #ffffff; border-radius: 4px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); text-align: center;">
               <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #111827;">Verify your email address</h1>
               <p style="margin: 24px 0; font-size: 16px; line-height: 24px; color: #4b5563;">
-                Click the button below to verify your email address and sign in to ${escapedHost}.
+                Click the button below to verify your email address and sign in to Cantor Library.
               </p>
               <table cellpadding="0" cellspacing="0" role="presentation" style="margin: 0 auto;">
                 <tr>
@@ -69,7 +69,7 @@ export function customEmailTemplate(params: {
           <tr>
             <td style="padding: 24px;">
               <p style="margin: 0; font-size: 14px; line-height: 20px; color: #6b7280; text-align: center;">
-                &copy; ${new Date().getFullYear()} ${escapedHost}. All rights reserved.
+                &copy; ${new Date().getFullYear()} Cantor Library. All rights reserved.
               </p>
             </td>
           </tr>
