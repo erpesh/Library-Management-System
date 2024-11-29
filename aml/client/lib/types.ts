@@ -28,11 +28,12 @@ export interface MediaSearchResponse {
 }
 
 export interface BorrowingRecord {
-    ID: string;         // MongoDB ObjectId (usually a string)
-    MediaID: string;    // MongoDB ObjectId (usually a string)
-    UserID: number;     // UserID as an integer
+    ID: string;
+    MediaID: string;
+    UserID: string;
     BorrowedAt: number; // Unix timestamp (number)
     ReturnAt: number;   // Unix timestamp (number)
+    ReturnedAt: number; // Unix timestamp (number)
 }
 
 export interface Genre {
