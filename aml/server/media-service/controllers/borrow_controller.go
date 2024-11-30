@@ -13,6 +13,10 @@ import (
 	"fmt"
 )
 
+type BorrowRequest struct {
+	ReturnAt int64 `json:"returnAt"`
+}
+
 func BorrowMedia(c *gin.Context) {
 	userIDParam := c.Param("userID")
 	mediaIDParam := c.Param("mediaID")
@@ -24,12 +28,30 @@ func BorrowMedia(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("Converted userID:", userID)
-
 	mediaID, err := primitive.ObjectIDFromHex(mediaIDParam)
 	if err != nil {
 		fmt.Println("Error converting mediaID to ObjectID:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid media ID"})
+		return
+	}
+
+	// Bind the request body to BorrowRequest struct
+	var borrowRequest BorrowRequest
+	if err := c.ShouldBindJSON(&borrowRequest); err != nil {
+		fmt.Println("Error binding request body:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// Validate if ReturnAt is provided (optional: check if the time is valid)
+	if borrowRequest.ReturnAt == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ReturnAt must be provided"})
+		return
+	}
+
+	// Check if the return date is not before the current date
+	if time.Unix(borrowRequest.ReturnAt, 0).Before(time.Now()) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Return date cannot be in the past"})
 		return
 	}
 
@@ -57,7 +79,7 @@ func BorrowMedia(c *gin.Context) {
 		UserID:     userID,
 		MediaID:    mediaID,
 		BorrowedAt: time.Now().Unix(),
-		ReturnAt:   time.Now().Add(30 * 24 * time.Hour).Unix(),
+		ReturnAt:   borrowRequest.ReturnAt,
 		ReturnedAt: nil,
 	}
 
