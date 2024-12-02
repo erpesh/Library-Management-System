@@ -5,17 +5,20 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Image from 'next/image'
 import Link from 'next/link'
-import { Media, WishlistRecord } from '@/lib/types'
+import { WishlistRecord } from '@/lib/types' // Importing the types
 import MediaIcon from '@/components/media-icon'
-import {formatUnixTimestampToFullDate} from '@/lib/utils';
+import { formatUnixTimestampToFullDate } from '@/lib/utils'
 import { RenewButton } from '@/components/renew-media-button'
 import { ReturnButton } from '@/components/return-media-button'
+import { BorrowButton } from '@/components/borrow-button'
+import { WishlistRemoveButton } from '@/components/wishlist-remove-button'
 
 interface WishlistHistoryListProps {
   wishlistRecords: WishlistRecord[]
 }
 
 export function WishlistHistoryList({ wishlistRecords }: WishlistHistoryListProps) {
+  console.log(wishlistRecords)
   return (
     <motion.div layout className="space-y-4">
       <AnimatePresence>
@@ -32,8 +35,8 @@ export function WishlistHistoryList({ wishlistRecords }: WishlistHistoryListProp
                 <div className="mr-4 relative w-[70px] h-[100px]">
                   <Link href={`/media/${item._id}`}>
                     <Image
-                      src={item.imageUrl}
-                      alt={item.title}
+                      src={item.media.imageUrl}
+                      alt={item.media.title}
                       layout="fill"
                       objectFit="cover"
                       className="rounded-md"
@@ -43,30 +46,16 @@ export function WishlistHistoryList({ wishlistRecords }: WishlistHistoryListProp
                 </div>
                 <div className="flex-grow">
                   <Link href={`/media/${item._id}`} className="hover:underline">
-                    <h3 className="font-semibold">{item.title}</h3>
+                    <h3 className="font-semibold">{item.media.title}</h3>
                   </Link>
                   <div className="flex items-center text-sm text-muted-foreground mb-1">
-                    <MediaIcon mediaType={item.mediaType} className="mr-1" />
-                    <span className="capitalize">{item.mediaType}</span>
+                    <MediaIcon mediaType={item.media.mediaType} className="mr-1" />
+                    <span className="capitalize">{item.media.mediaType}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Borrowed on: {formatUnixTimestampToFullDate(item.borrowingRecord!.BorrowedAt)}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {item.borrowingRecord!.ReturnedAt ? 'Returned on: ' : 'Due on: '}
-                    {formatUnixTimestampToFullDate(item.borrowingRecord!.ReturnAt)}
-                  </p>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Badge variant={item.borrowingRecord!.ReturnedAt ? 'secondary' : 'default'}>
-                    {item.borrowingRecord!.ReturnedAt ? 'Returned' : 'Borrowed'}
-                  </Badge>
-                  {!item.borrowingRecord!.ReturnedAt && (
-                    <>
-                      <RenewButton item={item} />
-                      <ReturnButton item={item} />
-                    </>
-                  )}
+                <BorrowButton item={item.media}/>
+                <WishlistRemoveButton item={item}/>
                 </div>
               </CardContent>
             </Card>
@@ -76,4 +65,3 @@ export function WishlistHistoryList({ wishlistRecords }: WishlistHistoryListProp
     </motion.div>
   )
 }
-
