@@ -8,11 +8,7 @@ const axiosApi = axios.create({
 
 const getMediaByIds = async (ids) => {
     try {
-        const response = await axiosApi.get('/', {
-            params: {
-                ids: ids.join(','),
-            },
-        });
+        const response = await axiosApi.get(`/?perPage=100&ids=${ids.join(',')}`);
         return response.data.mediaItems;
     } catch (error) {
         console.error('Error fetching inventory:', error);

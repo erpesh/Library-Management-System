@@ -9,6 +9,7 @@ services:
     environment:
       - MONGO_URI=mongodb://mongo:27017/your_database_name
       - MEDIA_SERVICE_URL=http://media-service:8080/api/media
+      - WISHLIST_SERVICE_URL=http://wishlist-service:3000/api/wishlist
     depends_on:
       - mongo
     networks:
