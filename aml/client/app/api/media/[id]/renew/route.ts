@@ -46,7 +46,6 @@ export async function POST(
         if (error instanceof z.ZodError) {
             return new Response(JSON.stringify(error.issues), { status: 422 });
         }
-
         // Log and handle other errors (e.g., API errors)
         console.error("Error during media renewal:", error);
 

@@ -118,9 +118,7 @@ func CheckMediaBorrowingStatus(c *gin.Context) {
     err = borrowingCollection.FindOne(c, bson.M{
         "mediaID": mediaID,
         "userID":  userID,
-        "returnAt": bson.M{
-            "$gte": time.Now().Unix(),
-        },
+        "returnedAt": nil,
     }).Decode(&borrowingRecord)
 
     if err != nil {

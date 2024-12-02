@@ -125,7 +125,7 @@ export default function ClientPage({ media }: Props) {
                         </div>
                         <Separator />
                         <div className="space-y-2 flex justify-end items-end gap-4">
-                            {media.isBorrowed ? (
+                        {media.isBorrowed? (
                                 <>
                                     <ReturnButton item={media} />
                                     <RenewButton item={media} />
@@ -133,6 +133,7 @@ export default function ClientPage({ media }: Props) {
                             ) : (
                                 <BorrowButton item={media} />
                             )}
+                            
                             <Button variant='outline'>
                                 <Heart className="h-4 w-4" />
                                 Add to Wishlist
