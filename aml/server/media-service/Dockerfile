@@ -32,8 +32,5 @@ COPY --from=builder /app/media-service .
 # Expose port 8080 to the outside world
 EXPOSE 8080
 
-# Set environment variable for MongoDB URI (optional, can also be passed in docker-compose.yml)
-ENV MONGO_URI=mongodb://mongo:27017/your_database_name
-
 # Run the Go application
 CMD ["./media-service"]

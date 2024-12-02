@@ -13,8 +13,10 @@ export async function POST(
             return new Response(null, { status: 401 });
         }
 
+        const data = await req.json();
+
         const id = (await params).id
-        const response = await mediaApi.post(`/user/${user.id}/media/${id}`);
+        const response = await mediaApi.post(`/user/${user.id}/media/${id}`, data);
         return new Response(JSON.stringify(response.data), { status: 200 })
 
     } catch (error) {

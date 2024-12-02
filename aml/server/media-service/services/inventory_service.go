@@ -1,11 +1,14 @@
 package services
 
 import (
-	"os"
 	"encoding/json"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"media-service/models"
 	"net/http"
+	"net/url"
+	"os"
+	"strings"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var BaseURL = os.Getenv("INVENTORY_SERVICE_URL")
@@ -64,4 +67,36 @@ func ReturnMedia(mediaID primitive.ObjectID) error {
 	}
 
 	return nil
+}
+
+func GetMediaByIds(mediaIDs []primitive.ObjectID) ([]models.Media, error) {
+	var mediaIDStrings []string
+	for _, id := range mediaIDs {
+		mediaIDStrings = append(mediaIDStrings, id.Hex())
+	}
+
+	idsQuery := strings.Join(mediaIDStrings, ",")
+
+	requestURL := fmt.Sprintf("%s/?perPage=100&ids=%s", BaseURL, url.QueryEscape(idsQuery))
+	fmt.Println("Request URL: ", requestURL)
+
+	resp, err := http.Get(requestURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make GET request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to get media by IDs, status code: %d", resp.StatusCode)
+	}
+
+	var response struct {
+		MediaItems []models.Media `json:"mediaItems"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %v", err)
+	}
+
+	fmt.Println("Response", response)
+	return response.MediaItems, nil
 }

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Media = require('../models/media');
 const { checkMediaBorrowingStatus } = require('../services/mediaService');
 
@@ -10,8 +11,6 @@ exports.createMedia = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
-
-const mongoose = require('mongoose');
 
 exports.getMedia = async (req, res) => {
     try {

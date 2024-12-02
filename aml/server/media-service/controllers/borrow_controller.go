@@ -13,12 +13,13 @@ import (
 	"fmt"
 )
 
+type BorrowRequest struct {
+	ReturnAt int64 `json:"returnAt"`
+}
+
 func BorrowMedia(c *gin.Context) {
 	userIDParam := c.Param("userID")
 	mediaIDParam := c.Param("mediaID")
-
-	fmt.Println("Received userIDParam:", userIDParam)
-	fmt.Println("Received mediaIDParam:", mediaIDParam)
 
 	userID, err := primitive.ObjectIDFromHex(userIDParam)
 	if err != nil {
@@ -27,12 +28,30 @@ func BorrowMedia(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("Converted userID:", userID)
-
 	mediaID, err := primitive.ObjectIDFromHex(mediaIDParam)
 	if err != nil {
 		fmt.Println("Error converting mediaID to ObjectID:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid media ID"})
+		return
+	}
+
+	// Bind the request body to BorrowRequest struct
+	var borrowRequest BorrowRequest
+	if err := c.ShouldBindJSON(&borrowRequest); err != nil {
+		fmt.Println("Error binding request body:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+		return
+	}
+
+	// Validate if ReturnAt is provided (optional: check if the time is valid)
+	if borrowRequest.ReturnAt == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ReturnAt must be provided"})
+		return
+	}
+
+	// Check if the return date is not before the current date
+	if time.Unix(borrowRequest.ReturnAt, 0).Before(time.Now()) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Return date cannot be in the past"})
 		return
 	}
 
@@ -60,7 +79,8 @@ func BorrowMedia(c *gin.Context) {
 		UserID:     userID,
 		MediaID:    mediaID,
 		BorrowedAt: time.Now().Unix(),
-		ReturnAt:   time.Now().Add(30 * 24 * time.Hour).Unix(),
+		ReturnAt:   borrowRequest.ReturnAt,
+		ReturnedAt: nil,
 	}
 
 	borrowingCollection := utils.GetBorrowingCollection()
@@ -120,4 +140,74 @@ func CheckMediaBorrowingStatus(c *gin.Context) {
     })
 }
 
+func GetBorrowingRecordsByUserID(c *gin.Context) {
+	userIDParam := c.Param("userID")
 
+	userID, err := primitive.ObjectIDFromHex(userIDParam)
+	if err != nil {
+		fmt.Println("Error converting userID to ObjectID:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	// Fetch borrowing records for the user
+	borrowingCollection := utils.GetBorrowingCollection()
+	var borrowingRecords []models.BorrowingRecord
+	cursor, err := borrowingCollection.Find(c, bson.M{"userID": userID})
+	if err != nil {
+		fmt.Println("Error finding borrowing records:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch borrowing records"})
+		return
+	}
+	defer cursor.Close(c)
+
+	for cursor.Next(c) {
+		var record models.BorrowingRecord
+		if err := cursor.Decode(&record); err != nil {
+			fmt.Println("Error decoding borrowing record:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode borrowing record"})
+			return
+		}
+		borrowingRecords = append(borrowingRecords, record)
+	}
+
+	if err := cursor.Err(); err != nil {
+		fmt.Println("Cursor error:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error reading borrowing records"})
+		return
+	}
+
+	var mediaIDs []primitive.ObjectID
+	for _, record := range borrowingRecords {
+		mediaIDs = append(mediaIDs, record.MediaID)
+	}
+
+	mediaList, err := services.GetMediaByIds(mediaIDs)
+	if err != nil {
+		fmt.Println("Error fetching media details:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch media details"})
+		return
+	}
+
+	mediaMap := make(map[string]*models.Media)
+	for _, media := range mediaList {
+		mediaMap[media.ID] = &media
+	}
+
+	var result []models.Media
+	for i := range borrowingRecords {
+		mediaID := borrowingRecords[i].MediaID.Hex()
+		media := mediaMap[mediaID]
+
+		if media == nil {
+			fmt.Printf("Warning: Media not found for MediaID %s\n", mediaID)
+			continue
+		}
+
+		mediaCopy := *media
+		mediaCopy.BorrowingRecord = &borrowingRecords[i]
+		result = append(result, mediaCopy)
+	}
+
+	c.JSON(http.StatusOK, result)
+}
