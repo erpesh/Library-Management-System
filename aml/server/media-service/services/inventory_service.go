@@ -2,7 +2,6 @@ package services
 
 import (
 	"os"
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -38,16 +37,8 @@ func CheckMediaAvailability(mediaID primitive.ObjectID) (bool, error) {
 
 func BorrowMedia(mediaID primitive.ObjectID) error {
 	url := fmt.Sprintf("%s/%s/borrow", BaseURL, mediaID.Hex())
-	reqBody := map[string]interface{}{
-		"userID": 1,
-	}
 
-	body, err := json.Marshal(reqBody)
-	if err != nil {
-		return fmt.Errorf("failed to create request body")
-	}
-
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
 		return fmt.Errorf("failed to borrow media")
 	}
@@ -61,16 +52,8 @@ func BorrowMedia(mediaID primitive.ObjectID) error {
 
 func ReturnMedia(mediaID primitive.ObjectID) error {
 	url := fmt.Sprintf("%s/%s/return", BaseURL, mediaID.Hex())
-	reqBody := map[string]interface{}{
-		"userID": 1,
-	}
-	
-	body, err := json.Marshal(reqBody)
-	if err != nil {
-		return fmt.Errorf("failed to create request body")
-	}
 
-	resp, err := http.Post(url, "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post(url, "application/json", nil)
 	if err != nil {
 		return fmt.Errorf("failed to return media")
 	}

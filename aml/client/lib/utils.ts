@@ -86,7 +86,6 @@ const genres: Genre[] = [
           'Rhythm',
           'MOBA',
           'Battle Royale',
-          'Simulation',
           'Visual Novel',
       ]
   }

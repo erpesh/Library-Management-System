@@ -1,11 +1,16 @@
 import { inventoryApi } from "@/app/api/settings"
 import ClientPage from "./client-page"
+import { getCurrentUser } from "@/lib/auth";
 
 
 // Fetch media item by ID
 async function getMedia(id: string) {
     try {
-      const response = await inventoryApi.get(`/${id}`);
+      const user = await getCurrentUser();
+
+      const url = user ? `/${id}?userId=${user?.id}` : `/${id}`;
+
+      const response = await inventoryApi.get(url);
       return response.data;
     }
     catch (e) {

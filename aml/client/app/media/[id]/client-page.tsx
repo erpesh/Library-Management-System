@@ -22,24 +22,29 @@ import MediaIcon from "@/components/media-icon"
 import axios from "axios"
 import { toast } from "sonner"
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 interface Props {
     media: Media
 }
 
 export default function ClientPage({ media }: Props) {
-    const router = useRouter()
-    const [isBorrowing, setIsBorrowing] = React.useState(false)
+    const router = useRouter();
+    const [isBorrowing, setIsBorrowing] = React.useState(false);
 
-    console.log(media)
+    const { data: session } = useSession();
 
 
 
     const handleBorrow = async () => {
+        if (!session) {
+            toast.error('You need to sign in to borrow the item');
+            router.push('/signin');
+        }
+
         setIsBorrowing(true)
         try {
             await axios.post(`/api/media/${media._id}/borrow`)
-            // setIsBorrowed(true)
             toast.success('Successfully borrowed the item')
             router.refresh()
         } catch (error) {
