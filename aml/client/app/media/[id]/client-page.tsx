@@ -18,7 +18,7 @@ import {
 import Link from "next/link"
 import MediaIcon from "@/components/media-icon"
 import { BorrowButton } from '@/components/borrow-button'
-import { WishlistButton } from '@/components/wishlist-button'
+import { WishlistAddButton } from '@/components/wishlist-add-button'
 import { WishlistRemoveButton } from '@/components/wishlist-remove-button'
 
 interface Props {
@@ -132,7 +132,7 @@ export default function ClientPage({ media }: Props) {
                             {media.wishlistRecord ? (
                                 <WishlistRemoveButton item={media.wishlistRecord} />
                             ) : (
-                                <WishlistButton item={media} />
+                                <WishlistAddButton item={media} />
                             )}
                         </div>
                     </motion.div>

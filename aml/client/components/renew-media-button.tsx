@@ -1,110 +1,126 @@
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "lucide-react";
+'use client'
+
+import * as React from 'react'
+import { useRouter } from "next/navigation"
+import { useSession } from 'next-auth/react'
+import axios from "axios"
+import { toast } from "sonner"
+import { CalendarIcon, Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+
+import { Button } from "@/components/ui/button"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
-import axios from "axios";
-import { useRouter } from "next/navigation";
-import { Media } from "@/lib/types";
-import {formatUnixTimestamp} from '@/lib/utils';
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
+import DatePicker from "./ui/date-picker"
+import { Media } from "@/lib/types"
 
 interface Props {
-  item: Media;
+    item: Media
 }
 
+const formSchema = z.object({
+    newReturnDate: z.date({
+        required_error: "A new return date is required.",
+    }),
+})
+
 export function RenewButton({ item }: Props) {
-  const router = useRouter();
-  const [newReturnDate, setNewReturnDate] = useState("");
-  const [isRenewing, setIsRenewing] = useState(false);
-  const [startDate, setStartDate] = useState("");
+    const { data: session } = useSession()
+    const router = useRouter()
+    const [isRenewing, setIsRenewing] = React.useState(false)
+    const [isOpen, setIsOpen] = React.useState(false)
 
-  
+    const form = useForm<z.infer<typeof formSchema>>({
+        resolver: zodResolver(formSchema),
+    })
 
-  useEffect(() => {
-    if (item.borrowingRecord?.ReturnAt) {
-      const timestamp = item.borrowingRecord.ReturnAt * 1000;
-      const parsedDate = new Date(timestamp);
-      const formattedDate = parsedDate.toISOString().split("T")[0];
-      setStartDate(formattedDate);
-      setNewReturnDate(formattedDate);
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        if (!session) {
+            toast.error('You need to sign in to renew the item')
+            router.push('/signin')
+            return
+        }
+
+        if (!item.borrowingRecord) {
+            toast.error('The item is not borrowed')
+            return
+        }
+
+        setIsRenewing(true);
+        try {
+            await axios.post(`/api/media/${item.borrowingRecord!.ID}/renew`, {
+                newReturnDate: Math.floor(values.newReturnDate.getTime() / 1000)
+            })
+            toast.success('Successfully renewed the item')
+            router.refresh()
+            setIsOpen(false)
+        } catch (error) {
+            toast.error('Failed to renew the item')
+        } finally {
+          setIsRenewing(false)
+        }
     }
-  }, [item.borrowingRecord?.ReturnAt]);
 
-  const handleRenew = async () => {
-    if (!newReturnDate) {
-      toast.error("Please select a new return date.");
-      return;
-    }
+    if (!item.borrowingRecord)
+        return null
 
-    try {
-      setIsRenewing(true);
-
-      const newReturnTimestamp = new Date(newReturnDate).getTime() / 1000; 
-      const response = await axios.post(`/api/media/${item.borrowingRecord?.ID}/renew`, {
-        newReturnDate: newReturnTimestamp,
-      });
-       console.log(response.data);
-
-      toast.success(
-        `${item.title} has been renewed. New return date: ${new Date(
-          newReturnTimestamp * 1000
-        ).toDateString()}`
-      );
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to renew the item");
-    } finally {
-      setIsRenewing(false);
-    }
-  };
-
-  if (!item.borrowingRecord) {
-    return null;
-  }
-
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button size="sm" variant="outline" disabled={isRenewing}>
-          <CalendarIcon className="w-4 h-4 mr-2" /> Renew
-        </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Reschedule Return Date</AlertDialogTitle>
-          <AlertDialogDescription>
-            Select a new return date for "{item.title}". The new date must be on
-            or after the original return date "{formatUnixTimestamp(item.borrowingRecord?.ReturnAt)}".
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <div className="flex flex-col items-start p-4">
-          <label className="mb-2 text-sm font-medium">New Return Date:</label>
-          <input
-            type="date"
-            className="border rounded p-2 w-full"
-            min={startDate}
-            value={newReturnDate || formatUnixTimestamp(item.borrowingRecord?.ReturnAt)}
-            onChange={(e) => setNewReturnDate(e.target.value)}
-          />
-        </div>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleRenew}>
-            Confirm Renewal
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+            <Button size="sm" variant="outline" disabled={isRenewing}>
+              <CalendarIcon className="w-4 h-4 mr-2" /> Renew
+            </Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Select Return Date</DialogTitle>
+                </DialogHeader>
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                        <FormField
+                            control={form.control}
+                            name="newReturnDate"
+                            render={({ field }) => (
+                                <FormItem className='flex flex-col'>
+                                    <FormLabel>New Return Date</FormLabel>
+                                    <FormControl>
+                                        <DatePicker
+                                            date={field.value}
+                                            setDate={field.onChange}
+                                            minDate={new Date(item.borrowingRecord!.ReturnAt * 1000)}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <DialogFooter>
+                            <Button type="button" variant="secondary" onClick={() => setIsOpen(false)}>
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={isRenewing}>
+                                Confirm Renewal
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </Form>
+            </DialogContent>
+        </Dialog>
+    )
 }
