@@ -5,7 +5,7 @@ import { ChevronRight, Clock, Home, Share2 } from "lucide-react";
 import Link from "next/link";
 import { inventoryApi } from "@/app/api/settings";
 import AddMediaForm from "../../add/page";
-import  DeleteMedia  from "./DeletePage";  // Import DeleteMedia component
+import  DeleteMedia  from "./delete-button";  // Import DeleteMedia component
 
 // Fetch media item by ID
 async function getMedia(id: string) {

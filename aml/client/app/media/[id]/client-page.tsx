@@ -1,11 +1,13 @@
 'use client'
 
 import * as React from 'react'
-import { Media } from "@/types/media"
+import { Media } from "@/lib/types"
 import { motion } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { ReturnButton } from '@/components/return-media-button'
+import { RenewButton } from '@/components/renew-media-button'
 import {
     ChevronRight,
     Clock,
@@ -17,35 +19,17 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import MediaIcon from "@/components/media-icon"
-import { RainbowButton } from "@/components/ui/rainbow-button"
 import axios from "axios"
 import { toast } from "sonner"
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { BorrowButton } from '@/components/borrow-button'
 
 interface Props {
     media: Media
 }
 
 export default function ClientPage({ media }: Props) {
-    const router = useRouter()
-    const [isBorrowing, setIsBorrowing] = React.useState(false)
-
-    console.log(media)
-
-    const handleBorrow = async () => {
-        setIsBorrowing(true)
-        try {
-            await axios.post(`/api/media/${media._id}/borrow`)
-            // setIsBorrowed(true)
-            toast.success('Successfully borrowed the item')
-            router.refresh()
-        } catch (error) {
-            toast.error('Failed to borrow the item')
-        } finally {
-            setIsBorrowing(false)
-        }
-    }
-
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -139,54 +123,15 @@ export default function ClientPage({ media }: Props) {
                                 {media.stock - media.borrowed}
                             </div>
                         </div>
-
                         <Separator />
-
                         <div className="space-y-2 flex justify-end items-end gap-4">
                             {media.isBorrowed ? (
                                 <>
-                                    <Button
-                                        onClick={() => {/* Return */ }}
-                                        disabled={false}
-                                    >
-                                        {false ? (
-                                            <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                Renew...
-                                            </>
-                                        ) : (
-                                            'Renew'
-                                        )}
-                                    </Button>
-                                    <Button
-                                        variant='outline'
-                                        onClick={() => {/* Return */ }}
-                                        disabled={false}
-                                    >
-                                        {false ? (
-                                            <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                Returning...
-                                            </>
-                                        ) : (
-                                            'Return'
-                                        )}
-                                    </Button>
+                                    <ReturnButton item={media} />
+                                    <RenewButton item={media} />
                                 </>
                             ) : (
-                                <Button
-                                    onClick={handleBorrow}
-                                    disabled={isBorrowing || media.stock === media.borrowed}
-                                >
-                                    {isBorrowing ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Borrowing...
-                                        </>
-                                    ) : (
-                                        'Borrow Now'
-                                    )}
-                                </Button>
+                                <BorrowButton item={media} />
                             )}
                             <Button variant='outline'>
                                 <Heart className="h-4 w-4" />

@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Media } from '@/types/media';
+import { Media } from '@/lib/types';
 import Link from 'next/link';
 import MediaIcon from './media-icon';
 import { Heart } from 'lucide-react';

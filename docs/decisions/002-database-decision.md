@@ -4,11 +4,11 @@ Database Decision Change
 
 ## Context
 
-Choosing database approach towards the AML system again after careful reevaluation.
+The Advanced Media Library (AML) system needs a strong and secure database to handle its operations. The choice of database setup is important because it affects how data is managed, secured, and scaled. After evaluating the system's needs, the team has decided on a centralized database approach.
 
 ## Problem Statement 
 
-Current chosen AML database is lacks security and the data is not consistent   
+The current AML database lacks security and data consistency, which makes it harder to manage and process media. These issues need to be addressed with a more secure and scalable solution.  
 
 ## Considered Options 
 
@@ -16,7 +16,7 @@ Considered choosing to have separate databases for each service or having a sing
 
 ## Decision Outcome Confirmation 
 
-After reevaluating the recent chosen decision for the database, the team has decided it’s more convenient and scalable to choose a single shared database instead of separate databases. Now confirmed to have chosen a single shared database. 
+The team decided to go with a single shared database for the AML system. This choice will help ensure data consistency, simplify maintenance, and make it easier to scale the system.
 
 ## Consequences  
 
