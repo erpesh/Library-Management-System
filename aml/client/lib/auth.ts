@@ -24,7 +24,7 @@ export async function getSession() {
 export async function getCurrentUser(): Promise<User | null> {
     const session = await getSession();
 
-    if (session) 
+    if (session)
         return session.user as User;
 
     return null
@@ -46,27 +46,34 @@ export const authOptions: AuthOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         }),
         EmailProvider({
-            server: process.env.EMAIL_SERVER,
-            from: process.env.EMAIL_FROM,
+            server: {
+                host: 'smtp.gmail.com',
+                port: 587,
+                auth: {
+                    user: process.env.EMAIL_USER,
+                    pass: process.env.EMAIL_PASS,
+                },
+            },
+            from: process.env.EMAIL_USER,
             sendVerificationRequest: async ({ identifier: email, url, provider, theme }) => {
                 const { host } = new URL(url)
                 const transport = await createTransport(provider.server)
                 const result = await transport.sendMail({
-                  to: email,
-                  from: provider.from,
-                  subject: `Sign in to ${host}`,
-                  text: `Sign in to ${host}\n${url}\n\n`,
-                  html: customEmailTemplate({
-                    url,
-                    host,
-                    theme,
-                  }),
+                    to: email,
+                    from: provider.from,
+                    subject: `Sign in to ${host}`,
+                    text: `Sign in to ${host}\n${url}\n\n`,
+                    html: customEmailTemplate({
+                        url,
+                        host,
+                        theme,
+                    }),
                 })
                 const failed = result.rejected.concat(result.pending).filter(Boolean)
                 if (failed.length) {
-                  throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
+                    throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
                 }
-              },
+            },
         }),
     ],
     adapter: MongoDBAdapter(client),
