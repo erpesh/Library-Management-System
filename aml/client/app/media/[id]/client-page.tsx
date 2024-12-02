@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { BorrowButton } from '@/components/borrow-button'
 import { WishlistButton } from '@/components/wishlist-button'
+import { WishlistRemoveButton } from '@/components/wishlist-remove-button'
 
 interface Props {
     media: Media
@@ -134,7 +135,11 @@ export default function ClientPage({ media }: Props) {
                             ) : (
                                 <BorrowButton item={media} />
                             )}
-                            <WishlistButton item={media}></WishlistButton>
+                            {media.wishlistRecord ? (
+                                <WishlistRemoveButton item={media.wishlistRecord}/>
+                            ) : (
+                                <WishlistButton item={media} />
+                            )}
                         </div>
                     </motion.div>
 

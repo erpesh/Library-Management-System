@@ -3,20 +3,33 @@ const { getMediaByIds } = require('../services/inventoryService');
 
 // Create a new wishlist record
 exports.createWishlistRecord = (req, res) => {
-    const wishlist = new WishlistRecord({
-        userId: req.params.userId,
-        mediaId: req.params.mediaId
-    });
+// check for duplicate wishlist records
+    WishlistRecord.findOne({ userId: req.params.userId, mediaId: req.params.mediaId })
+    .then(existingRecord => {
+        if (existingRecord) {
+            return res.status(400).send({ message: "This item is already in the wishlist." });
+        }
 
-    wishlist.save()
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "An error occurred while creating the wishlist record."
-            });
+        const wishlist = new WishlistRecord({
+            userId: req.params.userId,
+            mediaId: req.params.mediaId
         });
+
+        wishlist.save()
+            .then(data => {
+                res.send(data);
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: err.message || "An error occurred while creating the wishlist record."
+                });
+            });
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: err.message || "An error occurred while checking for duplicate wishlist records."
+        });
+    }); 
 };
 
 // Get all wishlist records by user ID
