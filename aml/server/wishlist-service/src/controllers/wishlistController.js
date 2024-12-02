@@ -1,4 +1,5 @@
 const WishlistRecord = require('../models/wishlist');
+const { getMediaByIds } = require('../services/inventoryService');
 
 // Create a new wishlist record
 exports.createWishlistRecord = (req, res) => {
@@ -26,8 +27,23 @@ exports.getWishlistByUserId = async (req, res) => {
         if (!wishlist) {
             return res.status(404).send({ message: "No wishlist records found for this user." });
         }
+        
+        // Call the inventory service to get the media items
+        const mediaIds = wishlist.map(wishlistItem => wishlistItem.mediaId);
+        const mediaItems = await getMediaByIds(mediaIds);
 
-        res.status(200).send(wishlist);
+        const wishlistItems = wishlist.map(wishlistItem => {
+            const mediaItem = mediaItems.find(mediaItem => mediaItem._id.toString() === wishlistItem.mediaId.toString());
+            return {
+                _id: wishlistItem._id,
+                userId: wishlistItem.userId,
+                mediaId: wishlistItem.mediaId,
+                createdAt: wishlistItem.createdAt,
+                media: mediaItem,
+            };
+        });
+
+        res.status(200).send(wishlistItems);
     } catch (err) {
         res.status(500).send({
             message: err.message || "An error occurred while retrieving the wishlist records."
@@ -35,9 +51,13 @@ exports.getWishlistByUserId = async (req, res) => {
     }
 };
 
+exports.deleteWishlistRecordById = async (req, res) => {
+    const wishlistRecord = await WishlistRecord.findById(req.params.id);
+    
+    if (wishlistRecord.userId.toString() !== req.params.userId) {
+        return res.status(403).send({ message: "You are not authorized to delete this wishlist record." });
+    };
 
-// Delete a single wishlist record by ID
-exports.deleteWishlistRecordById = (req, res) => {
     WishlistRecord.findByIdAndDelete(req.params.id)
         .then(wishlist => {
             if (!wishlist) {
