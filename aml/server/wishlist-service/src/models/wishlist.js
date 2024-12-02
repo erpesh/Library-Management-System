@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const wishlistRecordSchema = new mongoose.Schema({
-  userId: { type: Number, required: true },
+  userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    required: true 
+  },
   createdAt: {
     type: Date,
     required: true,

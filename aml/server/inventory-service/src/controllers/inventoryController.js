@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Media = require('../models/media');
 const { checkMediaBorrowingStatus } = require('../services/mediaService');
+const { getWishlistRecord } = require('../services/wishlistService');
 
 exports.createMedia = async (req, res) => {
     try {
@@ -68,6 +69,12 @@ exports.getMediaById = async (req, res) => {
                 isBorrowed: borrowingStatus.isBorrowed,
                 borrowingRecord: borrowingStatus.borrowingRecord
             };
+
+            const wishlistRecord = await getWishlistRecord(userID, media._id);
+            responseData = {
+                ...responseData,
+                wishlistRecord: wishlistRecord
+            }
         }
 
         // Send the combined response
