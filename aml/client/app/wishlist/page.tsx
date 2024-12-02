@@ -175,9 +175,42 @@ export default function WishlistPage() {
       setWishlistItems(updatedWishlist)
       localStorage.setItem('wishlist', JSON.stringify(updatedWishlist))
       
-      // Optionally, you could also save this borrowed item to another list in localStorage
       toast.success("Item added to your borrowed items")
     }
+  }
+
+  const resetWishlist = () => {
+    const exampleData = [
+      {
+        _id: "1",
+        title: "The Great Gatsby",
+        mediaType: "book",
+        genre: "Classic",
+        releaseDate: new Date(),
+        stock: 5,
+        description: "A novel by F. Scott Fitzgerald.",
+        imageUrl: "https://via.placeholder.com/150",
+        borrowed: 0,
+        author: "F. Scott Fitzgerald",
+        createdAt: new Date(),
+      },
+      {
+        _id: "2",
+        title: "1984",
+        mediaType: "book",
+        genre: "Dystopian",
+        releaseDate: new Date(),
+        stock: 3,
+        description: "A novel by George Orwell.",
+        imageUrl: "https://via.placeholder.com/150",
+        borrowed: 0,
+        author: "George Orwell",
+        createdAt: new Date(),
+      },
+    ]
+    localStorage.setItem("wishlist", JSON.stringify(exampleData))
+    setWishlistItems(exampleData)
+    toast.success("Wishlist reset to default items!")
   }
 
   return (
@@ -195,6 +228,14 @@ export default function WishlistPage() {
       >
         Your Wishlist
       </motion.h1>
+      {/* Reset Button */}
+      <Button 
+        onClick={resetWishlist} 
+        variant="outline" 
+        className="mb-4"
+      >
+        Reset Wishlist
+      </Button>
       <ScrollArea className="h-[calc(100vh-200px)] w-full">
         <motion.div
           variants={containerVariants}
@@ -218,4 +259,3 @@ export default function WishlistPage() {
     </motion.div>
   )
 }
-
