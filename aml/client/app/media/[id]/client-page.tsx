@@ -24,6 +24,8 @@ import { toast } from "sonner"
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { BorrowButton } from '@/components/borrow-button'
+import { WishlistButton } from '@/components/wishlist-button'
+import { WishlistRemoveButton } from '@/components/wishlist-remove-button'
 
 interface Props {
     media: Media
@@ -133,10 +135,11 @@ export default function ClientPage({ media }: Props) {
                             ) : (
                                 <BorrowButton item={media} />
                             )}
-                            <Button variant='outline'>
-                                <Heart className="h-4 w-4" />
-                                Add to Wishlist
-                            </Button>
+                            {media.wishlistRecord ? (
+                                <WishlistRemoveButton item={media.wishlistRecord}/>
+                            ) : (
+                                <WishlistButton item={media} />
+                            )}
                         </div>
                     </motion.div>
 

@@ -7,3 +7,7 @@ export const inventoryApi = axios.create({
 export const mediaApi = axios.create({
     baseURL: process.env.NEXT_PUBLIC_MEDIA_SERVICE_URL,
 })
+
+export const wishlistApi = axios.create({
+    baseURL: process.env.NEXT_PUBLIC_WISHLIST_SERVICE_URL,
+})

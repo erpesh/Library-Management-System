@@ -17,6 +17,7 @@ export interface Media {
     createdAt: Date;
     isBorrowed?: boolean | undefined;
     borrowingRecord?: BorrowingRecord;
+    wishlistRecord?: WishlistRecord;
 }
 
 export interface MediaSearchResponse {
