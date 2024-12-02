@@ -16,7 +16,7 @@ export interface Media {
     artist?: string | undefined;  // Optional, can be null
     createdAt: Date;
     isBorrowed?: boolean | undefined;
-    borrowingRecord?: BorrowingRecord
+    borrowingRecord?: BorrowingRecord;
 }
 
 export interface MediaSearchResponse {
@@ -34,6 +34,14 @@ export interface BorrowingRecord {
     BorrowedAt: number; // Unix timestamp (number)
     ReturnAt: number;   // Unix timestamp (number)
     ReturnedAt: number; // Unix timestamp (number)
+}
+
+export interface WishlistRecord {
+    _id: string;
+    mediaId: string;
+    userId: string;
+    createdAt: number;
+    media: Media;
 }
 
 export interface Genre {

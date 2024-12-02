@@ -5,21 +5,21 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Image from 'next/image'
 import Link from 'next/link'
-import { Media } from '@/lib/types'
+import { Media, WishlistRecord } from '@/lib/types'
 import MediaIcon from '@/components/media-icon'
 import {formatUnixTimestampToFullDate} from '@/lib/utils';
 import { RenewButton } from '@/components/renew-media-button'
 import { ReturnButton } from '@/components/return-media-button'
 
-interface BorrowingHistoryListProps {
-  media: Media[]
+interface WishlistHistoryListProps {
+  wishlistRecords: WishlistRecord[]
 }
 
-export function BorrowingHistoryList({ media }: BorrowingHistoryListProps) {
+export function WishlistHistoryList({ wishlistRecords }: WishlistHistoryListProps) {
   return (
     <motion.div layout className="space-y-4">
       <AnimatePresence>
-        {media.map((item) => (
+        {wishlistRecords.map((item) => (
           <motion.div
             key={item._id}
             initial={{ opacity: 0, y: 20 }}
