@@ -1,75 +1,88 @@
 package controllers
 
 import (
-	"context"
+	"media-service/models"
+	"media-service/services"
+	"media-service/utils"
 	"net/http"
 	"time"
-
+	"go.mongodb.org/mongo-driver/mongo"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"media-service/models"
-	"media-service/utils"
+	"fmt"
+
 )
 
 func ReturnMedia(c *gin.Context) {
-	// Extract borrowing record ID from URL parameters
-	borrowingRecordID := c.Param("id")
-	if borrowingRecordID == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Borrowing record ID is required"})
+	userIDParam := c.Param("userID")
+	borrowingRecordIDParam := c.Param("id")
+
+	fmt.Println("Received userIDParam:", userIDParam)
+	fmt.Println("Received borrowingRecordIDParam:", borrowingRecordIDParam)
+
+	// Validate user ID
+	userID, err := primitive.ObjectIDFromHex(userIDParam)
+	if err != nil {
+		fmt.Println("Error converting userID to ObjectID:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
-	// Parse the borrowing record ID into an ObjectID
-	recordID, err := primitive.ObjectIDFromHex(borrowingRecordID)
+	// Validate borrowing record ID
+	borrowingRecordID, err := primitive.ObjectIDFromHex(borrowingRecordIDParam)
 	if err != nil {
+		fmt.Println("Error converting borrowingRecordID to ObjectID:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid borrowing record ID"})
 		return
 	}
 
-	// Get the borrowing collection
 	borrowingCollection := utils.GetBorrowingCollection()
-
-	// Context for MongoDB operations
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	// Find the borrowing record
 	var borrowingRecord models.BorrowingRecord
-	err = borrowingCollection.FindOne(ctx, bson.M{"_id": recordID}).Decode(&borrowingRecord)
+	err = borrowingCollection.FindOne(c, bson.M{
+		"_id":    borrowingRecordID,
+		"userID": userID,
+	}).Decode(&borrowingRecord)
+
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Borrowing record not found"})
+		if err == mongo.ErrNoDocuments {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "No borrowing record found for this ID and user"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check borrowing record"})
+		}
 		return
 	}
 
-	// Now, we will update the borrowing record:
-	// - Set isBorrowed to false (indicating the item has been returned).
-	// - Increment the stock if required.
-
-	_, err = borrowingCollection.UpdateOne(
-		ctx,
-		bson.M{"_id": recordID},
-		bson.M{
-			"$set": bson.M{
-				"isBorrowed": false,
-			},
-			"$inc": bson.M{
-				"stock": 1, // Increment stock as the media is returned
-			},
-		},
-	)
+	// Update media status to mark as returned
+	err = services.ReturnMedia(borrowingRecord.MediaID)
 	if err != nil {
+		fmt.Println("Error returning media:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to return media"})
+		return
+	}
+
+	// Update the borrowing record's returnedAt field
+	returnedAt := time.Now().Unix()
+	update := bson.M{
+		"$set": bson.M{
+			"returnedAt": returnedAt,
+		},
+	}
+
+	_, err = borrowingCollection.UpdateOne(c, bson.M{
+		"_id": borrowingRecordID,
+	}, update)
+
+	if err != nil {
+		fmt.Println("Error updating borrowing record:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update borrowing record"})
 		return
 	}
 
-	// Delete the borrowing record after returning the media
-	_, err = borrowingCollection.DeleteOne(ctx, bson.M{"_id": recordID})
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete borrowing record"})
-		return
-	}
-
-	// Respond with success
-	c.JSON(http.StatusOK, gin.H{"message": "Media returned successfully"})
+	c.JSON(http.StatusOK, gin.H{
+		"message":    "Media returned successfully",
+		"returnedAt": returnedAt,
+	})
 }

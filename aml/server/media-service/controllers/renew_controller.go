@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"media-service/models"
 	"media-service/utils"
 	"io"
+	"bytes"
 )
 
 func RenewMedia(c *gin.Context) {
@@ -111,7 +111,7 @@ func RenewMedia(c *gin.Context) {
 	// Respond with success
 	fmt.Println("[DEBUG] Borrowing record updated successfully for ID:", recordID.Hex())
 	c.JSON(http.StatusOK, gin.H{
-		"message":      "Borrowing record updated successfully",
+		"message":       "Borrowing record updated successfully",
 		"newReturnDate": time.Unix(requestBody.NewReturnDate, 0).Format(time.RFC3339), // Return new date in human-readable format
 	})
 }
