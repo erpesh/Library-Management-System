@@ -29,15 +29,6 @@ export default function MediaCard({ media }: Props) {
                             Not Available
                         </div>
                     )}
-                    <Button
-                        variant="secondary"
-                        size="icon"
-                        className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        onClick={() => {/* Add to wishlist functionality */ }}
-                    >
-                        <Heart className="h-4 w-4" />
-                        <span className="sr-only">Add to wishlist</span>
-                    </Button>
                 </motion.div>
                 <CardContent className="p-4">
                     <h3 className="font-semibold text-lg mb-2">{media.title}</h3>

@@ -12,7 +12,7 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
@@ -68,7 +68,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
+        <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">Our Features</h2>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
@@ -102,41 +102,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-
         <section className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">Upcoming Events</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                { title: "Author Talk: Jane Doe", date: "May 15, 2024", time: "6:00 PM" },
-                { title: "Children's Story Time", date: "Every Saturday", time: "10:00 AM" },
-                { title: "Book Club: Sci-Fi Lovers", date: "May 20, 2024", time: "7:00 PM" },
-              ].map((event, index) => (
-                <Card key={index}>
-                  <CardHeader>
-                    <CardTitle>{event.title}</CardTitle>
-                    <CardDescription>
-                      <div className="flex items-center">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        {event.date} at {event.time}
-                      </div>
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Join us for an exciting event at the library. Don't miss out!
-                    </p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button variant="outline" className="w-full">Learn More</Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">What Our Members Say</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">

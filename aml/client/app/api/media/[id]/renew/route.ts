@@ -4,7 +4,7 @@ import * as z from "zod";
 
 export async function POST(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const user = await getCurrentUser();
@@ -14,7 +14,7 @@ export async function POST(
         }
 
         // Extract the `id` from params
-        const { id } = params;
+        const { id } = await params;
 
         // Ensure the `id` is valid
         if (!id) {
@@ -29,6 +29,7 @@ export async function POST(
 
         // Ensure the payload contains a newReturnDate
         const newReturnDate = payload.newReturnDate;
+        console.log(newReturnDate);
         if (!newReturnDate) {
             return new Response(
                 JSON.stringify({ error: "newReturnDate is required" }),
@@ -37,7 +38,7 @@ export async function POST(
         }
 
         // Call the API with the ID and payload
-        const response = await mediaApi.post(`/user/${user?.id}/record/${id}/renew`, { newReturnDate });
+        const response = await mediaApi.post(`/user/${user.id}/record/${id}/renew`, { newReturnDate });
 
         // Send the response back to the client
         return new Response(JSON.stringify(response.data), { status: 200 });

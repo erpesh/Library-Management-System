@@ -10,7 +10,7 @@ export default function Header() {
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-4">
             <LibraryIcon className="w-6 h-6 text-primary" />
-            <span className="text-xl font-semibold">MediaLib</span>
+            <span className="text-xl font-semibold">CantorLib</span>
           </div>
           <nav>
             <ul className="flex space-x-6">

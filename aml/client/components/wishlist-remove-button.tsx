@@ -1,21 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import axios from "axios";
 import { useRouter } from 'next/navigation'
 import React from "react";
-import { Media, WishlistRecord } from "@/lib/types";
+import { WishlistRecord } from "@/lib/types";
 import { Trash } from "lucide-react";
 
 
