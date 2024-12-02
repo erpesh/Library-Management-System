@@ -26,7 +26,7 @@ export default async function Page() {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect('/sigin');
+    redirect('/signin');
   }
 
   const media = await getMediaWithBorrowingRecords(user.id);
