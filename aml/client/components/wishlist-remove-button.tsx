@@ -25,20 +25,22 @@ interface Props {
 
 export function WishlistRemoveButton({ item }: Props) {
   const router = useRouter();
-  
+
   const removeFromWishlist = async () => {
     try {
-      await axios.delete(`/api/wishlist/${item._id}`);
-      toast.success(`Successfully removed from wishlist "${item.media.title}"`);
+      const response = await axios.delete(`/api/wishlist/${item._id}`);
+      
+      toast.success(`Successfully removed from wishlist`);
       router.refresh();
     } catch (error) {
       console.error(error);
       toast.error('Failed to remove the item from wishlist');
-    } 
+    }
   };
-return (<Button variant='outline' onClick={removeFromWishlist}>.
-    <Trash className="h-4 w-4" />
-    Remove 
-</Button>)
-  
+  return (
+    <Button variant='outline' onClick={removeFromWishlist}>
+      <Trash className="h-4 w-4" />
+      Remove
+    </Button>
+  )
 }

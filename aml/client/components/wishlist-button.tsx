@@ -1,16 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import axios from "axios";
 import { useRouter } from 'next/navigation'
@@ -25,11 +13,9 @@ interface Props {
 
 export function WishlistButton({ item }: Props) {
   const router = useRouter();
-  
+
   const addToWishlist = async () => {
     try {
-      
-
       await axios.post(`/api/wishlist/media/${item._id}`);
 
       toast.success(`Successfully added to wishlist "${item.title}"`);
@@ -37,11 +23,12 @@ export function WishlistButton({ item }: Props) {
     } catch (error) {
       console.error(error);
       toast.error('Failed to add to the item to wishlist');
-    } 
+    }
   };
-return (<Button variant='outline' onClick={addToWishlist}>.
-    <Heart className="h-4 w-4" />
-    Add to Wishlist
-</Button>)
-  
+  return (
+    <Button variant='outline' onClick={addToWishlist}>
+      <Heart className="h-4 w-4" />
+      Add to Wishlist
+    </Button>
+  )
 }

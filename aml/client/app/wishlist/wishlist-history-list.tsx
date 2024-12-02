@@ -18,7 +18,6 @@ interface WishlistHistoryListProps {
 }
 
 export function WishlistHistoryList({ wishlistRecords }: WishlistHistoryListProps) {
-  console.log(wishlistRecords)
   return (
     <motion.div layout className="space-y-4">
       <AnimatePresence>
@@ -33,7 +32,7 @@ export function WishlistHistoryList({ wishlistRecords }: WishlistHistoryListProp
             <Card>
               <CardContent className="flex items-center p-4">
                 <div className="mr-4 relative w-[70px] h-[100px]">
-                  <Link href={`/media/${item._id}`}>
+                  <Link href={`/media/${item.media._id}`}>
                     <Image
                       src={item.media.imageUrl}
                       alt={item.media.title}
@@ -45,7 +44,7 @@ export function WishlistHistoryList({ wishlistRecords }: WishlistHistoryListProp
                   </Link>
                 </div>
                 <div className="flex-grow">
-                  <Link href={`/media/${item._id}`} className="hover:underline">
+                  <Link href={`/media/${item.media._id}`} className="hover:underline">
                     <h3 className="font-semibold">{item.media.title}</h3>
                   </Link>
                   <div className="flex items-center text-sm text-muted-foreground mb-1">
@@ -54,8 +53,8 @@ export function WishlistHistoryList({ wishlistRecords }: WishlistHistoryListProp
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                <BorrowButton item={item.media}/>
-                <WishlistRemoveButton item={item}/>
+                  <BorrowButton item={item.media} />
+                  <WishlistRemoveButton item={item} />
                 </div>
               </CardContent>
             </Card>

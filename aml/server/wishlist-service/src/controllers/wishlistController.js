@@ -35,9 +35,6 @@ exports.createWishlistRecord = (req, res) => {
 exports.getWishlistRecordByUserIdAndMediaId = (req, res) => {
     WishlistRecord.findOne({ userId: req.params.userId, mediaId: req.params.mediaId })
         .then(wishlist => {
-            if (!wishlist) {
-                return res.status(404).send({ message: "No wishlist record found for this user and media item." });
-            }
             res.send(wishlist);
         })
         .catch(err => {
