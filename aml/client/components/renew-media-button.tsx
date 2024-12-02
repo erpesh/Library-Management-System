@@ -50,9 +50,10 @@ export function RenewButton({ item }: Props) {
       setIsRenewing(true);
 
       const newReturnTimestamp = new Date(newReturnDate).getTime() / 1000; 
-      await axios.post(`/api/media/${item.borrowingRecord?.ID}/renew`, {
+      const response = await axios.post(`/api/media/${item.borrowingRecord?.ID}/renew`, {
         newReturnDate: newReturnTimestamp,
       });
+       console.log(response.data);
 
       toast.success(
         `${item.title} has been renewed. New return date: ${new Date(
