@@ -6,5 +6,6 @@ router.get('/user/:userId/media/:mediaId', wishlistController.getWishlistRecordB
 router.post('/user/:userId/media/:mediaId', wishlistController.createWishlistRecord);
 router.get('/user/:userId', wishlistController.getWishlistByUserId);
 router.delete('/user/:userId/record/:id', wishlistController.deleteWishlistRecordById);
+router.post('/media/:mediaId', wishlistController.getRecordsByMediaIdAndNotify);
 
 module.exports = router;

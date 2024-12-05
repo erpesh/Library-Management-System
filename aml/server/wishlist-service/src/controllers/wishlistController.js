@@ -1,5 +1,5 @@
 const WishlistRecord = require('../models/wishlist');
-const { getMediaByIds } = require('../services/inventoryService');
+const { getMediaByIds, getEmailsByUserIds } = require('../services/inventoryService');
 
 // Create a new wishlist record
 exports.createWishlistRecord = (req, res) => {
@@ -98,4 +98,37 @@ exports.deleteWishlistRecordById = async (req, res) => {
         });
 };
 
+exports.getRecordsByMediaIdAndNotify = async (req, res) => {
+    try {
+        const wishlistRecords = await WishlistRecord.find({ mediaId: req.params.mediaId });
 
+        if (!wishlistRecords) {
+            return res.status(200).send({ message: "No wishlist records found for this mediaId." });
+        }
+        
+        const [media] = await getMediaByIds([req.params.mediaId]);
+        
+        const userEmailsMap = await getEmailsByUserIds(wishlistRecords.map(record => record.userId));
+
+        // Add user emails to wishlist records
+        const wishlistRecordsWithEmails = wishlistRecords.map(record => {
+            return {
+                ...record.toObject(),
+                email: userEmailsMap[record.userId]
+            };
+        });
+
+        requestObject = {
+            media,
+            wishlistRecords: wishlistRecordsWithEmails
+        }
+
+        console.log('supa request object yo', requestObject);
+
+        res.status(200).send({ message: "Request to Notification Service sent successfully." });
+    } catch (err) {
+        res.status(500).send({
+            message: err.message || "An error occurred while retrieving the wishlist records."
+        });
+    }
+};

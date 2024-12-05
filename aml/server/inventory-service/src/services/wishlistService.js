@@ -14,6 +14,17 @@ const getWishlistRecord = async (userId, mediaId) => {
     }
 };
 
+const getWishlistRecordsByMediaIdAndNotify = async (mediaId) => {
+    try {
+        const response = await wishlistApi.post(`/media/${mediaId}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 module.exports = {
     getWishlistRecord,
+    getWishlistRecordsByMediaIdAndNotify
 };
