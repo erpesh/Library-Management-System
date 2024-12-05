@@ -6,9 +6,10 @@ const axiosApi = axios.create({
     baseURL: NOTIFICATION_SERVICE_URL,
 });
 
-const sendWishlistNotification = async (ids) => {
+const sendWishlistNotification = async (requestObject) => {
     try {
-        const response = await axiosApi.post(`/?perPage=100&ids=${ids.join(',')}`);
+        const response = await axiosApi.post(`/send-wishlist`, requestObject);
+        return response.data;
     } catch (error) {
         console.error('Error fetching inventory:', error);
         throw error;
@@ -16,5 +17,5 @@ const sendWishlistNotification = async (ids) => {
 };
 
 module.exports = {
-    getMediaByIds,
+    sendWishlistNotification,
 };

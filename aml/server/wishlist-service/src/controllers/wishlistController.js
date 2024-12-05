@@ -1,5 +1,6 @@
 const WishlistRecord = require('../models/wishlist');
 const { getMediaByIds, getEmailsByUserIds } = require('../services/inventoryService');
+const { sendWishlistNotification } = require('../services/notificationService');
 
 // Create a new wishlist record
 exports.createWishlistRecord = (req, res) => {
@@ -123,7 +124,8 @@ exports.getRecordsByMediaIdAndNotify = async (req, res) => {
             wishlistRecords: wishlistRecordsWithEmails
         }
 
-        console.log('supa request object yo', requestObject);
+        // Call the notification service to send the wishlist notification
+        await sendWishlistNotification(requestObject);
 
         res.status(200).send({ message: "Request to Notification Service sent successfully." });
     } catch (err) {
