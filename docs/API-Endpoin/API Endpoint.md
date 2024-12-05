@@ -283,4 +283,99 @@ This `POST` endpoint is used for returning media.
 }
 
 ```
+# Media Service API Documentation
 
+## 1. Return Media
+
+### Endpoint
+**POST** `/api/media/user/:userID/record/:id/return`
+
+### Description
+Allows a user to return a borrowed media item. This endpoint updates the borrowing record to mark the item as returned.
+
+### Headers
+| Header        | Required | Description                      |
+|---------------|----------|----------------------------------|
+| Authorization | Yes      | Bearer token for authentication. |
+
+### Path Parameters
+| Parameter | Type   | Required | Description                                      |
+|-----------|--------|----------|--------------------------------------------------|
+| userID    | string | Yes      | The unique ID of the user returning the media.   |
+| id        | string | Yes      | The unique ID of the borrowing record associated with the media item. |
+
+### Request Body
+No additional request body is required for this endpoint.
+
+### Responses
+
+#### Success
+**Status: 200 OK**
+
+**Body:**
+```json
+{
+  "message": "Media returned successfully"
+}
+
+## 1. Return Media
+
+### Endpoint
+**POST** `/api/media/user/:userID/record/:id/return`
+
+### Description
+Allows a user to return a borrowed media item. This endpoint updates the borrowing record to mark the item as returned.
+
+### Headers
+| Header        | Required | Description                      |
+|---------------|----------|----------------------------------|
+| Authorization | Yes      | Bearer token for authentication. |
+
+### Path Parameters
+| Parameter | Type   | Required | Description                                      |
+|-----------|--------|----------|--------------------------------------------------|
+| userID    | string | Yes      | The unique ID of the user returning the media.   |
+| id        | string | Yes      | The unique ID of the borrowing record associated with the media item. |
+
+### Request Body
+No additional request body is required for this endpoint.
+
+### Responses
+
+#### Success
+**Status: 200 OK**
+
+**Body:**
+```json
+{
+  "message": "Media returned successfully"
+}
+
+## 2. Renew Media
+
+### Endpoint
+**POST** `/api/media/user/:userID/record/:id/renew`
+
+### Description
+Allows a user to renew the borrowing period for a media item by updating the return date in the borrowing record.
+
+### Headers
+| Header        | Required | Description                      |
+|---------------|----------|----------------------------------|
+| Authorization | Yes      | Bearer token for authentication. |
+| Content-Type  | Yes      | Must be application/json.        |
+
+### Path Parameters
+| Parameter | Type   | Required | Description                                      |
+|-----------|--------|----------|--------------------------------------------------|
+| userID    | string | Yes      | The unique ID of the user renewing the media.    |
+| id        | string | Yes      | The unique ID of the borrowing record associated with the media item. |
+
+### Request Body
+The request body must contain the new return date in ISO 8601 format.
+
+**Example:**
+```json
+{
+  "newReturnDate": "2024-12-30T00:00:00.000Z"
+}
