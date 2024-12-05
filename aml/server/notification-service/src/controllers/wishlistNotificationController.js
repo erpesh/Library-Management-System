@@ -2,15 +2,14 @@ const sendEmail = require('../config/mail-service');
 
 exports.sendWishlistNotificationEndpoint = async (req, res) => {
   const { wishlistRecords, media } = req.body; // Expecting WishlistData from the payload
+
+  if (!media) {
+    console.error(`No media provided in the request body.`);
+    return res.status(400).json({ error: 'No media provided in the request body.' });
+  }
+
   try {
     for (const record of wishlistRecords) {
-      const mediaDetails = media.find(item => item._id === record.mediaId);
-
-      if (!mediaDetails) {
-        console.error(`Media with ID ${record.mediaId} not found for record ${record._id}`);
-        continue; // Skip sending email for this record
-      }
-
       const emailContent = `
         <!DOCTYPE html>
         <html lang="en">
@@ -117,10 +116,10 @@ exports.sendWishlistNotificationEndpoint = async (req, res) => {
                         <div class="media-card">
                             <div class="media-details">
                                 <div class="media-info">
-                                    <h2 class="media-title">${mediaDetails.title}</h2>
-                                    <p><strong>Media Type:</strong> ${mediaDetails.mediaType}</p>
-                                    <p><strong>Genre:</strong> ${mediaDetails.genre}</p>
-                                    <img src="${mediaDetails.imageUrl}" alt="${mediaDetails.title}" class="media-image" />
+                                    <h2 class="media-title">${media.title}</h2>
+                                    <p><strong>Media Type:</strong> ${media.mediaType}</p>
+                                    <p><strong>Genre:</strong> ${media.genre}</p>
+                                    <img src="${media.imageUrl}" alt="${media.title}" class="media-image" />
                                     <a href="${process.env.CLIENT_URL}/media/${record.mediaId}" class="button">View Media Details</a>
                                 </div>
                             </div>
