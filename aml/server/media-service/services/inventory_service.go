@@ -101,3 +101,31 @@ func GetMediaByIds(mediaIDs []primitive.ObjectID) ([]models.Media, error) {
 	fmt.Println("Response", response)
 	return response.MediaItems, nil
 }
+
+func GetEmailsByUserIds(userIDs []primitive.ObjectID) (map[string]string, error) {
+	var userIDStrings []string
+	for _, id := range userIDs {
+		userIDStrings = append(userIDStrings, id.Hex())
+	}
+
+	idsQuery := strings.Join(userIDStrings, ",")
+	requestURL := fmt.Sprintf("%s/emails?userIds=%s", BaseURL, url.QueryEscape(idsQuery))
+	fmt.Println("Request URL: ", requestURL)
+
+	resp, err := http.Get(requestURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to make GET request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to get emails by user IDs, status code: %d", resp.StatusCode)
+	}
+
+	var response map[string]string
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %v", err)
+	}
+
+	return response, nil
+}
