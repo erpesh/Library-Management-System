@@ -21,24 +21,33 @@
 }
 ```
 
-## Example API Endpoint
+## API Endpoints
 
-This example shows a `POST` endpoint for creating a new user in a system.  
-**Endpoint**: POST /api/users  
-**Description**: Creates a new user in the system.
+This `POST` endpoint is used for adding new media.  
+**Endpoint**: POST /api/inventory  
+**Description**: Add a new media to the inventory database.
 
 **Headers**:
 
-- `Authorization`: Bearer [token] (required)
 - `Content-Type`: application/json
 
 **Request Body**:
 
 ```json
 {
-  "username": "exampleUser", 
-  "email": "user@example.com", 
-  "password": "securePassword123" 
+  "title": "The Great Gatsby",
+  "mediaType": "book",
+  "genre": "Classic",
+  "releaseDate": "1925-04-10T00:00:00.000Z",
+  "stock": 5,
+  "description": "A novel written by American author F. Scott Fitzgerald.",
+  "imageUrl": "https://example.com/greatgatsby.jpg",
+  "borrowed": 2,
+  "author": "F. Scott Fitzgerald",
+  "publisher": "Charles Scribner's Sons",
+  "platform": null,
+  "artist": null,
+  "createdAt": "2024-12-05T00:00:00.000Z"
 }
 ```
 
@@ -49,7 +58,20 @@ This example shows a `POST` endpoint for creating a new user in a system.
 
 ```json
 {
-  "id": "12345", 
-  "created_at": "2024-11-04T14:00:00z" 
+  "_id": "218749yh2f189dy1hd",
+  "title": "The Great Gatsby",
+  "mediaType": "book",
+  "genre": "Classic",
+  "releaseDate": "1925-04-10T00:00:00.000Z",
+  "stock": 5,
+  "description": "A novel written by American author F. Scott Fitzgerald.",
+  "imageUrl": "https://example.com/greatgatsby.jpg",
+  "borrowed": 2,
+  "author": "F. Scott Fitzgerald",
+  "publisher": "Charles Scribner's Sons",
+  "platform": null,
+  "artist": null,
+  "createdAt": "2024-12-05T00:00:00.000Z"
 }
+
 ```
