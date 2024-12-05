@@ -1,7 +1,7 @@
 const sendEmail = require('../config/mail-service'); 
 
-exports.sendWishlistNotificationEndpoint = async (req, res) => {
-  const { wishlistRecords, media } = req.body; // Expecting WishlistData from the payload
+exports.sendWishlistNotification = async (req, res) => {
+  const { wishlistRecords, media } = req.body;
 
   if (!media) {
     console.error(`No media provided in the request body.`);

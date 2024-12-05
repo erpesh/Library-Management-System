@@ -1,26 +1,31 @@
-const Borrowingrecords = require('../controllers/Borrowingrecords');
 const sendEmail = require('../config/mail-service');
 
-const getBorrowingRecord = (userId) => {
-  return Borrowingrecords.find(record => record.userID === userId);
-};
+exports.sendReturnNotification = async (req, res) => {
+  const { borrowingRecords, media } = req.body;
 
-const remindUserToReturnBook = async (userId) => {
-  const record = getBorrowingRecord(userId);
+  console.log('Received request to send return reminders:', borrowingRecords);
+  console.log('Media yo:', media);
 
-  if (record) {
-    const today = new Date();
-    const returnDate = new Date(record.returnAt);
-    const daysLeft = Math.ceil((returnDate - today) / (1000 * 60 * 60 * 24));
+  if (!media || !borrowingRecords || borrowingRecords.length === 0) {
+    console.error(`Invalid request body. Either media or borrowing records are missing.`);
+    return res.status(400).json({ error: 'Invalid request body.' });
+  }
 
-    if (daysLeft <= 7) {
+  try {
+    for (const record of borrowingRecords) {
+      if (!record.UserEmail || !record.ReturnAt) {
+        console.warn(`Skipping record with missing email or return date.`);
+        continue;
+      }
+
+    const returnDate = new Date(record.ReturnAt * 1000).toLocaleDateString('en-GB');
       const emailContent = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Media Return Reminder</title>
+            <title>Return Reminder</title>
             <style>
                 body {
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -29,14 +34,6 @@ const remindUserToReturnBook = async (userId) => {
                     background-color: #ffffff;
                     margin: 0;
                     padding: 20px;
-                }
-                li {
-                     list-style-type: none; 
-                    }
-
-                li a {
-                    color: white;
-                    text-decoration: none; /* Remove underline from links */
                 }
                 .container {
                     max-width: 42rem;
@@ -73,18 +70,12 @@ const remindUserToReturnBook = async (userId) => {
                     padding: 1rem;
                     margin-top: 1rem;
                     margin-bottom: 1.5rem;
+                    text-align: center;
                 }
                 .media-details {
                     display: flex;
                     flex-direction: column;
                     gap: 1rem;
-                }
-                .media-image {
-                    width: 150px;
-                    height: 200px;
-                    object-fit: cover;
-                    border-radius: 0.375rem;
-                    margin-right: 1rem;
                 }
                 .media-info {
                     flex: 1;
@@ -94,6 +85,11 @@ const remindUserToReturnBook = async (userId) => {
                     font-weight: 600;
                     margin-top: 0;
                     margin-bottom: 0.5rem;
+                }
+                .media-image {
+                    max-width: 100%;
+                    border-radius: 0.375rem;
+                    margin-top: 10px;
                 }
                 .button {
                     display: inline-block;
@@ -106,10 +102,6 @@ const remindUserToReturnBook = async (userId) => {
                     text-align: center;
                     margin-top: 1rem;
                 }
-                .due-date {
-                    color: #dc2626;
-                    font-weight: bold;
-                }
                 .card-footer {
                     background-color: #f1f5f9;
                     color: #64748b;
@@ -118,11 +110,6 @@ const remindUserToReturnBook = async (userId) => {
                     padding: 1rem;
                     margin-top: 20px;
                     border-radius: 0 0 0.5rem 0.5rem;
-                }
-                @media (min-width: 768px) {
-                    .media-details {
-                        flex-direction: row;
-                    }
                 }
             </style>
         </head>
@@ -133,29 +120,26 @@ const remindUserToReturnBook = async (userId) => {
                         <h1 class="card-title">Media Return Reminder</h1>
                     </div>
                     <div class="card-content">
-                        <p>Dear Valued Library Member,</p>
-                        <p>This is a friendly reminder that the following item is due for return soon:</p>
-                        
+                        <p>Dear Library Member,</p>
+                        <p>This is a friendly reminder that the media item you borrowed is due for return soon:</p>
                         <div class="media-card">
                             <div class="media-details">
-                                <img src="https://placeholder.com/150x200" alt="Media Cover" class="media-image">
                                 <div class="media-info">
-                                    <h2 class="media-title">Media ID: ${record.mediaID}</h2>
-                                    <p><strong>Type:</strong> Media</p>
-                                    <p><strong>Due Date:</strong> <span class="due-date">${returnDate.toISOString().split('T')[0]}</span></p>
-                                    <a href="${process.env.CLIENT_URL}/media/${record.mediaID}" class="button">Return Media Now</a>
+                                    <h2 class="media-title">${media.title}</h2>
+                                    <p><strong>Media Type:</strong> ${media.mediaType}</p>
+                                    <p><strong>Genre:</strong> ${media.genre}</p>
+                                    <img src="${media.imageUrl}" alt="${media.title}" class="media-image" />
+                                    <a href="${process.env.CLIENT_URL}/media/${media._id}" class="button">View Media Details</a>
                                 </div>
                             </div>
                         </div>
-                        
-                        <p>Please ensure that you return this item by the due date to avoid any late fees. If you need an extension, please contact our library staff.</p>
-                        
+                        <p><strong>Return Date:</strong> ${returnDate}</p>
+                        <p>Please ensure you return the item by this date to avoid any late fees.</p>
                         <p>Thank you for using our library services!</p>
-                        
                         <p>Best regards,<br>Cantor Library Team</p>
                     </div>
                     <div class="card-footer">
-                        <p>If you have any questions, please contact us at library@example.com or call (123) 456-7890.</p>
+                        <p>If you have any questions, please contact us at cantorlibrarynotification@gmail.com or call (+44) 0114 273 4727.</p>
                         <p>&copy; 2024 Cantor Library. All rights reserved.</p>
                     </div>
                 </div>
@@ -164,19 +148,18 @@ const remindUserToReturnBook = async (userId) => {
         </html>
       `;
 
-      try {
-        await sendEmail('farshad389@gmail.com', 'Media Return Reminder', emailContent);
-      } catch (error) {
-        console.error('Failed to send reminder email:', error);
-      }
-  }
-}};
+      // Send the email reminder
+      await sendEmail(
+        record.UserEmail,
+        'Reminder: Media Return Due Soon',
+        emailContent
+      );
+    }
 
-exports.sendReturnNotification = async (req, res) => {
-  try {
-    await remindUserToReturnBook(req.body.userId);
-    res.status(201).json({ message: 'Return notification sent successfully' });
+    // Respond with a success message
+    res.status(200).json({ message: 'Return reminders sent for all borrowing records.' });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error sending return reminder emails:', error);
+    res.status(500).json({ error: 'Failed to send return reminders.' });
   }
 };
