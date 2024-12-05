@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Media } from '@/lib/types'
 import MediaIcon from '@/components/media-icon'
-import {formatUnixTimestampToFullDate} from '@/lib/utils';
+import { formatUnixTimestampToFullDate } from '@/lib/utils';
 import { RenewButton } from '@/components/renew-media-button'
 import { ReturnButton } from '@/components/return-media-button'
 
@@ -53,8 +53,16 @@ export function BorrowingHistoryList({ media }: BorrowingHistoryListProps) {
                     Borrowed on: {formatUnixTimestampToFullDate(item.borrowingRecord!.BorrowedAt)}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {item.borrowingRecord!.ReturnedAt ? 'Returned on: ' : 'Due on: '}
-                    {formatUnixTimestampToFullDate(item.borrowingRecord!.ReturnAt)}
+                    {item.borrowingRecord!.ReturnedAt ?
+                      <>
+                        Returned on:{' '}
+                        {formatUnixTimestampToFullDate(item.borrowingRecord!.ReturnedAt)}
+                      </>
+                      :
+                      <>
+                        Due on:{' '}
+                        {formatUnixTimestampToFullDate(item.borrowingRecord!.ReturnAt)}
+                      </>}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2">
