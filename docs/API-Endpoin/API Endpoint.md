@@ -281,9 +281,10 @@ This `POST` endpoint is used for returning media.
 {
  message: 'Media returned successfully' 
 }
-
 ```
-# Media Service API Documentation
+
+
+## API Endpoints - Media Service
 
 ## 1. Return Media
 
@@ -317,39 +318,43 @@ No additional request body is required for this endpoint.
 {
   "message": "Media returned successfully"
 }
+```
+### Error Responses
 
-## 1. Return Media
-
-### Endpoint
-**POST** `/api/media/user/:userID/record/:id/return`
-
-### Description
-Allows a user to return a borrowed media item. This endpoint updates the borrowing record to mark the item as returned.
-
-### Headers
-| Header        | Required | Description                      |
-|---------------|----------|----------------------------------|
-| Authorization | Yes      | Bearer token for authentication. |
-
-### Path Parameters
-| Parameter | Type   | Required | Description                                      |
-|-----------|--------|----------|--------------------------------------------------|
-| userID    | string | Yes      | The unique ID of the user returning the media.   |
-| id        | string | Yes      | The unique ID of the borrowing record associated with the media item. |
-
-### Request Body
-No additional request body is required for this endpoint.
-
-### Responses
-
-#### Success
-**Status: 200 OK**
-
-**Body:**
+#### General Errors
+#### 400 Bad Request
 ```json
 {
-  "message": "Media returned successfully"
+  "error": "Missing required fields."
 }
+```
+### 401 Unauthorized**
+  ```json
+  {
+    "error": "Authentication required."
+  }
+```
+#### 404 Not Found
+
+```json
+{
+  "error": "Resource not found."
+}
+```
+#### 409 Conflict
+
+```json
+{
+  "error": "Media is currently unavailable."
+}
+```
+#### 500 Internal Server Error
+
+```json
+{
+  "error": "An error occurred while renewing the media."
+}
+```
 
 ## 2. Renew Media
 
@@ -372,10 +377,48 @@ Allows a user to renew the borrowing period for a media item by updating the ret
 | id        | string | Yes      | The unique ID of the borrowing record associated with the media item. |
 
 ### Request Body
-The request body must contain the new return date in ISO 8601 format.
+The request body must contain the new return date in hex format.
 
 **Example:**
 ```json
 {
-  "newReturnDate": "2024-12-30T00:00:00.000Z"
+  "newReturnDate": "6751B2D3"
 }
+```
+
+#### Success
+**Status: 200 OK**
+
+**Body:**
+```json
+{
+  "message": "Media renewed successfully"
+}
+```
+
+### Error Responses
+#### 400 Bad Request
+```json
+{
+  "error": "newReturnDate is required."
+}
+```
+### 401 Unauthorized
+```json
+{
+  "error": "Authentication required."
+}
+
+```
+### 422 Unprocessable Entity
+```json
+{
+  "error": "Invalid record ID or user ID."
+}
+```
+### 500 Internal Server Error
+```json
+{
+  "error": "An error occurred while renewing the media."
+}
+```
