@@ -3,33 +3,33 @@
 ## Table of Contents
 
 ### Inventory API
-- [POST - /api/inventory](#post-api-inventory)
-- [GET - /api/inventory](#get-api-inventory)
-- [GET - /api/inventory/:id](#get-api-inventoryid)
-- [PUT - /api/inventory/:id](#put-api-inventoryid)
-- [DELETE - /api/inventory/:id](#delete-api-inventoryid)
-- [GET - /api/inventory/:id/available](#get-api-inventoryidavailable)
-- [POST - /api/inventory/:id/borrow](#post-api-inventoryidborrow)
-- [POST - /api/inventory/:id/return](#post-api-inventoryidreturn)
+- [POST - /api/inventory](#post---apiinventory)
+- [GET - /api/inventory](#get---apiinventory)
+- [GET - /api/inventory/:id](#get---apiinventoryid)
+- [PUT - /api/inventory/:id](#put---apiinventoryid)
+- [DELETE - /api/inventory/:id](#delete---apiinventoryid)
+- [GET - /api/inventory/:id/available](#get---apiinventoryidavailable)
+- [POST - /api/inventory/:id/borrow](#post---apiinventoryidborrow)
+- [POST - /api/inventory/:id/return](#post---apiinventoryidreturn)
 
 ### Media API
-- [POST - /api/media/notify/:mediaID](#post-api-medianotifymediaid)
-- [POST - /api/media/user/:userID/media/:mediaID](#post-api-mediausermediaidmediaid)
-- [GET - /api/media/user/:userID/](#get-api-mediauseruserid)
-- [POST - /api/media/user/:userID/record/:id/return](#post-api-mediauseruseridrecordidreturn)
-- [POST - /api/media/user/:userID/record/:id/renew](#post-api-mediauseruseridrecordidrenew)
-- [GET - /api/media/user/:userID/media/:mediaID](#get-api-mediauseruseridmediaid)
+- [POST - /api/media/notify/:mediaID](#post---apimedianotifymediaid)
+- [POST - /api/media/user/:userID/media/:mediaID](#post---apimediauseruseridmediamediaid)
+- [GET - /api/media/user/:userID/](#get---apimediauseruserid)
+- [POST - /api/media/user/:userID/record/:id/return](#post---apimediauseruseridrecordidreturn)
+- [POST - /api/media/user/:userID/record/:id/renew](#post---apimediauseruseridrecordidrenew)
+- [GET - /api/media/user/:userID/media/:mediaID](#get---apimediauseruseridmediamediaid)
 
 ### Wishlist API
-- [GET - /api/wishlst/user/:userId/media/:mediaId](#get-api-wishlstuseruseridmediaid)
-- [POST - /api/wishlst/user/:userId/media/:mediaId](#post-api-wishlstuseruseridmediaid)
-- [GET - /api/wishlst/user/:userId](#get-api-wishlstuseruserid)
-- [DELETE - /api/wishlst/user/:userId/record/:id](#delete-api-wishlstuseruseridrecordid)
-- [POST - /api/wishlst/media/:mediaId](#post-api-wishlstmediamediaid)
+- [GET - /api/wishlist/user/:userId/media/:mediaId](#get---apiwishlistuseruseridmediamediaid)
+- [POST - /api/wishlist/user/:userId/media/:mediaId](#post---apiwishlistuseruseridmediamediaid)
+- [GET - /api/wishlist/user/:userId](#get---apiwishlistuseruserid)
+- [DELETE - /api/wishlist/user/:userId/record/:id](#delete---apiwishlistuseruseridrecordid)
+- [POST - /api/wishlist/media/:mediaId](#post---apiwishlistmediamediaid)
 
 ### Notification API
-- [POST - /api/notification/send-wishlist](#post-api-notificationsend-wishlist)
-- [POST - /api/notification/send-return](#post-api-notificationsend-return)
+- [POST - /api/notification/send-wishlist](#post---apinotificationsend-wishlist)
+- [POST - /api/notification/send-return](#post---apinotificationsend-return)
 
 ---
 
@@ -437,7 +437,7 @@
 ---
 ## API Endpoints - Wishlist Service
 
-### **GET** - `/api/wishlst/user/:userId/media/:mediaId`
+### **GET** - `/api/wishlist/user/:userId/media/:mediaId`
 **Description**: Gets a wishlist record by the specified user ID and media ID. It's used only internally by Inventory Service.
 
 **Headers**:
@@ -459,7 +459,7 @@
 }
 ```
 ---
-### **POST** - `/api/wishlst/user/:userId/media/:mediaId`
+### **POST** - `/api/wishlist/user/:userId/media/:mediaId`
 **Description**: Creates a wishlist record for the specified user ID and media ID
 
 **Headers**:
@@ -481,7 +481,7 @@
 }
 ```
 ---
-### **GET** - `/api/wishlst/user/:userId`
+### **GET** - `/api/wishlist/user/:userId`
 **Description**: Gets all wishlist records by the specified user ID
 
 **Headers**:
@@ -506,7 +506,7 @@
 ```
 
 ---
-### **DELETE** - `/api/wishlst/user/:userId/record/:id`
+### **DELETE** - `/api/wishlist/user/:userId/record/:id`
 **Description**: Deletes a wishlist record by the specified record id.
 
 **Headers**:
@@ -526,7 +526,7 @@
 ```
 
 ---
-### **POST** - `/api/wishlst/media/:mediaId`
+### **POST** - `/api/wishlist/media/:mediaId`
 **Description**: Gets all records by the specified media ID and makes a request to Notification Service to send emails about media availability.
 
 **Headers**:
