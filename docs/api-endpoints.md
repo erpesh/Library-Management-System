@@ -288,6 +288,8 @@
 - `mediaID` (path parameter): The ID of the media to notify users about.
 
 **Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "message": "Return notifications sent successfully"
@@ -314,6 +316,8 @@
 ```
 
 **Response**:
+- **Status**: 201 Created
+- **Body**:
 ```json
 {
   "message": "Media borrowed successfully"
@@ -332,6 +336,8 @@
 - `userID` (path parameter): The ID of the user whose borrowing records are being retrieved.
 
 **Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 [
   {
@@ -363,6 +369,8 @@
 - `id` (path parameter): The ID of the borrowing record.
 
 **Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "message": "Media returned successfully",
@@ -383,6 +391,8 @@
 - `id` (path parameter): The ID of the borrowing record.
 
 **Request Body**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "newReturnDate": 1700100000
@@ -409,6 +419,8 @@
 - `mediaID` (path parameter): The ID of the media.
 
 **Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "isBorrowed": true,
@@ -436,6 +448,8 @@
 - `mediaId` (path parameter): The ID of the media.
 
 **Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "_id": "78fhasfhkjh124kj",
@@ -456,6 +470,8 @@
 - `mediaId` (path parameter): The ID of the media.
 
 **Response**:
+- **Status**: 201 Created
+- **Body**:
 ```json
 {
   "_id": "78fhasfhkjh124kj",
@@ -475,6 +491,8 @@
 - `userId` (path parameter): The ID of the user.
 
 **Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 [
   {
@@ -499,6 +517,8 @@
 - `id` (path parameter): The ID of the wishlist record.
 
 **Response**:
+- **Status**: 204 No-Content
+- **Body**:
 ```json
 {
   "message": "Wishlist record deleted successfully."
@@ -516,6 +536,8 @@
 - `mediaId` (path parameter): The ID of the media.
 
 **Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "message": "Request to Notification Service sent successfully."
@@ -547,6 +569,8 @@
 ```
 
 **Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "message": "Emails sent for all wishlist records."
@@ -578,6 +602,8 @@
 ```
 
 **Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "message": "Emails sent for all wishlist records."
