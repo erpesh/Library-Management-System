@@ -1,4 +1,4 @@
-# API Endpoint 
+# API Documentation
 
 ## Table of Contents
 
@@ -11,6 +11,7 @@
 - [GET - /api/inventory/:id/available](#get-api-inventoryidavailable)
 - [POST - /api/inventory/:id/borrow](#post-api-inventoryidborrow)
 - [POST - /api/inventory/:id/return](#post-api-inventoryidreturn)
+
 ### Media API
 - [POST - /api/media/notify/:mediaID](#post-api-medianotifymediaid)
 - [POST - /api/media/user/:userID/media/:mediaID](#post-api-mediausermediaidmediaid)
@@ -18,19 +19,31 @@
 - [POST - /api/media/user/:userID/record/:id/return](#post-api-mediauseruseridrecordidreturn)
 - [POST - /api/media/user/:userID/record/:id/renew](#post-api-mediauseruseridrecordidrenew)
 - [GET - /api/media/user/:userID/media/:mediaID](#get-api-mediauseruseridmediaid)
+
+### Wishlist API
+- [GET - /api/wishlst/user/:userId/media/:mediaId](#get-api-wishlstuseruseridmediaid)
+- [POST - /api/wishlst/user/:userId/media/:mediaId](#post-api-wishlstuseruseridmediaid)
+- [GET - /api/wishlst/user/:userId](#get-api-wishlstuseruserid)
+- [DELETE - /api/wishlst/user/:userId/record/:id](#delete-api-wishlstuseruseridrecordid)
+- [POST - /api/wishlst/media/:mediaId](#post-api-wishlstmediamediaid)
+
+### Notification API
+- [POST - /api/notification/send-wishlist](#post-api-notificationsend-wishlist)
+- [POST - /api/notification/send-return](#post-api-notificationsend-return)
+
 ---
 
-## API Endpoints - Inventory API
+## API Endpoints
 
-**Endpoint**: `POST` - `/api/inventory` 
+### Inventory API
+
+#### **POST** - `/api/inventory`
 **Description**: Adds a new media to the inventory database.
 
 **Headers**:
-
 - `Content-Type`: application/json
 
 **Request Body**:
-
 ```json
 {
   "title": "The Great Gatsby",
@@ -49,11 +62,9 @@
 }
 ```
 
-***Response***:
-
-- Status: 201 Created
-- Body:
-
+**Response**:
+- **Status**: 201 Created
+- **Body**:
 ```json
 {
   "_id": "218749yh2f189dy1hd",
@@ -72,20 +83,18 @@
   "createdAt": "2024-12-05T00:00:00.000Z"
 }
 ```
+
 ---
 
-**Endpoint**: `GET` - `/api/inventory`
-**Description**: Gets media by search params. It includes `page`, `perPage`, `ids`, `title`, `genre`, etc. 
+#### **GET** - `/api/inventory`
+**Description**: Gets media by search parameters. Includes pagination and filters.
 
 **Headers**:
-
 - `Content-Type`: application/json
 
-***Response***:
-
-- Status: 200 OK
-- Body:
-
+**Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 [
   {
@@ -106,23 +115,21 @@
   }
 ]
 ```
+
 ---
 
-**Endpoint**: `GET` - `/api/inventory/:id`
-**Description**: Gets media by id.
+#### **GET** - `/api/inventory/:id`
+**Description**: Gets media by ID.
 
 **Headers**:
 - `Content-Type`: application/json
 
 **Request Parameters**:
-- `id` (path parameter): The ID of the media.
+- `id`: The ID of the media.
 
-
-***Response***:
-
-- Status: 200 OK
-- Body:
-
+**Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "_id": "218749yh2f189dy1hd",
@@ -141,19 +148,19 @@
   "createdAt": "2024-12-05T00:00:00.000Z"
 }
 ```
+
 ---
 
-**Endpoint**: `PUT` - `/api/inventory/:id`
-**Description**: Updates an existing media by id.
+#### **PUT** - `/api/inventory/:id`
+**Description**: Updates media details by ID.
 
 **Headers**:
 - `Content-Type`: application/json
 
 **Request Parameters**:
-- `id` (path parameter): The ID of the media.
+- `id`: The ID of the media.
 
 **Request Body**:
-
 ```json
 {
   "title": "The Great Gatsby",
@@ -172,11 +179,9 @@
 }
 ```
 
-***Response***:
-
-- Status: 200 OK
-- Body:
-
+**Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "title": "The Great Gatsby",
@@ -194,36 +199,35 @@
   "createdAt": "2024-12-05T00:00:00.000Z"
 }
 ```
+
 ---
 
-**Endpoint**: `DELETE` - `/api/inventory/:id` 
-**Description**: Deletes an existing media by id.
+#### **DELETE** - `/api/inventory/:id`
+**Description**: Deletes media by ID.
 
 **Headers**:
 - `Content-Type`: application/json
 
 **Request Parameters**:
-- `id` (path parameter): The ID of the media.
+- `id`: The ID of the media.
 
-***Response***:
+**Response**:
+- **Status**: 204 No Content
 
-- Status: 204 No Content
 ---
 
-**Endpoint**: `GET` - `/api/inventory/:id/available`
-**Description**: Checking availability of the media.
+#### **GET** - `/api/inventory/:id/available`
+**Description**: Checks availability of the media.
 
 **Headers**:
 - `Content-Type`: application/json
 
 **Request Parameters**:
-- `id` (path parameter): The ID of the media.
+- `id`: The ID of the media.
 
-***Response***:
-
-- Status: 200 OK
-- Body:
-
+**Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
   "available": true
@@ -232,49 +236,47 @@
 
 ---
 
-**Endpoint**: `POST` - `/api/inventory/:id/borrow`
-**Description**: Increments 'borrowed' count for the specified media. It's used only internally by Media Service.
+#### **POST** - `/api/inventory/:id/borrow`
+**Description**: Marks the media as borrowed. Internal use only.
 
 **Headers**:
 - `Content-Type`: application/json
 
 **Request Parameters**:
-- `id` (path parameter): The ID of the media.
+- `id`: The ID of the media.
 
-***Response***:
-
-- Status: 200 OK
-- Body:
-
+**Response**:
+- **Status**: 200 OK
+- **Body**:
 ```json
 {
-  "message": "Media borrowed successfully" 
-}
-```  
----
-
-**Endpoint**: `POST` - `/api/inventory/:id/return`  
-**Description**: Decrements 'borrowed' count for the specified media. It's used only internally by Media Service.
-
-**Headers**:
-- `Content-Type`: application/json
-
-**Request Parameters**:
-- `id` (path parameter): The ID of the media.
-
-***Response***:
-
-- Status: 200 OK
-- Body:
-
-```json
-{
-  "message": "Media borrowed successfully" 
+  "message": "Media borrowed successfully"
 }
 ```
+
 ---
 
-## API Endpoints - Media API
+#### **POST** - `/api/inventory/:id/return`
+**Description**: Marks the media as returned. Internal use only.
+
+**Headers**:
+- `Content-Type`: application/json
+
+**Request Parameters**:
+- `id`: The ID of the media.
+
+**Response**:
+- **Status**: 200 OK
+- **Body**:
+```json
+{
+  "message": "Media returned successfully"
+}
+```
+
+---
+
+## API Endpoints - Media Service
 
 ### **POST** - `/api/media/notify/:mediaID`
 **Description**: Notifies users to return the specified media.
@@ -418,5 +420,166 @@
     "returnAt": 1700002000,
     "returnedAt": null
   }
+}
+```
+---
+## API Endpoints - Wishlist Service
+
+### **GET** - `/api/wishlst/user/:userId/media/:mediaId`
+**Description**: Gets a wishlist record by the specified user ID and media ID. It's used only internally by Inventory Service.
+
+**Headers**:
+- `Content-Type`: application/json
+
+**Request Parameters**:
+- `userId` (path parameter): The ID of the user.
+- `mediaId` (path parameter): The ID of the media.
+
+**Response**:
+```json
+{
+  "_id": "78fhasfhkjh124kj",
+  "userId": "2gfhasfhkjh124kj",
+  "mediaId": "kjhfg823hhf7hj8v",
+  "createdAt": "2024-12-05T00:00:00.000Z"
+}
+```
+---
+### **POST** - `/api/wishlst/user/:userId/media/:mediaId`
+**Description**: Creates a wishlist record for the specified user ID and media ID
+
+**Headers**:
+- `Content-Type`: application/json
+
+**Request Parameters**:
+- `userId` (path parameter): The ID of the user.
+- `mediaId` (path parameter): The ID of the media.
+
+**Response**:
+```json
+{
+  "_id": "78fhasfhkjh124kj",
+  "userId": "2gfhasfhkjh124kj",
+  "mediaId": "kjhfg823hhf7hj8v",
+  "createdAt": "2024-12-05T00:00:00.000Z"
+}
+```
+---
+### **GET** - `/api/wishlst/user/:userId`
+**Description**: Gets all wishlist records by the specified user ID
+
+**Headers**:
+- `Content-Type`: application/json
+
+**Request Parameters**:
+- `userId` (path parameter): The ID of the user.
+
+**Response**:
+```json
+[
+  {
+  "_id": "78fhasfhkjh124kj",
+  "userId": "2gfhasfhkjh124kj",
+  "mediaId": "kjhfg823hhf7hj8v",
+  "createdAt": "2024-12-05T00:00:00.000Z",
+  "media": {...}
+  }
+]
+```
+
+---
+### **DELETE** - `/api/wishlst/user/:userId/record/:id`
+**Description**: Deletes a wishlist record by the specified record id.
+
+**Headers**:
+- `Content-Type`: application/json
+
+**Request Parameters**:
+- `userId` (path parameter): The ID of the user.
+- `id` (path parameter): The ID of the wishlist record.
+
+**Response**:
+```json
+{
+  "message": "Wishlist record deleted successfully."
+}
+```
+
+---
+### **POST** - `/api/wishlst/media/:mediaId`
+**Description**: Gets all records by the specified media ID and makes a request to Notification Service to send emails about media availability.
+
+**Headers**:
+- `Content-Type`: application/json
+
+**Request Parameters**:
+- `mediaId` (path parameter): The ID of the media.
+
+**Response**:
+```json
+{
+  "message": "Request to Notification Service sent successfully."
+}
+```
+---
+## API Endpoints - Notification Service
+
+### **POST** - `/api/notification/send-wishlist`
+**Description**: Sends emails to users to notify them that a media object in their wishlist is available now.
+
+**Headers**:
+- `Content-Type`: application/json
+
+**Request Body**:
+```json
+{
+  "media": {...},
+  "wishlistRecords": [
+    {
+      "_id": "78fhasfhkjh124kj",
+      "userId": "2gfhasfhkjh124kj",
+      "mediaId": "kjhfg823hhf7hj8v",
+      "createdAt": "2024-12-05T00:00:00.000Z",
+      "email": "user.email@example.com"
+    }
+  ]
+}
+```
+
+**Response**:
+```json
+{
+  "message": "Emails sent for all wishlist records."
+}
+```
+---
+### **POST** - `/api/notification/send-return`
+**Description**: Sends emails to users to notify them that a media object in their wishlist is available now.
+
+**Headers**:
+- `Content-Type`: application/json
+
+**Request Body**:
+```json
+{
+  "media": {...},
+  "borrowingRecords": [
+    {
+      "_id": "kljk1241244asdgfg",
+      "userId": "asfasfkjlasf12412",
+      "mediaId": "218749yh2f189dy1hd",
+      "borrowedAt": 1700001000,
+      "returnAt": 1700002000,
+      "returnedAt": null,
+      "email": "user.email@example.com"
+    }
+  ]
+}
+```
+
+**Response**:
+```json
+{
+  "message": "Emails sent for all wishlist records."
 }
 ```
