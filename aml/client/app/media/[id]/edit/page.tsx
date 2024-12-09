@@ -5,7 +5,7 @@ import { ChevronRight, Clock, Home, Share2 } from "lucide-react";
 import Link from "next/link";
 import { inventoryApi } from "@/app/api/settings";
 import AddMediaForm from "../../add/page";
-import  DeleteMedia  from "./delete-button";  // Import DeleteMedia component
+import  DeleteMedia  from "./delete-button";
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
@@ -23,15 +23,15 @@ async function getMedia(id: string) {
 export default async function Page({ params }: { params: { id: string } }) {
   const user = await getCurrentUser();
 
-  if (!user || user.role !== "admin") {
+  if (user?.role !== "admin") {
     redirect("/media");
   }
 
   const { id } = params;
-  const mediaItem = await getMedia(id); // Fetch media item
+  const mediaItem = await getMedia(id);
 
   if (!mediaItem) {
-    return <p>Loading...</p>; // Handle loading state
+    return <p>Loading...</p>;
   }
 
   return (
@@ -77,12 +77,12 @@ export default async function Page({ params }: { params: { id: string } }) {
               <div className="space-y-1">
                 <p className="text-lg font-medium">Status</p>
                 <p className="text-sm text-muted-foreground">
-                  {mediaItem.stock > 0
-                    ? `${mediaItem.stock} copies available`
+                  {mediaItem.stock - mediaItem.borrowed > 0
+                    ? `${mediaItem.stock - mediaItem.borrowed} copies available`
                     : "Currently unavailable"}
                 </p>
               </div>
-              <div className="flex items-center text-green-600">
+              <div className={`flex items-center ${mediaItem.stock - mediaItem.borrowed > 0 ? "text-green-600" : "text-red-500"}`}>
                 <Clock className="mr-2 h-4 w-4" />
                 {mediaItem.stock - mediaItem.borrowed}
               </div>

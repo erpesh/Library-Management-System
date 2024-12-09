@@ -110,10 +110,10 @@ export default function ClientPage({ media, userRole }: Props) {
                             <div className="space-y-1">
                                 <p className="text-lg font-medium">Status</p>
                                 <p className="text-sm text-muted-foreground">
-                                    {media.stock > 0 ? `${media.stock} copies available` : "Currently unavailable"}
+                                    {media.stock - media.borrowed > 0 ? `${media.stock - media.borrowed} copies available` : "Currently unavailable"}
                                 </p>
                             </div>
-                            <div className="flex items-center text-green-600">
+                            <div className={`flex items-center ${media.stock - media.borrowed > 0 ? "text-green-600" : "text-red-500"}`}>
                                 <Clock className="mr-2 h-4 w-4" />
                                 {media.stock - media.borrowed}
                             </div>

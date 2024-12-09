@@ -91,7 +91,7 @@ export default function AddMediaForm({ media }: Props) {
   const {data: session} = useSession();
   const router = useRouter();
 
-  if (!session || session.role !== 'admin') {
+  if (!session || session.user?.role !== 'admin') {
     router.push('/media');
   }
 
