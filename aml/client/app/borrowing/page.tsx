@@ -25,7 +25,7 @@ export default async function Page() {
   const media = await getMediaWithBorrowingRecords(user.id);
 
   if (!media) {
-    toast.error('Failed to fetch borrowing history');
+    console.log('Failed to fetch media with borrowing records');
     return
   }
 

@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mediaController = require('../controllers/inventoryController');
+const userController = require('../controllers/usersController');
+
+router.get('/emails', userController.getEmailsByUserIds)
 
 router.post('/', mediaController.createMedia);
 router.get('/', mediaController.getMedia);

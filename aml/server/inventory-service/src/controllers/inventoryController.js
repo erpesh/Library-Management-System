@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Media = require('../models/media');
 const { checkMediaBorrowingStatus } = require('../services/mediaService');
-const { getWishlistRecord } = require('../services/wishlistService');
+const { getWishlistRecord, getWishlistRecordsByMediaIdAndNotify } = require('../services/wishlistService');
 
 exports.createMedia = async (req, res) => {
     try {
@@ -87,13 +87,24 @@ exports.getMediaById = async (req, res) => {
 
 exports.updateMedia = async (req, res) => {
     try {
+        // Fetch the current media object by ID
+        const currentMedia = await Media.findById(req.params.id);
+        if (!currentMedia) return res.status(404).json({ error: 'Media not found' });
+
+        const { stock: currentStock, borrowed: currentBorrowed } = currentMedia;
+
+        // Check if media became available with the update
+        if (currentStock === currentBorrowed && req.body.stock > currentStock) {
+            await getWishlistRecordsByMediaIdAndNotify(req.params.id);
+        }
+
         const updatedMedia = await Media.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedMedia) return res.status(404).json({ error: 'Media not found' });
         res.status(200).json(updatedMedia);
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
 };
+
 
 exports.deleteMedia = async (req, res) => {
     try {

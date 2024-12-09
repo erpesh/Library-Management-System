@@ -1,10 +1,15 @@
-const WishlistRecords = require('./dummyRecords'); 
 const sendEmail = require('../config/mail-service'); 
 
+exports.sendWishlistNotification = async (req, res) => {
+  const { wishlistRecords, media } = req.body;
 
-exports.sendWishlistNotificationEndpoint = async (req, res) => {
+  if (!media) {
+    console.error(`No media provided in the request body.`);
+    return res.status(400).json({ error: 'No media provided in the request body.' });
+  }
+
   try {
-    for (const record of WishlistRecords) {
+    for (const record of wishlistRecords) {
       const emailContent = `
         <!DOCTYPE html>
         <html lang="en">
@@ -56,6 +61,7 @@ exports.sendWishlistNotificationEndpoint = async (req, res) => {
                     padding: 1rem;
                     margin-top: 1rem;
                     margin-bottom: 1.5rem;
+                    text-align: center;
                 }
                 .media-details {
                     display: flex;
@@ -70,6 +76,11 @@ exports.sendWishlistNotificationEndpoint = async (req, res) => {
                     font-weight: 600;
                     margin-top: 0;
                     margin-bottom: 0.5rem;
+                }
+                .media-image {
+                    max-width: 100%;
+                    border-radius: 0.375rem;
+                    margin-top: 10px;
                 }
                 .button {
                     display: inline-block;
@@ -100,21 +111,20 @@ exports.sendWishlistNotificationEndpoint = async (req, res) => {
                         <h1 class="card-title">Media Item Now Available!</h1>
                     </div>
                     <div class="card-content">
-                        <p>Dear Valued Library Member,</p>
-                        <p>We are excited to inform you that a media item on your wishlist is now available for borrowing:</p>
-                        
+                        <p>Dear Library Member,</p>
+                        <p>We are excited to inform you that the media item you added to your wishlist is now available:</p>
                         <div class="media-card">
                             <div class="media-details">
                                 <div class="media-info">
-                                    <h2 class="media-title">Media ID: ${record.mediaID}</h2>
-                                    <p><strong>Added to Wishlist:</strong> ${record.createdAt}</p>
-                                    <a href="${process.env.CLIENT_URL}/media/${record.mediaID}" class="button">View Media Details</a>
+                                    <h2 class="media-title">${media.title}</h2>
+                                    <p><strong>Media Type:</strong> ${media.mediaType}</p>
+                                    <p><strong>Genre:</strong> ${media.genre}</p>
+                                    <img src="${media.imageUrl}" alt="${media.title}" class="media-image" />
+                                    <a href="${process.env.CLIENT_URL}/media/${record.mediaId}" class="button">View Media Details</a>
                                 </div>
                             </div>
                         </div>
-                        
                         <p>Thank you for using our library services!</p>
-                        
                         <p>Best regards,<br>Cantor Library Team</p>
                     </div>
                     <div class="card-footer">
@@ -127,21 +137,18 @@ exports.sendWishlistNotificationEndpoint = async (req, res) => {
         </html>
       `;
 
-      console.log(`Sending email to user ${record.userID} for media ID ${record.mediaID}`);
-
       // Send the email notification
       await sendEmail(
-        `farshad389@gmail.com`,
+        record.email,
         'Wishlist Media Item Now Available',
         emailContent
       );
-      console.log(`Email sent to user ${record.userID} for media ID ${record.mediaID}`);
     }
 
     // Respond with a success message
-    res.status(200).json({ message: 'Wishlist notifications sent to all users' });
+    res.status(200).json({ message: 'Emails sent for all wishlist records.' });
   } catch (error) {
-    console.error('Failed to send wishlist notification emails:', error);
-    res.status(500).json({ error: 'Failed to send notifications' });
+    console.error('Error sending wishlist emails:', error);
+    res.status(500).json({ error: 'Failed to send emails.' });
   }
 };

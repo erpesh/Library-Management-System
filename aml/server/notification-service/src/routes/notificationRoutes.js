@@ -4,7 +4,7 @@ const returnNotificationController = require('../controllers/returnNotificationC
 const express = require('express');
 const router = express.Router();
 
-router.post('/send-wishlist', wishlistNotificationController.sendWishlistNotificationEndpoint); // Ensure this matches the exported function
+router.post('/send-wishlist', wishlistNotificationController.sendWishlistNotification); // Ensure this matches the exported function
 router.post('/send-return', returnNotificationController.sendReturnNotification);
 
 

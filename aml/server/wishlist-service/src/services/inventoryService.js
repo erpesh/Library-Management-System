@@ -16,6 +16,17 @@ const getMediaByIds = async (ids) => {
     }
 };
 
+const getEmailsByUserIds = async (ids) => {
+    try {
+        const response = await axiosApi.get(`/emails?userIds=${ids.join(',')}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching inventory:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     getMediaByIds,
+    getEmailsByUserIds,
 };
