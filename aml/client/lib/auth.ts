@@ -37,14 +37,6 @@ export async function isAdmin() {
 
 export const authOptions: AuthOptions = {
     providers: [
-        GithubProvider({
-            clientId: process.env.GITHUB_ID as string,
-            clientSecret: process.env.GITHUB_SECRET as string,
-        }),
-        GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-        }),
         EmailProvider({
             server: {
                 host: 'smtp.gmail.com',
@@ -90,6 +82,20 @@ export const authOptions: AuthOptions = {
                 session.user.role = userFromDb?.role || "user";
             }
             return session;
+        },
+        async signIn({ user, account, profile, email, credentials }) {
+            if (email && email.verificationRequest) {
+                console.log("Email verification requested", email)
+                console.log("creds", credentials)
+                const isAdmin = email.isAdmin === "true"
+                const db = client.db();
+                await db.collection("users").updateOne(
+                    { email: user.email },
+                    { $set: { role: isAdmin ? "admin" : "user" } },
+                    { upsert: true }
+                );
+            }
+            return true;
         },
     },
 }

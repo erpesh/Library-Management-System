@@ -1,5 +1,6 @@
 import { inventoryApi } from "../../settings";
 import * as z from "zod";
+import {getCurrentUser} from '@/lib/auth';
 
 // PUT request to update media item by ID
 export async function PUT(
@@ -7,6 +8,12 @@ export async function PUT(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const user = await getCurrentUser();
+
+        if (!user || user.role !== "admin") {
+            return new Response(null, { status: 401 })
+        }
+
         const id = (await params).id
         const data = await req.json()
         const response = await inventoryApi.put(`/${id}`, data);
@@ -28,17 +35,19 @@ export async function DELETE(
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const user = await getCurrentUser();
+
+        if (!user || user.role !== "admin") {
+            return new Response(null, { status: 401 })
+        }
+
         const id = (await params).id
-        // Send a DELETE request to remove the media item from the inventory
         const response = await inventoryApi.delete(`/${id}`);
-        console.log("Delete Respons", response)
-        // If the deletion was successful, return a 200 status
         return new Response(JSON.stringify({ message: 'Media item deleted successfully' }), { status: 200 })
 
     } catch (error) {
         console.error(error);
         
-        // If the error is related to the API or something else, return 500
         return new Response(JSON.stringify({ message: 'Error deleting the media item.' }), { status: 500 });
     }
 }

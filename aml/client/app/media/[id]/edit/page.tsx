@@ -6,6 +6,8 @@ import Link from "next/link";
 import { inventoryApi } from "@/app/api/settings";
 import AddMediaForm from "../../add/page";
 import  DeleteMedia  from "./delete-button";  // Import DeleteMedia component
+import { getCurrentUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 // Fetch media item by ID
 async function getMedia(id: string) {
@@ -19,7 +21,12 @@ async function getMedia(id: string) {
 
 // Page component
 export default async function Page({ params }: { params: { id: string } }) {
-  
+  const user = await getCurrentUser();
+
+  if (!user || user.role !== "admin") {
+    redirect("/media");
+  }
+
   const { id } = params;
   const mediaItem = await getMedia(id); // Fetch media item
 

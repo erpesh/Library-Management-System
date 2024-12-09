@@ -42,6 +42,7 @@ const formSchema = z.object({
 
 export function BorrowButton({ item }: Props) {
     const { data: session } = useSession()
+    
     const router = useRouter()
     const [isBorrowing, setIsBorrowing] = React.useState(false)
     const [isOpen, setIsOpen] = React.useState(false)
