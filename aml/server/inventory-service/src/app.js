@@ -8,7 +8,9 @@ const app = express();
 require('dotenv').config();
 
 // Connect to MongoDB
-connectDB();
+if (process.env.NODE_ENV !== 'test') {
+  connectDB(process.env.MONGO_URI);
+}
 
 // Middleware
 app.use(express.json());

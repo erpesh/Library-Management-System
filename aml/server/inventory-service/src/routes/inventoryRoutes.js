@@ -1,17 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const mediaController = require('../controllers/inventoryController');
+const inventoryController = require('../controllers/inventoryController');
 const userController = require('../controllers/usersController');
 
 router.get('/emails', userController.getEmailsByUserIds)
 
-router.post('/', mediaController.createMedia);
-router.get('/', mediaController.getMedia);
-router.get('/:id', mediaController.getMediaById);
-router.put('/:id', mediaController.updateMedia);
-router.delete('/:id', mediaController.deleteMedia);
-router.get('/:id/available', mediaController.checkAvailability)
-router.post('/:id/borrow', mediaController.borrowMedia)
-router.post('/:id/return', mediaController.returnMedia)
+router.post('/', inventoryController.createMedia);
+router.get('/', inventoryController.getMedia);
+router.get('/:id', inventoryController.getMediaById);
+router.put('/:id', inventoryController.updateMedia);
+router.delete('/:id', inventoryController.deleteMedia);
+router.get('/:id/available', inventoryController.checkAvailability)
+router.post('/:id/borrow', inventoryController.borrowMedia)
+router.post('/:id/return', inventoryController.returnMedia)
 
 module.exports = router;
