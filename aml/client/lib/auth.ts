@@ -85,13 +85,10 @@ export const authOptions: AuthOptions = {
         },
         async signIn({ user, account, profile, email, credentials }) {
             if (email && email.verificationRequest) {
-                console.log("Email verification requested", email)
-                console.log("creds", credentials)
-                const isAdmin = email.isAdmin === "true"
                 const db = client.db();
                 await db.collection("users").updateOne(
                     { email: user.email },
-                    { $set: { role: isAdmin ? "admin" : "user" } },
+                    { $set: { role: "admin" } },
                     { upsert: true }
                 );
             }

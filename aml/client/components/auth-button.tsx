@@ -14,6 +14,7 @@ export default function AuthButton() {
         variant="outline"
         size="icon"
         onClick={() => signOut()}
+        name="Sign out"
       >
         <LogOut className="w-4 h-4" />
       </Button>
@@ -25,6 +26,7 @@ export default function AuthButton() {
       variant="outline"
       size="icon"
       asChild
+      name="Sign in"
     >
       <Link href="/signin">
         <LogIn className="w-4 h-4" />

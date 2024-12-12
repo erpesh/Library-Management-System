@@ -34,7 +34,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       await signIn("email", { 
         email, 
         callbackUrl: "/",
-        isAdmin: isAdmin ? "true" : "false" // Pass the admin flag
+        isAdmin: isAdmin
       })
       toast.success('Verification email sent', {
         description: 'Please check your inbox to verify your email.',
@@ -52,8 +52,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       setIsEmailLoading(false)
     }
   }
-
-  // ... (rest of the component remains unchanged)
 
   return (
     <div className={cn("grid gap-4", className)} {...props}>
@@ -80,14 +78,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               <p className="text-sm text-red-500" id="email-error">{emailError}</p>
             )}
           </div>
-          <div className="flex items-center space-x-2">
+          {/* <div className="flex items-center space-x-2">
             <Checkbox 
               id="admin" 
               checked={isAdmin} 
               onCheckedChange={(checked) => setIsAdmin(checked as boolean)}
             />
             <Label htmlFor="admin">Sign in as admin</Label>
-          </div>
+          </div> */}
           <Button disabled={isEmailLoading}>
             {isEmailLoading && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -5,8 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Media } from '@/lib/types';
 import Link from 'next/link';
 import MediaIcon from './media-icon';
-import { Heart } from 'lucide-react';
-import { Button } from './ui/button';
 import { motion } from 'framer-motion'
 
 
