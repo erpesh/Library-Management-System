@@ -9,7 +9,7 @@ require('dotenv').config();
 
 // Connect to MongoDB
 if (process.env.NODE_ENV !== 'test') {
-  connectDB(process.env.MONGO_URI);
+  connectDB();
 }
 
 // Middleware
