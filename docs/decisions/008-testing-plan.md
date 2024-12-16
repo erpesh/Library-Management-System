@@ -31,7 +31,6 @@ Integration tests will be implemented to verify that the individual components o
 
 - **Scope**:
   - Validating service-to-service communication
-  - Ensuring correct data storage and retrieval from MongoDB
   - Simulating real-world scenarios (e.g., borrowing, returning books, managing wishlist) to ensure smooth interactions between microservices
 
 ### Non-functional Requirements Testing
@@ -40,5 +39,5 @@ To ensure the system meets non-functional requirements, various performance and 
 - **Scope**:
   - **Accessibility Testing**: Accessibility testing ensures that the library management system is usable by all users, including those with disabilities. This includes ensuring that the system is compliant with accessibility standards such as WCAG 2.1.
   - **Performance Testing**: Assessing response times and throughput under varying loads.
-  - **Security Testing**: Testing for vulnerabilities like SQL injection, cross-site scripting (XSS), and cross-site request forgery (CSRF).
+  - **Security Testing**: Testing for vulnerabilities like operation's not being able to be done until a user has logged in to check if the access control systems
   - **Scalability Testing**: Ensuring the system can scale horizontally with increasing users or data size.
