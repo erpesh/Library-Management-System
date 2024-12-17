@@ -21,6 +21,15 @@ We have chosen to implement JWT Tokens for security measures, as our primary foc
 - Library Manager: Responsible for managing the media catalog (adding, editing, and deleting media) and accessing library-wide borrowing records for administrative purposes.
 - User: Allowed to browse, borrow, and view media but restricted to accessing and managing only their personal borrowing history and wishlist.
 
+## Permissions:
+- Users can view and interact with the media catalog.
+- Access and manage only their personal borrowing history.
+- Access and manage only their personal wishlist.
+- Restriction: Cannot edit, add, or delete entries in the library catalog.
+- Restriction: Cannot access other users' borrowing records or wishlists.
+
+
+
 ## Consequences
 
 Choosing JWT tokens for security and authorization significantly enhances the media system's scalability and performance by reducing server load and enabling quick, stateless user authentication. The tokens are lightweight, ensuring fast and efficient access to resources across different platforms. Additionally, JWT tokens offer strong security through signing and optional encryption, ensuring data integrity and confidentiality. Their flexibility allows for easy integration of custom claims, simplifying authorization and access control, making JWT a robust and efficient solution for modern systems.
