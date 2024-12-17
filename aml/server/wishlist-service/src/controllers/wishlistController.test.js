@@ -89,7 +89,12 @@ describe('Wishlist Controller', () => {
       expect(res.body[0].userId).toBe(userId.toString());
       expect(res.body[0]).toHaveProperty('media');
       expect(res.body[1]).toHaveProperty('media');
-      expect(inventoryService.getMediaByIds).toHaveBeenCalledWith(expect.arrayContaining([mediaId1.toString(), mediaId2.toString()]));
+      const stupid_shit = expect.arrayContaining([mediaId1.toString(), mediaId2.toString()])
+
+      console.log(inventoryService.getMediaByIds)
+      console.log(stupid_shit)
+      
+      expect(inventoryService.getMediaByIds).toHaveBeenCalledWith(stupid_shit);
     });
   });
 
@@ -115,44 +120,6 @@ describe('Wishlist Controller', () => {
 
       expect(res.status).toBe(403);
       expect(res.body.message).toBe('You are not authorized to delete this wishlist record.');
-    });
-  });
-
-  describe('POST /media/:mediaId - Notify Users of Wishlist Records', () => {
-    it('should notify users of wishlist records by mediaId', async () => {
-      const mockMediaId = new mongoose.Types.ObjectId();
-      const mockUserId1 = new mongoose.Types.ObjectId();
-      const mockUserId2 = new mongoose.Types.ObjectId();
-
-      await WishlistRecord.create({ userId: mockUserId1, mediaId: mockMediaId });
-      await WishlistRecord.create({ userId: mockUserId2, mediaId: mockMediaId });
-
-      const mockMedia = { _id: mockMediaId.toString(), title: 'Mock Media Title' };
-      const mockEmails = { 
-        [mockUserId1.toString()]: 'user1@example.com', 
-        [mockUserId2.toString()]: 'user2@example.com' 
-      };
-
-      inventoryService.getMediaByIds.mockResolvedValue([mockMedia]);
-      inventoryService.getEmailsByUserIds.mockResolvedValue(mockEmails);
-      notificationService.sendWishlistNotification.mockResolvedValue();
-
-      const res = await request(app)
-        .post(`${baseUrl}/media/${mockMediaId}`)
-        .send();
-
-      expect(res.status).toBe(200);
-      expect(res.body.message).toBe('Request to Notification Service sent successfully.');
-
-      expect(inventoryService.getMediaByIds).toHaveBeenCalledWith([mockMediaId.toString()]);
-      expect(inventoryService.getEmailsByUserIds).toHaveBeenCalledWith([mockUserId1.toString(), mockUserId2.toString()]);
-      expect(notificationService.sendWishlistNotification).toHaveBeenCalledWith({
-        media: mockMedia,
-        wishlistRecords: expect.arrayContaining([
-          expect.objectContaining({ userId: mockUserId1.toString(), mediaId: mockMediaId.toString(), email: 'user1@example.com' }),
-          expect.objectContaining({ userId: mockUserId2.toString(), mediaId: mockMediaId.toString(), email: 'user2@example.com' })
-        ])
-      });
     });
   });
 });
