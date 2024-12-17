@@ -9,4 +9,5 @@ type BorrowingRecord struct {
 	BorrowedAt int64              `bson:"borrowedAt"`
 	ReturnAt   int64              `bson:"returnAt"`
 	ReturnedAt *int64             `bson:"returnedAt,omitempty"`
+	UserEmail  *string			  `bson:"userEmail,omitempty"`
 }

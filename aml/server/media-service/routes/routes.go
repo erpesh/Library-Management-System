@@ -6,18 +6,19 @@ import (
 )
 
 func RegisterRoutes(router *gin.Engine) {
-	apiMedia := router.Group("/api/media/user/:userID")
+	mediaApi := router.Group("/api/media")
 
-	apiMedia.POST("/media/:mediaID", controllers.BorrowMedia)
-	apiMedia.GET("/", controllers.GetBorrowingRecordsByUserID)
+	mediaApi.POST("/notify/:mediaID", controllers.NotifyUsersToReturn)
 
-	apiMedia.POST("/record/:id/return", controllers.ReturnMedia)
-	apiMedia.POST("/record/:id/renew", controllers.RenewMedia)
+	// User based routes
+	userGroup := mediaApi.Group("/user/:userID")
+
+	userGroup.POST("/media/:mediaID", controllers.BorrowMedia)
+	userGroup.GET("/", controllers.GetBorrowingRecordsByUserID)
+
+	userGroup.POST("/record/:id/return", controllers.ReturnMedia)
+	userGroup.POST("/record/:id/renew", controllers.RenewMedia)
 	
-
 	// Check media borrowing status by user and media
-	apiMedia.GET("/media/:mediaID", controllers.CheckMediaBorrowingStatus)
-
-	// Get borrowing history by userId (optional, you can uncomment and implement it)
-	// apiMedia.GET("/user/:userID/history", controllers.GetBorrowingHistory)
+	userGroup.GET("/media/:mediaID", controllers.CheckMediaBorrowingStatus)
 }

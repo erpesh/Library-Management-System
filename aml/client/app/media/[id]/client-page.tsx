@@ -23,9 +23,10 @@ import { WishlistRemoveButton } from '@/components/wishlist-remove-button'
 
 interface Props {
     media: Media
+    userRole?: 'admin' | 'user'
 }
 
-export default function ClientPage({ media }: Props) {
+export default function ClientPage({ media, userRole }: Props) {
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -42,9 +43,7 @@ export default function ClientPage({ media }: Props) {
                 <ChevronRight className="h-4 w-4" />
                 <Link href="/media" className="hover:text-primary">Media</Link>
                 <ChevronRight className="h-4 w-4" />
-                <span
-                    className="text-foreground font-medium"
-                >
+                <span className="text-foreground font-medium">
                     {media.title}
                 </span>
             </nav>
@@ -85,10 +84,10 @@ export default function ClientPage({ media }: Props) {
                             <h1 className="text-3xl">
                                 {media.title}
                             </h1>
-                            <Link href={`/media/${media._id}/edit`} className="flex items-center text-primary hover:text-primary/80 transition-colors">
+                            {userRole && userRole === 'admin' && <Link href={`/media/${media._id}/edit`} className="flex items-center text-primary hover:text-primary/80 transition-colors">
                                 <Edit className="h-4 w-4 mr-1" />
                                 Edit
-                            </Link>
+                            </Link>}
                         </div>
                         <motion.div
                             layoutId={`type-${media._id}`}
@@ -111,10 +110,10 @@ export default function ClientPage({ media }: Props) {
                             <div className="space-y-1">
                                 <p className="text-lg font-medium">Status</p>
                                 <p className="text-sm text-muted-foreground">
-                                    {media.stock > 0 ? `${media.stock} copies available` : "Currently unavailable"}
+                                    {media.stock - media.borrowed > 0 ? `${media.stock - media.borrowed} copies available` : "Currently unavailable"}
                                 </p>
                             </div>
-                            <div className="flex items-center text-green-600">
+                            <div className={`flex items-center ${media.stock - media.borrowed > 0 ? "text-green-600" : "text-red-500"}`}>
                                 <Clock className="mr-2 h-4 w-4" />
                                 {media.stock - media.borrowed}
                             </div>

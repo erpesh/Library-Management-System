@@ -7,11 +7,6 @@ export default function Footer() {
           <div className="mb-4 md:mb-0">
             <p>&copy; {(new Date()).getFullYear()} Cantor Library. All rights reserved.</p>
           </div>
-          <div className="flex space-x-4">
-            <a href="#" className="hover:text-primary transition-colors"><FacebookIcon className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-primary transition-colors"><TwitterIcon className="w-5 h-5" /></a>
-            <a href="#" className="hover:text-primary transition-colors"><InstagramIcon className="w-5 h-5" /></a>
-          </div>
         </div>
       </div>
     </footer>

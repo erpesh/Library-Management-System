@@ -69,6 +69,7 @@ export default function GenreCombobox() {
                         role="combobox"
                         aria-expanded={open}
                         className="w-full justify-between"
+                        name='Select genre...'
                     >
                         {value
                             ? genres.find((genre) => genre.toLowerCase() === value.toLowerCase())

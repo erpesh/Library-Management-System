@@ -32,7 +32,7 @@ export default function MediaSelect() {
         <div>
             <h2 className="text-lg font-semibold mb-2">Media Type</h2>
             <Select onValueChange={handleTypeChange} value={selectedType}>
-                <SelectTrigger>
+                <SelectTrigger name='Select media type...'>
                     <SelectValue>{mediaTypes[selectedType]}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>

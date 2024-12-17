@@ -44,6 +44,7 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Media } from '@/lib/types'
 import { getGenresForType } from '@/lib/utils'
+import { useSession } from 'next-auth/react'
 
 export const formSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -87,7 +88,12 @@ interface Props {
 }
 
 export default function AddMediaForm({ media }: Props) {
+  const {data: session} = useSession();
   const router = useRouter();
+
+  if (!session || session.user?.role !== 'admin') {
+    router.push('/media');
+  }
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [selectedMediaType, setSelectedMediaType] = useState<'book' | 'cd' | 'game'>('book')
