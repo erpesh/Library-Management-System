@@ -1,138 +1,158 @@
-const request = require('supertest');
 const mongoose = require('mongoose');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-const app = require('../app'); 
-const Wishlist = require('../models/wishlist');  
+const request = require('supertest');
+const app = require('../app');
+const WishlistRecord = require('../models/wishlist');
+const inventoryService = require('../services/inventoryService');
+const notificationService = require('../services/notificationService');
 
-let mongoServer;
+jest.mock('../services/inventoryService');
+jest.mock('../services/notificationService');
 
-beforeAll(async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const mongoUri = mongoServer.getUri();
-  await mongoose.connect(mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-});
+describe('Wishlist Controller', () => {
+  const baseUrl = '/api/wishlist';
+  const userId = new mongoose.Types.ObjectId();
+  const mediaId = new mongoose.Types.ObjectId();
 
-afterAll(async () => {
-  await mongoose.disconnect();
-  await mongoServer.stop();
-});
-
-beforeEach(async () => {
-  await Wishlist.deleteMany();
-});
-
-describe('Wishlist API Endpoints', () => {
-  const sampleWishlistItem = {
-    title: 'Sample Item',
-    mediaType: 'movie',
-    genre: 'Action',
-    description: 'A sample movie description',
-    addedBy: 'UserId123',
-  };
-
-  it('TC001 should create a new wishlist item', async () => {
-    const response = await request(app).post('/api/wishlist').send(sampleWishlistItem);
-    expect(response.status).toBe(201);
-    expect(response.body.title).toBe(sampleWishlistItem.title);
-
-    const wishlistItemInDb = await Wishlist.findOne({ title: sampleWishlistItem.title });
-    expect(wishlistItemInDb).toBeTruthy();
-    expect(wishlistItemInDb.genre).toBe(sampleWishlistItem.genre);
+  beforeAll(async () => {
+    await mongoose.connect('mongodb://127.0.0.1:27017/test-wishlist', {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
   });
 
-  it('TC002 should fail to create a wishlist item with invalid data', async () => {
-    const invalidData = { title: '', mediaType: 'unknownType' };
-    const response = await request(app).post('/api/wishlist').send(invalidData);
-    expect(response.status).toBe(400);
-    expect(response.body.error).toContain('Wishlist validation failed');
+  beforeEach(async () => {
+    await WishlistRecord.deleteMany({});
+    jest.clearAllMocks();
   });
 
-  it('TC003 should retrieve all wishlist items', async () => {
-    await Wishlist.create(sampleWishlistItem);
-    const response = await request(app).get('/api/wishlist');
-    expect(response.status).toBe(200);
-    expect(response.body.wishlistItems.length).toBe(1);
-    expect(response.body.wishlistItems[0].title).toBe(sampleWishlistItem.title);
+  afterAll(async () => {
+    await mongoose.connection.close();
   });
 
-  it('TC004 should retrieve a wishlist item by ID', async () => {
-    const wishlistItem = await Wishlist.create(sampleWishlistItem);
-    const response = await request(app).get(`/api/wishlist/${wishlistItem._id}`);
-    expect(response.status).toBe(200);
-    expect(response.body.title).toBe(wishlistItem.title);
+  describe('POST /user/:userId/media/:mediaId - Create Wishlist Record', () => {
+    it('should create a new wishlist record', async () => {
+      const res = await request(app)
+        .post(`${baseUrl}/user/${userId}/media/${mediaId}`)
+        .send();
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('_id');
+      expect(res.body.userId).toBe(userId.toString());
+      expect(res.body.mediaId).toBe(mediaId.toString());
+    });
+
+    it('should return an error if the wishlist item already exists', async () => {
+      await WishlistRecord.create({ userId, mediaId });
+
+      const res = await request(app)
+        .post(`${baseUrl}/user/${userId}/media/${mediaId}`)
+        .send();
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toBe('This item is already in the wishlist.');
+    });
   });
 
-  it('TC005 should return 404 for retrieving a non-existent wishlist item', async () => {
-    const nonExistentId = new mongoose.Types.ObjectId();
-    const response = await request(app).get(`/api/wishlist/${nonExistentId}`);
-    expect(response.status).toBe(404);
-    expect(response.body.message).toBe('Wishlist item not found');
+  describe('GET /user/:userId/media/:mediaId - Retrieve Wishlist Record', () => {
+    it('should retrieve a wishlist record by userId and mediaId', async () => {
+      const record = await WishlistRecord.create({ userId, mediaId });
+
+      const res = await request(app)
+        .get(`${baseUrl}/user/${userId}/media/${mediaId}`)
+        .send();
+
+      expect(res.status).toBe(200);
+      expect(res.body._id).toBe(record._id.toString());
+      expect(res.body.userId).toBe(userId.toString());
+      expect(res.body.mediaId).toBe(mediaId.toString());
+    });
   });
 
-  it('TC006 should update a wishlist item by ID', async () => {
-    const wishlistItem = await Wishlist.create(sampleWishlistItem);
-    const updatedData = { description: 'Updated description' };
-    const response = await request(app).put(`/api/wishlist/${wishlistItem._id}`).send(updatedData);
-    expect(response.status).toBe(200);
-    expect(response.body.description).toBe(updatedData.description);
+  describe('GET /user/:userId - Get All Wishlist Records by UserId', () => {
+    it('should return all wishlist records for a user', async () => {
+      const mediaId1 = new mongoose.Types.ObjectId();
+      const mediaId2 = new mongoose.Types.ObjectId();
+      await WishlistRecord.create({ userId, mediaId: mediaId1 });
+      await WishlistRecord.create({ userId, mediaId: mediaId2 });
+
+      inventoryService.getMediaByIds.mockResolvedValue([
+        { _id: mediaId1.toString(), title: 'Media 1' },
+        { _id: mediaId2.toString(), title: 'Media 2' }
+      ]);
+
+      const res = await request(app)
+        .get(`${baseUrl}/user/${userId}`)
+        .send();
+
+      expect(res.status).toBe(200);
+      expect(res.body.length).toBe(2);
+      expect(res.body[0].userId).toBe(userId.toString());
+      expect(res.body[0]).toHaveProperty('media');
+      expect(res.body[1]).toHaveProperty('media');
+      expect(inventoryService.getMediaByIds).toHaveBeenCalledWith(expect.arrayContaining([mediaId1.toString(), mediaId2.toString()]));
+    });
   });
 
-  it('TC007 should delete a wishlist item by ID', async () => {
-    const wishlistItem = await Wishlist.create(sampleWishlistItem);
-    const response = await request(app).delete(`/api/wishlist/${wishlistItem._id}`);
-    expect(response.status).toBe(200);
-    const deletedItem = await Wishlist.findById(wishlistItem._id);
-    expect(deletedItem).toBeNull();
+  describe('DELETE /user/:userId/record/:id - Delete Wishlist Record', () => {
+    it('should delete a wishlist record', async () => {
+      const record = await WishlistRecord.create({ userId, mediaId });
+
+      const res = await request(app)
+        .delete(`${baseUrl}/user/${userId}/record/${record._id}`)
+        .send();
+
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('Wishlist record deleted successfully.');
+    });
+
+    it('should return an error if user is not authorized to delete the record', async () => {
+      const record = await WishlistRecord.create({ userId, mediaId });
+      const unauthorizedUserId = new mongoose.Types.ObjectId();
+
+      const res = await request(app)
+        .delete(`${baseUrl}/user/${unauthorizedUserId}/record/${record._id}`)
+        .send();
+
+      expect(res.status).toBe(403);
+      expect(res.body.message).toBe('You are not authorized to delete this wishlist record.');
+    });
   });
 
-  it('TC008 should return 404 when deleting a non-existent wishlist item', async () => {
-    const nonExistentId = new mongoose.Types.ObjectId();
-    const response = await request(app).delete(`/api/wishlist/${nonExistentId}`);
-    expect(response.status).toBe(404);
-    expect(response.body.error).toBe('Wishlist item not found');
-  });
+  describe('POST /media/:mediaId - Notify Users of Wishlist Records', () => {
+    it('should notify users of wishlist records by mediaId', async () => {
+      const mockMediaId = new mongoose.Types.ObjectId();
+      const mockUserId1 = new mongoose.Types.ObjectId();
+      const mockUserId2 = new mongoose.Types.ObjectId();
 
-  it('TC009 should check availability of a wishlist item', async () => {
-    const wishlistItem = await Wishlist.create(sampleWishlistItem);
-    const response = await request(app).get(`/api/wishlist/${wishlistItem._id}/available`);
-    expect(response.status).toBe(200);
-    expect(response.body.available).toBe(true);
-  });
+      await WishlistRecord.create({ userId: mockUserId1, mediaId: mockMediaId });
+      await WishlistRecord.create({ userId: mockUserId2, mediaId: mockMediaId });
 
-  it('TC010 should return 404 for checking availability of a non-existent wishlist item', async () => {
-    const nonExistentId = new mongoose.Types.ObjectId();
-    const response = await request(app).get(`/api/wishlist/${nonExistentId}/available`);
-    expect(response.status).toBe(404);
-    expect(response.body.error).toBe('Wishlist item not found');
-  });
+      const mockMedia = { _id: mockMediaId.toString(), title: 'Mock Media Title' };
+      const mockEmails = { 
+        [mockUserId1.toString()]: 'user1@example.com', 
+        [mockUserId2.toString()]: 'user2@example.com' 
+      };
 
-  it('TC011 should add item to wishlist if it doesn’t exist', async () => {
-    const response = await request(app).post('/api/wishlist').send(sampleWishlistItem);
-    expect(response.status).toBe(201);
-    expect(response.body.title).toBe(sampleWishlistItem.title);
-  });
+      inventoryService.getMediaByIds.mockResolvedValue([mockMedia]);
+      inventoryService.getEmailsByUserIds.mockResolvedValue(mockEmails);
+      notificationService.sendWishlistNotification.mockResolvedValue();
 
-  it('TC012 should return 400 when trying to add duplicate item to wishlist', async () => {
-    await Wishlist.create(sampleWishlistItem);
-    const response = await request(app).post('/api/wishlist').send(sampleWishlistItem);
-    expect(response.status).toBe(400);
-    expect(response.body.error).toContain('Duplicate wishlist item');
-  });
+      const res = await request(app)
+        .post(`${baseUrl}/media/${mockMediaId}`)
+        .send();
 
-  it('TC013 should return 400 when invalid ObjectId is passed for wishlist item', async () => {
-    const invalidId = '123invalidId';
-    const responses = await Promise.all([
-      request(app).get(`/api/wishlist/${invalidId}`),
-      request(app).put(`/api/wishlist/${invalidId}`).send({ description: 'Updated description' }),
-      request(app).delete(`/api/wishlist/${invalidId}`),
-    ]);
+      expect(res.status).toBe(200);
+      expect(res.body.message).toBe('Request to Notification Service sent successfully.');
 
-    responses.forEach((response) => {
-      expect(response.status).toBe(400);
-      expect(response.body.error).toContain('Cast to ObjectId failed');
+      expect(inventoryService.getMediaByIds).toHaveBeenCalledWith([mockMediaId.toString()]);
+      expect(inventoryService.getEmailsByUserIds).toHaveBeenCalledWith([mockUserId1.toString(), mockUserId2.toString()]);
+      expect(notificationService.sendWishlistNotification).toHaveBeenCalledWith({
+        media: mockMedia,
+        wishlistRecords: expect.arrayContaining([
+          expect.objectContaining({ userId: mockUserId1.toString(), mediaId: mockMediaId.toString(), email: 'user1@example.com' }),
+          expect.objectContaining({ userId: mockUserId2.toString(), mediaId: mockMediaId.toString(), email: 'user2@example.com' })
+        ])
+      });
     });
   });
 });
