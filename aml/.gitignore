@@ -10,3 +10,4 @@ mongo/sizeStorer.wt
 
 /node_modules/
 /server/inventory-service/node_modules
+/server/wishlist-service/node_modules
