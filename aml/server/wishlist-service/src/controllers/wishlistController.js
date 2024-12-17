@@ -103,38 +103,32 @@ exports.getRecordsByMediaIdAndNotify = async (req, res) => {
     try {
         const wishlistRecords = await WishlistRecord.find({ mediaId: req.params.mediaId });
 
-        if (!wishlistRecords.length) {
+        if (!wishlistRecords) {
             return res.status(200).send({ message: "No wishlist records found for this mediaId." });
         }
-
+        
         const [media] = await getMediaByIds([req.params.mediaId]);
-        console.log('Fetched Media:', media);
-
+        
         const userEmailsMap = await getEmailsByUserIds(wishlistRecords.map(record => record.userId));
-        console.log('User Emails:', userEmailsMap);
 
         // Add user emails to wishlist records
-        const wishlistRecordsWithEmails = wishlistRecords.map(record => ({
-            ...record.toObject(),
-            email: userEmailsMap[record.userId] || "Email not found"
-        }));
+        const wishlistRecordsWithEmails = wishlistRecords.map(record => {
+            return {
+                ...record.toObject(),
+                email: userEmailsMap[record.userId]
+            };
+        });
 
-        const requestObject = {
+        requestObject = {
             media,
             wishlistRecords: wishlistRecordsWithEmails
-        };
+        }
 
         // Call the notification service to send the wishlist notification
-        try {
-            await sendWishlistNotification(requestObject);
-        } catch (notificationError) {
-            console.error('Notification Error:', notificationError);
-            return res.status(500).send({ message: "Failed to send notification." });
-        }
+        await sendWishlistNotification(requestObject);
 
         res.status(200).send({ message: "Request to Notification Service sent successfully." });
     } catch (err) {
-        console.error('Controller Error:', err);
         res.status(500).send({
             message: err.message || "An error occurred while retrieving the wishlist records."
         });

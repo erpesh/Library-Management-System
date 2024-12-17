@@ -91,9 +91,9 @@ describe('Wishlist Controller', () => {
       expect(res.body[1]).toHaveProperty('media');
       const stupid_shit = expect.arrayContaining([mediaId1.toString(), mediaId2.toString()])
 
-      console.log(inventoryService.getMediaByIds)
+      console.log(expect(inventoryService.getMediaByIds))
       console.log(stupid_shit)
-      
+
       expect(inventoryService.getMediaByIds).toHaveBeenCalledWith(stupid_shit);
     });
   });
