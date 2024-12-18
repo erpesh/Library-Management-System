@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { ChevronRight, Clock, Home, Share2 } from "lucide-react";
 import Link from "next/link";
 import { inventoryApi } from "@/app/api/settings";
-import AddMediaForm from "../../add/page";
+import AddMediaForm from "../../add/add-media-form";
 import  DeleteMedia  from "./delete-button";
 import { getCurrentUser } from "@/lib/auth";
 import { redirect } from "next/navigation";
