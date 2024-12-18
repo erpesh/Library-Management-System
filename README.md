@@ -2,11 +2,6 @@
 
 Welcome to the **Project Name** repository! This project provides an application to [brief description of what the application does].
 
-## Features
-
-- Feature 1
-- Feature 2
-- Feature 3
 
 ## Prerequisites
 
