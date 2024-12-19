@@ -196,8 +196,8 @@ export default function AddMediaForm({ media }: Props) {
                       <Select onValueChange={(value) => {
                         field.onChange(value)
                         setSelectedMediaType(value as 'book' | 'cd' | 'game')
-                      }} value={field.value} disabled={!!media}>
-                        <SelectTrigger>
+                      }} value={field.value} disabled={!!media} name='mediaType'>
+                        <SelectTrigger id='mediaType'>
                           <SelectValue placeholder="Select media type" />
                         </SelectTrigger>
                         <SelectContent>
@@ -221,8 +221,8 @@ export default function AddMediaForm({ media }: Props) {
                   <FormItem>
                     <FormLabel>Genre</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <SelectTrigger>
+                      <Select onValueChange={field.onChange} value={field.value} name='genre'>
+                        <SelectTrigger id='genre'>
                           <SelectValue placeholder="Select genre" />
                         </SelectTrigger>
                         <SelectContent>
