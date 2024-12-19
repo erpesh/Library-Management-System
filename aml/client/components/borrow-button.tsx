@@ -78,6 +78,7 @@ export function BorrowButton({ item }: Props) {
             <DialogTrigger asChild>
                 <Button
                     disabled={isBorrowing || item.stock === item.borrowed}
+                    name='borrow'
                 >
                     {isBorrowing ? (
                         <>

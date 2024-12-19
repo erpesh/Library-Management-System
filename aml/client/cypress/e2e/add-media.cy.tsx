@@ -1,5 +1,7 @@
 describe('Add Media Form', () => {
   beforeEach(() => {
+    // @ts-ignore
+    cy.login() // Custom command to log in
     cy.visit('/media/add')
   })
 

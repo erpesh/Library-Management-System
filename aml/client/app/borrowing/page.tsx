@@ -17,7 +17,7 @@ async function getMediaWithBorrowingRecords(userId: string): Promise<Media[] | n
 
 export default async function Page() {
   const user = await getCurrentUser();
-
+  
   if (!user) {
     redirect('/signin');
   }

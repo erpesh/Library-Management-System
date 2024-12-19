@@ -29,6 +29,7 @@ export default function DatePicker({ date, setDate, minDate }: Props) {
             "w-[280px] justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
+          name="date"
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
           {date ? format(date, "PPP") : <span>Pick a date</span>}
