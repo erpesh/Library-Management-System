@@ -39,20 +39,34 @@ func CheckMediaAvailability(mediaID primitive.ObjectID) (bool, error) {
 	return response.Available, nil
 }
 
-func BorrowMedia(mediaID primitive.ObjectID) error {
+func BorrowMedia(mediaID primitive.ObjectID, token string) error {
 	url := fmt.Sprintf("%s/%s/borrow", BaseURL, mediaID.Hex())
 
-	resp, err := http.Post(url, "application/json", nil)
+	// Create a new POST request
+	req, err := http.NewRequest("POST", url, nil)
 	if err != nil {
-		return fmt.Errorf("failed to borrow media")
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+
+	// Set headers
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+token) // ✅ Attach token here
+
+	// Send the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("failed to borrow media")
+		return fmt.Errorf("borrow request failed with status: %s", resp.Status)
 	}
+
 	return nil
 }
+
 
 func ReturnMedia(mediaID primitive.ObjectID) error {
 	url := fmt.Sprintf("%s/%s/return", BaseURL, mediaID.Hex())

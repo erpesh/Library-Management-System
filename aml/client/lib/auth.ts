@@ -1,5 +1,3 @@
-import GithubProvider from "next-auth/providers/github"
-import GoogleProvider from "next-auth/providers/google"
 import EmailProvider from "next-auth/providers/email"
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import { ObjectId } from "mongodb"
@@ -8,6 +6,7 @@ import client from '@/lib/db';
 import { AuthOptions } from "next-auth"
 import { customEmailTemplate } from "./email-template"
 import { createTransport } from 'nodemailer'
+import jwt from "jsonwebtoken";
 
 export interface User {
     name?: string;
@@ -23,6 +22,7 @@ export async function getSession() {
 
 export async function getCurrentUser(): Promise<User | null> {
     const session = await getSession();
+    console.log("Session in getCurrentUser:", session);
 
     if (session)
         return session.user as User;
@@ -36,15 +36,27 @@ export async function isAdmin() {
 }
 
 export const authOptions: AuthOptions = {
+    session: {
+        strategy: "jwt",
+    },
+    jwt: {
+        secret: process.env.NEXTAUTH_SECRET,
+        encode: async ({ token, secret }) => {
+            return jwt.sign(token, secret, { algorithm: "HS256" });
+        },
+        decode: async ({ token, secret }) => {
+            return jwt.verify(token, secret);
+        },
+    },
     providers: [
         EmailProvider({
             server: {
-                host: 'smtp.gmail.com',
-                port: 587,
+                host: "sandbox.smtp.mailtrap.io",
+                port: 2525,
                 auth: {
-                    user: process.env.EMAIL_USER,
-                    pass: process.env.EMAIL_PASS,
-                },
+                    user: "dc6b52205ab3bf",
+                    pass: "81bb2d29ce6d0e"
+                }
             },
             from: process.env.EMAIL_USER,
             sendVerificationRequest: async ({ identifier: email, url, provider, theme }) => {
@@ -74,16 +86,37 @@ export const authOptions: AuthOptions = {
         verifyRequest: '/signin/verify-request',
     },
     callbacks: {
-        async session({ session, user }) {
-            if (session.user) {
-                session.user.id = user.id;
+        async jwt({ token, user }) {
+            // Called on sign-in and whenever the token is updated
+            if (user) {
+                token.id = user.id;
+                token.email = user.email;
+                token.name = user.name;
+                token.role = user.role || "user"; // You can also fetch from DB here if needed
+            }
+
+            // Optional: enrich token with DB role if not already set
+            if (!token.role) {
                 const db = client.db();
-                const userFromDb = await db.collection("users").findOne({ _id: new ObjectId(user.id) });
-                session.user.role = userFromDb?.role || "user";
+                const userFromDb = await db.collection("users").findOne({ _id: new ObjectId(token.id as string) });
+                token.role = userFromDb?.role || "user";
+            }
+
+            return token;
+        },
+
+        async session({ session, token }) {
+            // Pass token data into session
+            if (token && session.user) {
+                session.user.id = token.id as string;
+                session.user.email = token.email as string;
+                session.user.name = token.name as string;
+                session.user.role = token.role as "user" | "admin";
             }
             return session;
         },
-        async signIn({ user, account, profile, email, credentials }) {
+
+        async signIn({ user, email }) {
             if (email && email.verificationRequest) {
                 const db = client.db();
                 await db.collection("users").updateOne(
@@ -94,6 +127,6 @@ export const authOptions: AuthOptions = {
             }
             return true;
         },
-    },
+    }
 }
 

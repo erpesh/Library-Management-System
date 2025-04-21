@@ -50,40 +50,40 @@ exports.getMedia = async (req, res) => {
 
 exports.getMediaById = async (req, res) => {
     try {
-        const media = await Media.findById(req.params.id);
-        if (!media) {
-            return res.status(404).json({ message: 'Media not found' });
-        }
-
-        const userID = req.query.userId;
-
-        let responseData = media.toObject();
-
-        if (userID) {
-            // Fetch borrowing status for the media item
-            const borrowingStatus = await checkMediaBorrowingStatus(userID, media._id);
-
-            // Merge borrowing status with the media data
-            responseData = {
-                ...responseData,
-                isBorrowed: borrowingStatus.isBorrowed,
-                borrowingRecord: borrowingStatus.borrowingRecord
-            };
-
-            const wishlistRecord = await getWishlistRecord(userID, media._id);
-            responseData = {
-                ...responseData,
-                wishlistRecord: wishlistRecord
-            }
-        }
-
-        // Send the combined response
-        res.status(200).json(responseData);
+      const media = await Media.findById(req.params.id);
+      if (!media) {
+        return res.status(404).json({ message: 'Media not found' });
+      }
+  
+      const userID = req.query.userId;
+      const token = req.headers.authorization?.split(" ")[1];
+      console.log("Token:", token); // Debugging line
+      console.log('Req headers:', req.headers); // Debugging line
+  
+      let responseData = media.toObject();
+  
+      if (userID) {
+        const borrowingStatus = await checkMediaBorrowingStatus(userID, media._id, token);
+  
+        responseData = {
+          ...responseData,
+          isBorrowed: borrowingStatus?.isBorrowed ?? false,
+          borrowingRecord: borrowingStatus?.borrowingRecord || null,
+        };
+  
+        const wishlistRecord = await getWishlistRecord(userID, media._id);
+        responseData = {
+          ...responseData,
+          wishlistRecord: wishlistRecord,
+        };
+      }
+  
+      res.status(200).json(responseData);
     } catch (error) {
-        console.error('Error fetching media or borrowing status:', error);
-        res.status(400).json({ error: error.message });
+      console.error('Error fetching media or borrowing status:', error);
+      res.status(400).json({ error: error.message });
     }
-};
+  };
 
 exports.updateMedia = async (req, res) => {
     try {
@@ -133,6 +133,7 @@ exports.checkAvailability = async (req, res) => {
 }
 
 exports.borrowMedia = async (req, res) => {
+    console.log('Borrow media request:', req.headers); // Debugging line   
     try {
         const mediaItem = await Media.findById(req.params.id);
         if (!mediaItem) return res.status(404).json({ error: 'Media not found' });

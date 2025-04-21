@@ -68,7 +68,15 @@ func BorrowMedia(c *gin.Context) {
 		return
 	}
 
-	err = services.BorrowMedia(mediaID)
+	rawToken, exists := c.Get("token")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token not found"})
+		return
+	}
+
+	token := rawToken.(string) // safe to cast since you stored it as string
+
+	err = services.BorrowMedia(mediaID, token)
 	if err != nil {
 		fmt.Println("Error borrowing media:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to borrow media"})

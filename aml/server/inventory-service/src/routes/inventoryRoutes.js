@@ -2,16 +2,23 @@ const express = require('express');
 const router = express.Router();
 const inventoryController = require('../controllers/inventoryController');
 const userController = require('../controllers/usersController');
+const { authenticateToken, requireAdmin } = require('../utils/authMiddleware');
 
-router.get('/emails', userController.getEmailsByUserIds)
+// Public route (no auth required)
+router.get('/emails', userController.getEmailsByUserIds);
 
-router.post('/', inventoryController.createMedia);
+// Routes requiring any authenticated user
+router.post('/:id/borrow', authenticateToken, inventoryController.borrowMedia);
+router.post('/:id/return', authenticateToken, inventoryController.returnMedia);
+
+// Admin-only routes
+router.post('/', authenticateToken, requireAdmin, inventoryController.createMedia);
+router.put('/:id', authenticateToken, requireAdmin, inventoryController.updateMedia);
+router.delete('/:id', authenticateToken, requireAdmin, inventoryController.deleteMedia);
+
+// Public or optional-auth routes
 router.get('/', inventoryController.getMedia);
 router.get('/:id', inventoryController.getMediaById);
-router.put('/:id', inventoryController.updateMedia);
-router.delete('/:id', inventoryController.deleteMedia);
-router.get('/:id/available', inventoryController.checkAvailability)
-router.post('/:id/borrow', inventoryController.borrowMedia)
-router.post('/:id/return', inventoryController.returnMedia)
+router.get('/:id/available', inventoryController.checkAvailability);
 
 module.exports = router;

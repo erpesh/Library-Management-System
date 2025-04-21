@@ -1,19 +1,20 @@
 // emailService.js
 const nodemailer = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail', 
+var transporter = nodemailer.createTransport({
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
     auth: {
-        user: process.env.EMAIL_USER, 
-        pass: process.env.EMAIL_PASS
+      user: "dc6b52205ab3bf",
+      pass: "81bb2d29ce6d0e"
     }
-});
+  });
 
 // Function to send email
 const sendEmail = async (to, subject, html) => { 
     try {
         await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: '"Library" <library@example.com>',
             to: to,
             subject: subject,
             html: html 

@@ -108,16 +108,16 @@ export default function AddMediaForm({ media }: Props) {
       platform: media.platform ?? '',  // Replace undefined with empty string
       artist: media.artist ?? '',  // Replace undefined with empty string
     } : {
-      title: '',
+      title: 'Some Title',
       mediaType: 'book',
-      description: '',
-      genre: '',
+      description: 'Some cool description Some cool description Some cool description Some cool description',
+      genre: 'Horror',
       releaseDate: new Date(),
-      imageUrl: '',
-      stock: 0,
+      imageUrl: 'https://cdn.cdkeys.com/700x700/media/catalog/product/n/e/new_project_88__2_1.jpg',
+      stock: 12,
       borrowed: 0,
-      author: '',
-      publisher: '',
+      author: 'Mark Twain',
+      publisher: 'Your Publisher',
       platform: '',
       artist: '',
     },

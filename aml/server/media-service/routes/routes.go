@@ -3,10 +3,11 @@ package routes
 import (
 	"media-service/controllers"
 	"github.com/gin-gonic/gin"
+	"media-service/utils"
 )
 
 func RegisterRoutes(router *gin.Engine) {
-	mediaApi := router.Group("/api/media")
+	mediaApi := router.Group("/api/media", utils.AuthenticateJWT())
 
 	mediaApi.POST("/notify/:mediaID", controllers.NotifyUsersToReturn)
 
