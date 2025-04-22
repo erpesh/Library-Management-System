@@ -4,10 +4,24 @@ import { getCurrentUser } from '@/lib/auth'
 import { Media } from '@/lib/types'
 import { redirect } from 'next/navigation'
 import { BorrowingHistoryList } from './borrowing-history-list'
+import { getToken } from 'next-auth/jwt';
+import { cookies } from 'next/headers';
 
 async function getMediaWithBorrowingRecords(userId: string): Promise<Media[] | null> {
   try {
-    const response = await mediaApi.get(`/user/${userId}`);
+    const cookiesList = await cookies();
+
+    const token = await getToken({
+      req: { cookies: cookiesList },
+      secret: process.env.NEXTAUTH_SECRET,
+      raw: true,
+    });
+
+    const response = await mediaApi.get(`/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (e) {
     console.error(e);
@@ -17,7 +31,7 @@ async function getMediaWithBorrowingRecords(userId: string): Promise<Media[] | n
 
 export default async function Page() {
   const user = await getCurrentUser();
-  
+
   if (!user) {
     redirect('/signin');
   }

@@ -3,6 +3,7 @@ const router = express.Router();
 const inventoryController = require('../controllers/inventoryController');
 const userController = require('../controllers/usersController');
 const { authenticateToken, requireAdmin } = require('../utils/authMiddleware');
+const { mediaSearchLimiter } = require('../utils/rateLimiter');
 
 // Public route (no auth required)
 router.get('/emails', userController.getEmailsByUserIds);
@@ -17,7 +18,7 @@ router.put('/:id', authenticateToken, requireAdmin, inventoryController.updateMe
 router.delete('/:id', authenticateToken, requireAdmin, inventoryController.deleteMedia);
 
 // Public or optional-auth routes
-router.get('/', inventoryController.getMedia);
+router.get('/', mediaSearchLimiter, inventoryController.getMedia);
 router.get('/:id', inventoryController.getMediaById);
 router.get('/:id/available', inventoryController.checkAvailability);
 

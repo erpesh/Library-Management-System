@@ -50,7 +50,7 @@ func BorrowMedia(mediaID primitive.ObjectID, token string) error {
 
 	// Set headers
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+token) // ✅ Attach token here
+	req.Header.Set("Authorization", "Bearer "+token)
 
 	// Send the request
 	client := &http.Client{}
