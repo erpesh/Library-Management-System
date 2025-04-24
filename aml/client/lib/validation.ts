@@ -35,4 +35,14 @@ export const mediaSchema = z.object({
     artist: safeString("Artist").optional(),
 });
 
+export const renewMediaSchema = z.object({
+    newReturnDate: z.date({
+        required_error: "A new return date is required.",
+    }),
+})
 
+export const borrowMediaSchema = z.object({
+    returnDate: z.date({
+        required_error: "A return date is required.",
+    }),
+})

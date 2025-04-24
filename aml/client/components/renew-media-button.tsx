@@ -29,16 +29,13 @@ import {
 } from "@/components/ui/form"
 import DatePicker from "./ui/date-picker"
 import { Media } from "@/lib/types"
+import { renewMediaSchema } from '@/lib/validation'
 
 interface Props {
     item: Media
 }
 
-const formSchema = z.object({
-    newReturnDate: z.date({
-        required_error: "A new return date is required.",
-    }),
-})
+const formSchema = renewMediaSchema;
 
 export function RenewButton({ item }: Props) {
     const { data: session } = useSession()
