@@ -22,7 +22,6 @@ export async function getSession() {
 
 export async function getCurrentUser(): Promise<User | null> {
     const session = await getSession();
-    console.log("Session in getCurrentUser:", session);
 
     if (session)
         return session.user as User;

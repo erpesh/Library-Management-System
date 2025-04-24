@@ -1,30 +1,26 @@
 const jwt = require("jsonwebtoken");
 
 const authenticateToken = (req, res, next) => {
-    console.log("Authentication middleware triggered"); // Debugging line
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(" ")[1];
-    console.log('req.headers:', req.headers); // Debugging line
-    console.log("Auth header:", authHeader); // Debugging line
-    console.log("Token:", token); // Debugging line
+    console.log("Token:", token); // Log the token for debugging
     if (!token) {
-        return res.status(401).json({ error: "No token provided" });
+        return res.status(401).json({ error: "Authorization token is required" });
     }
 
     try {
         const decoded = jwt.verify(token, process.env.NEXTAUTH_SECRET);
         req.user = decoded; // Attach decoded user info to request
-        console.log("Decoded user info:", req.user); // Debugging line
         next();
     } catch (err) {
-        console.error("Token verification error:", err); // Debugging line
+        console.error("Token verification error:", err);
         return res.status(403).json({ error: "Invalid or expired token" });
     }
 };
 
 const requireAdmin = (req, res, next) => {
     if (req.user?.role !== "admin") {
-        return res.status(403).json({ error: "Admin access required" });
+        return res.status(403).json({ error: "Access denied" });
     }
     next();
 };

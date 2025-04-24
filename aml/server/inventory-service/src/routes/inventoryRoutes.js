@@ -8,16 +8,13 @@ const { mediaSearchLimiter } = require('../utils/rateLimiter');
 // Public route (no auth required)
 router.get('/emails', userController.getEmailsByUserIds);
 
-// Routes requiring any authenticated user
 router.post('/:id/borrow', authenticateToken, inventoryController.borrowMedia);
 router.post('/:id/return', authenticateToken, inventoryController.returnMedia);
 
-// Admin-only routes
 router.post('/', authenticateToken, requireAdmin, inventoryController.createMedia);
 router.put('/:id', authenticateToken, requireAdmin, inventoryController.updateMedia);
 router.delete('/:id', authenticateToken, requireAdmin, inventoryController.deleteMedia);
 
-// Public or optional-auth routes
 router.get('/', mediaSearchLimiter, inventoryController.getMedia);
 router.get('/:id', inventoryController.getMediaById);
 router.get('/:id/available', inventoryController.checkAvailability);

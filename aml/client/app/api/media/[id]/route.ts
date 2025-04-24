@@ -66,8 +66,17 @@ export async function DELETE(
             return new Response(null, { status: 401 })
         }
 
+        const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET, raw: true });
+        if (!token) {
+            return new Response(null, { status: 403 });
+        }
+
         const id = (await params).id
-        const response = await inventoryApi.delete(`/${id}`);
+        const response = await inventoryApi.delete(`/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
         return new Response(JSON.stringify({ message: 'Media item deleted successfully' }), { status: 200 })
 
     } catch (error) {
