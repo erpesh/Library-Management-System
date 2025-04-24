@@ -44,23 +44,9 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Media } from '@/lib/types'
 import { getGenresForType } from '@/lib/utils'
+import { mediaSchema } from '@/lib/validation'
 
-export const formSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  mediaType: z.enum(['book', 'cd', 'game'], { required_error: 'Media type is required' }),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  genre: z.string().min(1, 'Genre is required'),
-  releaseDate: z.date({
-    required_error: "Please select a release date.",
-  }),
-  imageUrl: z.string().url('Please enter a valid URL for the cover image'),
-  stock: z.coerce.number().min(0, 'Stock must be a non-negative number').default(0),
-  borrowed: z.coerce.number().min(0).default(0),
-  author: z.string().optional(),
-  publisher: z.string().optional(),
-  platform: z.string().optional(),
-  artist: z.string().optional(),
-})
+const formSchema = mediaSchema;
 
 type FormValues = z.infer<typeof formSchema>
 
